@@ -25,6 +25,8 @@ type GlobalState = {
     callback?: () => void,
     option?: ConfirmOption
   ) => void;
+  collapsed: boolean;
+  setCollapsed: (collapsed: boolean) => void;
 };
 
 export const initialGlobalState: GlobalState = {
@@ -37,6 +39,8 @@ export const initialGlobalState: GlobalState = {
   notificationMessage: { body: "" },
   setNotificationMessage: () => {},
   showConfirm: () => {},
+  collapsed: false,
+  setCollapsed: () => {},
 };
 
 export const GlobalStateContext = React.createContext(initialGlobalState);

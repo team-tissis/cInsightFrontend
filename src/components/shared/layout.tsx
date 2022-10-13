@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext, useEffect, useState } from "react";
-import { withRouter } from "react-router-dom";
+import { useLocation, withRouter } from "react-router-dom";
 import * as H from "history";
 import { Flex } from "./flex";
 import {
@@ -15,65 +15,74 @@ import {
   UserOutlined,
   FireTwoTone,
 } from "@ant-design/icons";
+import { useQuery } from "utils/hooks";
+import { GlobalStateContext } from "contexts/global_state_context";
 
 const { Header, Content, Sider } = AntdLayout;
 
 type MenuItem = Required<MenuProps>["items"][number];
-
-const items1: MenuItem[] = [
-  {
-    key: "マイページ",
-    label: "マイページ",
-    icon: <UserOutlined />,
-    onClick: () => window.location.replace("/mypage"),
-  },
-  {
-    key: "勉強会一覧",
-    label: "勉強会一覧",
-    icon: <NotificationOutlined />,
-    onClick: () => window.location.replace("/lectures"),
-  },
-];
 
 type LayoutProps = {
   children?: ReactNode;
   history: H.History;
 };
 const Layout = (props: LayoutProps): JSX.Element => {
-  const [collapsed, setCollapsed] = useState(false);
+  const globalState = useContext(GlobalStateContext);
+  console.log(globalState.collapsed);
+  const location = useLocation();
+  const items1: MenuItem[] = [
+    {
+      key: "/mypage",
+      label: "マイページ",
+      icon: <UserOutlined />,
+      onClick: () => {
+        props.history.push("/mypage");
+      },
+    },
+    {
+      key: "/lectures",
+      label: "勉強会",
+      icon: <NotificationOutlined />,
+      onClick: () => {
+        props.history.push("/lectures");
+      },
+    },
+  ];
 
   return (
     <AntdLayout style={{ width: "100vw", height: "100vh" }}>
       <Sider
         collapsible
-        onCollapse={() => setCollapsed(!collapsed)}
+        onCollapse={() => globalState.setCollapsed(!globalState.collapsed)}
         width={200}
         className="site-layout-background"
-        collapsed={collapsed}
+        collapsed={globalState.collapsed}
       >
         <Flex style={{ padding: 20 }} alignItems="center">
-          <FireTwoTone twoToneColor="#f66" style={{ fontSize: 20 }} />
-          <div
+          <FireTwoTone
+            twoToneColor="#f66"
             style={{
-              marginLeft: 10,
-              width: 200,
-              color: "#fff",
-              fontWeight: 500,
+              marginLeft: globalState.collapsed ? 10 : 0,
+              fontSize: 30,
+              alignItems: "center",
+              transition: "0.2s",
             }}
-          >
-            Daofication
-          </div>
-          {/* <Menu
-            style={{ width: "100%" }}
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={["勉強会一覧"]}
-            items={items1}
-          /> */}
+          />
+          {!globalState.collapsed && (
+            <div
+              style={{
+                marginLeft: 10,
+                width: 200,
+                color: "#fff",
+                fontWeight: 500,
+              }}
+            >
+              Daofication
+            </div>
+          )}
         </Flex>
         <Menu
-          defaultOpenKeys={["sub1"]}
-          defaultSelectedKeys={["勉強会一覧"]}
+          selectedKeys={[location.pathname]}
           mode="inline"
           theme="dark"
           // style={{ height: "100%", borderRight: 0 }}

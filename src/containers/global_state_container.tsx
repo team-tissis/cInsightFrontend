@@ -27,6 +27,7 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
 ) => {
   const [user, setUser] = React.useState<User>({});
   const [users, setUsers] = React.useState<User[]>([]);
+  const [collapsed, setCollapsed] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(false);
   const [apiError, setApiError] = React.useState<ApiError>({});
   const [notificationMessage, setNotificationMessage] = React.useState<{
@@ -107,6 +108,8 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
         notificationMessage: notificationMessage,
         setNotificationMessage: setNotificationMessage,
         showConfirm: showConfirm,
+        collapsed: collapsed,
+        setCollapsed: setCollapsed,
       }}
     >
       <div>

@@ -27,7 +27,7 @@ export const LecturesPage: React.FC = () => {
 
   return (
     <Flex flexDirection="column">
-      <h4 style={{ padding: 10 }}>勉強会一覧</h4>
+      <h4 style={{ padding: 10 }}>勉強会</h4>
       <LecturesTable
         data={data}
         loading={loading}
