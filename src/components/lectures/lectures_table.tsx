@@ -5,6 +5,8 @@ import { Lecture } from "entities/lecture";
 import { TableParams } from "utils/table_params";
 import { HeartFilled } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { GlobalStateContext } from "contexts/global_state_context";
 
 const columns: ColumnsType<Lecture> = [
   {
@@ -58,7 +60,6 @@ export type LecturesTableProps = {
 export const LecturesTable = (props: LecturesTableProps) => {
   return (
     <Table
-      style={{ width: "100%" }}
       columns={columns}
       rowKey={(object) => String(object.id)}
       dataSource={props.data}

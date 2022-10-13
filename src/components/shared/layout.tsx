@@ -99,6 +99,7 @@ const Layout = (props: LayoutProps): JSX.Element => {
             style={{
               margin: 0,
               height: "calc(100vh-64px)",
+              width: "calc(100vw-200px)",
             }}
           >
             {props.children}
