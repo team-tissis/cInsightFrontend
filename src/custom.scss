@@ -1,0 +1,32 @@
+// Override default variables before the import
+$body-bg: #fafafa;
+$primary: #0071c7;
+$success: #00797b;
+$secondary: #d4d4d4;
+$info: #c1cc6a;
+// Import Bootstrap and its default variables
+
+$sidebar-bg-color: linear-gradient(
+  130deg,
+  rgb(0, 128, 200) 40%,
+  rgb(215, 227, 118) 100%
+);
+$submenu-bg-color: #fff0 !default;
+$submenu-bg-color-collapsed: #fff0 !default;
+$sidebar-color: white;
+$highlight-color: #dee2ec;
+$icon-bg-color: rgba(255, 255, 255, 0.15);
+$icon-size: 35px;
+
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~react-pro-sidebar/dist/scss/styles.scss";
+
+.pro-sidebar {
+  .pro-menu {
+    padding: 0;
+  }
+}
+
+.react-datepicker__month-container {
+  height: 290px !important;
+}
