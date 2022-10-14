@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { Error404Page } from "../components/shared/error_404";
+import Error404Page from "../components/shared/error_404";
 import Layout from "components/shared/layout";
 import { MyPage } from "components/mypage/my_page";
 import LecturePage from "components/lectures/lecture_page";

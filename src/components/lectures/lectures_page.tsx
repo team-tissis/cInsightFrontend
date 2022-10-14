@@ -27,24 +27,6 @@ export const LecturesPage: React.FC = () => {
     fetchData();
   }, [JSON.stringify(tableParams)]);
 
-  const getWindowDimensions = () => {
-    const { innerWidth: width, innerHeight: height } = window;
-    return {
-      width,
-      height,
-    };
-  };
-  const [windowDimensions, setWindowDimensions] = useState(
-    getWindowDimensions()
-  );
-  useEffect(() => {
-    const onResize = () => {
-      setWindowDimensions(getWindowDimensions());
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
   return (
     <Flex flexDirection="column">
       <h4 style={{ padding: 10 }}>勉強会</h4>
@@ -53,8 +35,8 @@ export const LecturesPage: React.FC = () => {
         style={{
           overflowX: "scroll",
           maxWidth: globalState.collapsed
-            ? windowDimensions.width - 120
-            : windowDimensions.width - 240,
+            ? globalState.dimension.width - 120
+            : globalState.dimension.width - 240,
           transition: "all 0.2s",
         }}
       >

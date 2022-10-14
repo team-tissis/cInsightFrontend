@@ -1,5 +1,5 @@
 import { User } from "entities/user";
-import { ConfirmOption } from "containers/global_state_container";
+import { ConfirmOption, Dimension } from "containers/global_state_container";
 import React, { ReactNode, SetStateAction } from "react";
 
 export type NotificationColor = "success" | "danger" | "warning" | "info";
@@ -27,6 +27,8 @@ type GlobalState = {
   ) => void;
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
+  dimension: Dimension;
+  setDimension: (dimension: Dimension) => void;
 };
 
 export const initialGlobalState: GlobalState = {
@@ -41,6 +43,8 @@ export const initialGlobalState: GlobalState = {
   showConfirm: () => {},
   collapsed: false,
   setCollapsed: () => {},
+  dimension: { width: 1000, height: 700 },
+  setDimension: () => {},
 };
 
 export const GlobalStateContext = React.createContext(initialGlobalState);

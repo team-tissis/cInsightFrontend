@@ -65,7 +65,7 @@ const Layout = (props: LayoutProps): JSX.Element => {
               marginLeft: globalState.collapsed ? 10 : 0,
               fontSize: 30,
               alignItems: "center",
-              transition: "0.2s",
+              transition: "all 0.19s",
             }}
           />
           {!globalState.collapsed && (

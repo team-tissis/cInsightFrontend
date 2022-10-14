@@ -1,4 +1,4 @@
-import React, { ReactNode, useContext, useEffect } from "react";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 import {
   GlobalStateContext,
   NotificationColor,
@@ -16,6 +16,11 @@ export type ConfirmOption = {
   backdropStatic?: boolean;
   onCancel?: () => void;
   hideCancel?: boolean;
+};
+
+export type Dimension = {
+  width: number;
+  height: number;
 };
 
 type GlobalStateContainerProps = {
@@ -48,6 +53,23 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
   const [showToast, setShowToast] = React.useState(false);
   const [confirmWord, setConfirmWord] = React.useState("");
   const theme = useContext(ThemeContext);
+
+  const getWindowDimensions = (): Dimension => {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+      width,
+      height,
+    };
+  };
+  const [dimension, setDimension] = useState<Dimension>(getWindowDimensions());
+
+  useEffect(() => {
+    const onResize = () => {
+      setDimension(getWindowDimensions());
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const showConfirm = (
     message: ReactNode,
@@ -110,6 +132,8 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
         showConfirm: showConfirm,
         collapsed: collapsed,
         setCollapsed: setCollapsed,
+        dimension: dimension,
+        setDimension: setDimension,
       }}
     >
       <div>

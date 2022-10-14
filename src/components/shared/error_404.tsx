@@ -1,16 +1,36 @@
-import Logo from 'components/../../public/logo_h.png'
-import React from 'react'
-import { withRouter } from 'react-router-dom'
-import { Flex } from './flex'
+import { Button, Result } from "antd";
+import * as H from "history";
+import { GlobalStateContext } from "contexts/global_state_context";
+import React, { useContext } from "react";
+import { withRouter } from "react-router-dom";
+import { Flex } from "./flex";
 
-export const Error404Page = (): JSX.Element => {
-    return (
-        <Flex flexDirection="column" alignItems="center" style={{ height: '80vh' }} justifyContent="center">
-            <img src={Logo} style={{ maxWidth: 500, marginBottom: 30 }} />
-            <div style={{ fontSize: 28, fontWeight: 'bold' }}>Error 404</div>
-            <div style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 30 }}>ページが存在しません</div>
-        </Flex>
-    )
-}
+type Props = {
+  history: H.History;
+};
 
-export default withRouter(Error404Page)
+const Error404Page = (props: Props): JSX.Element => {
+  const globalState = useContext(GlobalStateContext);
+  return (
+    <div style={{ width: "100%", alignItems: "center" }}>
+      <Result
+        style={{
+          transition: "all 0.2s",
+          width: globalState.collapsed
+            ? globalState.dimension.width - 120
+            : globalState.dimension.width - 240,
+        }}
+        status="404"
+        title="404 Not found."
+        subTitle="お探しのページは見つかりませんでした。"
+        extra={
+          <Button onClick={() => props.history.push("/mypage")} type="primary">
+            ホームへ戻る
+          </Button>
+        }
+      />
+    </div>
+  );
+};
+
+export default withRouter(Error404Page);
