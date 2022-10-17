@@ -1,38 +1,154 @@
-.App {
-  text-align: center;
+.shadow {
+  box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.25);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.shadow-dark {
+  box-shadow: 5px 10px 20px rgba(0, 0, 0);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.child-margin-r-5 > *:not(:last-child) {
+  margin-right: 5px;
+}
+.child-margin-r-10 > *:not(:last-child) {
+  margin-right: 10px;
+}
+.child-margin-r-15 > *:not(:last-child) {
+  margin-right: 15px;
+}
+.child-margin-c-5 > *:not(:last-child) {
+  margin-bottom: 5px;
+}
+.child-margin-c-10 > *:not(:last-child) {
+  margin-bottom: 10px;
+}
+.child-margin-c-15 > *:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.react-datepicker-wrapper {
+  display: block !important;
+}
+
+.sticky-table th {
+  border-collapse: separate;
+}
+
+.sticky-table thead th {
+  /* 縦スクロール時に固定する */
+  position: -webkit-sticky;
+  position: sticky;
+  top: -2px;
+  /* tbody内のセルより手前に表示する */
+  z-index: 1;
+  background-color: white;
+}
+
+.sticky-table-cell {
+  /* 横スクロール時に固定する */
+  position: -webkit-sticky;
+  position: sticky;
+  left: 1px;
+  /* tbody内のセルより手前に表示する */
+  z-index: 2;
+  background-color: white;
+  vertical-align: middle;
+  /* border-right: solid 2px #eee; */
+}
+.sticky-table thead th:first-child {
+  z-index: 3;
+}
+
+.flashing {
+  animation: flash 2s linear infinite;
+}
+
+@keyframes flash {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.form-label.required::after {
+  content: "\5fc5\9808";
+  padding: 3px 6px;
+  font-size: 11px;
+  background: #b81151;
   color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-left: 5px;
 }
 
-.App-link {
-  color: #61dafb;
+.form-control {
+  margin-bottom: 15px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.invalid-feedback {
+  position: absolute;
+  top: 35px;
+  width: 200px !important;
+}
+
+.form-label {
+  margin: 5px 0 0 0;
+}
+
+.vertical-align-middle-row > td {
+  vertical-align: middle;
+}
+
+.popover {
+  max-width: 500px !important;
+}
+
+.tooltip-inner {
+  max-width: 500px !important;
+}
+
+@media print {
+  .no-print,
+  .no-print * {
+    display: none !important;
   }
-  to {
-    transform: rotate(360deg);
+  .content {
+    margin-top: 0 !important;
+    padding: 0 !important;
   }
+}
+
+@media screen {
+  .no-screen,
+  .no-screen * {
+    display: none !important;
+  }
+}
+
+.content {
+  margin-top: 50px;
+  padding: 20px 20px 10px 20px;
+}
+
+.linked-text {
+  color: rgb(73, 119, 208);
+  text-decoration: underline;
+  cursor: pointer;
+  user-select: none;
+}
+
+.bg-primary-clear {
+  background-color: #0d6efd33 !important;
+}
+
+.full-width-tab-content > .tab-content {
+  width: 100%;
+}
+
+html.disable-swipe-back {
+  overflow: hidden;
+  overscroll-behavior-x: none;
 }

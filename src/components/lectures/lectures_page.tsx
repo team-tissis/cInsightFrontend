@@ -5,6 +5,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { TableParams } from "utils/table_params";
 import { LecturesTable } from "./lectures_table";
 import { GlobalStateContext } from "contexts/global_state_context";
+import { PageHeader } from "antd";
+import { sleep } from "utils/util";
 
 export const LecturesPage: React.FC = () => {
   const globalState = useContext(GlobalStateContext);
@@ -24,21 +26,22 @@ export const LecturesPage: React.FC = () => {
   };
 
   useEffect(() => {
+    sleep(
+      0.5,
+      () => globalState.setLoading(true),
+      () => globalState.setLoading(false)
+    );
     fetchData();
   }, [JSON.stringify(tableParams)]);
 
   return (
-    <Flex flexDirection="column">
-      <h4 style={{ padding: 10 }}>勉強会</h4>
-
-      <div
+    <>
+      <PageHeader
         style={{
-          overflowX: "scroll",
-          maxWidth: globalState.collapsed
-            ? globalState.dimension.width - 120
-            : globalState.dimension.width - 240,
-          transition: "all 0.2s",
+          width: "100%",
+          backgroundColor: "inherit",
         }}
+        title={"勉強会"}
       >
         <LecturesTable
           data={data}
@@ -46,7 +49,7 @@ export const LecturesPage: React.FC = () => {
           tableParams={tableParams}
           setTableParams={setTableParams}
         />
-      </div>
-    </Flex>
+      </PageHeader>
+    </>
   );
 };

@@ -189,7 +189,7 @@ export const TableCell = (props: TableCellProps): JSX.Element => {
         : props.sub
         ? theme.tableSubText
         : theme.tableText,
-      verticalAlign: "middle",
+      verticalAlign: "text-top",
       padding: "13px .5rem",
     };
 

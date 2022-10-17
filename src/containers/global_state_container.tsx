@@ -10,6 +10,7 @@ import { useEffectSkipFirst } from "utils/hooks";
 import { NestedModal } from "components/shared/widget";
 import { User } from "entities/user";
 import { ThemeContext } from "contexts/theme_context";
+import { Spin } from "antd";
 
 export type ConfirmOption = {
   confirmWord?: string;
@@ -184,7 +185,7 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
               zIndex: 1000000,
             }}
           >
-            <ScaleLoader color={theme.brand} />
+            <Spin size="large" />
           </div>
         )}
 

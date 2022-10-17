@@ -28,7 +28,6 @@ type LayoutProps = {
 };
 const Layout = (props: LayoutProps): JSX.Element => {
   const globalState = useContext(GlobalStateContext);
-  console.log(globalState.collapsed);
   const location = useLocation();
   const items1: MenuItem[] = [
     {
@@ -50,7 +49,7 @@ const Layout = (props: LayoutProps): JSX.Element => {
   ];
 
   return (
-    <AntdLayout style={{ width: "100vw", height: "100vh" }}>
+    <AntdLayout style={{ width: "100vw", height: "100%" }}>
       <Sider
         collapsible
         onCollapse={() => globalState.setCollapsed(!globalState.collapsed)}
@@ -89,17 +88,17 @@ const Layout = (props: LayoutProps): JSX.Element => {
           items={items1}
         />
       </Sider>
-      <AntdLayout style={{ padding: 20 }}>
+      <AntdLayout style={{ height: "100%" }}>
         <Flex flexDirection="column">
-          <Flex style={{ width: "100%" }} justifyContent="flex-end">
-            <Button shape="round">Connect</Button>
-          </Flex>
           <Content
             className="site-layout-background"
             style={{
-              margin: 0,
-              height: "calc(100vh-64px)",
-              width: "calc(100vw-200px)",
+              height: "100vh",
+              width: globalState.collapsed
+                ? globalState.dimension.width - 80
+                : globalState.dimension.width - 200,
+              overflowX: "scroll",
+              transition: "all 0.2s",
             }}
           >
             {props.children}

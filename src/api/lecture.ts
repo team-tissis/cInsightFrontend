@@ -33,6 +33,7 @@ export function useFetchLecturesApi(
 
   const execute = (): void => {
     // api.execute(apiPath, { params: searchForm.object });
+    setTimeout(() => {}, 1000);
     api.setResponse({ results: lectureData, count: 50 });
   };
 

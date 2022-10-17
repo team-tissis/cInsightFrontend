@@ -345,3 +345,18 @@ export const getFontColorByBackground = (backgroundColor: string) => {
   const color = brightness >= 140 ? "#000000" : "#FFFFFF";
   return color;
 };
+
+export const sleep = (
+  second: number,
+  before?: () => void,
+  after?: () => void
+) => {
+  (async () => {
+    const _sleep = (second: number) =>
+      new Promise((resolve) => setTimeout(resolve, second * 1000));
+
+    before && before();
+    await _sleep(second);
+    after && after();
+  })();
+};
