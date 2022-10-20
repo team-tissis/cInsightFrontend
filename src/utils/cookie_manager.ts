@@ -1,4 +1,3 @@
-import { DisplaySetting } from "components/shared/display_setting";
 import Cookies from "js-cookie";
 
 enum Key {

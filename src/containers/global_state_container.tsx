@@ -189,11 +189,7 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
           </div>
         )}
 
-        <NestedModal
-          show={openConfirm}
-          onHide={handleClose}
-          backdrop={confirm.option?.backdropStatic ? "static" : undefined}
-        >
+        <NestedModal open={openConfirm} onCancel={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>確認</Modal.Title>
           </Modal.Header>

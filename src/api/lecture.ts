@@ -13,7 +13,7 @@ import {
 import { Form, useEffectSkipFirst } from "utils/hooks";
 import { HttpClient } from "../utils/network/axios";
 import { PagingResponse } from "entities";
-import { Lecture, LectureSearchForm } from "entities/lecture";
+import { Lecture, LectureForm, LectureSearchForm } from "entities/lecture";
 import { CookieManager } from "utils/cookie_manager";
 import { lectureData } from "sample_data/lecture";
 
@@ -72,4 +72,24 @@ export function useFetchLectureApi(): ApiSet<LectureResponse> & {
   };
 
   return { ...api, execute: execute };
+}
+
+export function usePostLectureApi(): ApiSet<BaseResponse> & {
+  execute: (form: Form<LectureForm>) => void;
+} {
+  const apiSet = usePostApi<BaseResponse, LectureForm>(
+    new HttpClient(),
+    {
+      initialResponse: {},
+    },
+    { formatJson: true }
+  );
+
+  const execute = (form: Form<LectureForm>) => {
+    // const apiPath = `lectures/`;
+    // apiSet.execute(apiPath, form);
+    setTimeout(() => {}, 1000);
+  };
+
+  return { ...apiSet, execute: execute };
 }

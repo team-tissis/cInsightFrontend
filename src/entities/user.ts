@@ -2,6 +2,7 @@ import { BaseEntity, BaseSearchForm } from ".";
 
 export type User = BaseEntity & {
   id?: string;
+  avator?: string;
   fullName?: string;
   firstName?: string;
   lastName?: string;

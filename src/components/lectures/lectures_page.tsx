@@ -5,12 +5,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { TableParams } from "utils/table_params";
 import { LecturesTable } from "./lectures_table";
 import { GlobalStateContext } from "contexts/global_state_context";
-import { PageHeader } from "antd";
+import { Button, PageHeader } from "antd";
 import { sleep } from "utils/util";
+import { NewLectureForm } from "./lecture_form";
+import { usePostLectureApi } from "api/lecture";
+import { useForm } from "utils/hooks";
 
 export const LecturesPage: React.FC = () => {
   const globalState = useContext(GlobalStateContext);
   const [data, setData] = useState<Lecture[]>([]);
+  const newLectureForm = useForm<Lecture>({});
+  const postLectureApi = usePostLectureApi();
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState<TableParams>({
     pagination: {
@@ -18,6 +23,7 @@ export const LecturesPage: React.FC = () => {
       pageSize: 20,
     },
   });
+  const [openNewLectureForm, setOpenNewLectureForm] = useState(false);
 
   const fetchData = () => {
     setLoading(true);
@@ -42,6 +48,28 @@ export const LecturesPage: React.FC = () => {
           backgroundColor: "inherit",
         }}
         title={"勉強会"}
+        extra={[
+          <Button
+            onClick={() => {
+              setOpenNewLectureForm(true);
+            }}
+            type="primary"
+            key="new lecture NewLectureForm button"
+          >
+            勉強会の新規作成
+          </Button>,
+          <NewLectureForm
+            open={openNewLectureForm}
+            onCancel={() => setOpenNewLectureForm(false)}
+            onOk={() => {
+              postLectureApi.execute(newLectureForm);
+              newLectureForm.resetForm();
+              setOpenNewLectureForm(false);
+            }}
+            key={"new lecture NewLectureForm"}
+            form={newLectureForm}
+          />,
+        ]}
       >
         <LecturesTable
           data={data}

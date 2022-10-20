@@ -17,6 +17,9 @@ export type Lecture = {
   materialUrl?: string;
   movieUrl?: string;
   moviePrice?: number;
+  description?: string;
 };
 
 export type LectureSearchForm = BaseSearchForm & Lecture;
+
+export type LectureForm = Lecture;
