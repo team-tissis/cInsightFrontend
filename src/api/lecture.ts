@@ -16,6 +16,8 @@ import { PagingResponse } from "entities";
 import { Lecture, LectureForm, LectureSearchForm } from "entities/lecture";
 import { CookieManager } from "utils/cookie_manager";
 import { lectureData } from "sample_data/lecture";
+import { sleep } from "utils/util";
+import { message, notification } from "antd";
 
 type LecturesResponse = PagingResponse & {
   results: Lecture[];
@@ -33,8 +35,18 @@ export function useFetchLecturesApi(
 
   const execute = (): void => {
     // api.execute(apiPath, { params: searchForm.object });
-    setTimeout(() => {}, 1000);
-    api.setResponse({ results: lectureData, count: 50 });
+
+    sleep(
+      1,
+      () => {
+        api.setLoading(true);
+      },
+      () => {
+        const results = CookieManager.getLecturesData();
+        api.setResponse({ results, count: 50 });
+        api.setLoading(false);
+      }
+    );
   };
 
   useEffectSkipFirst(() => {
@@ -45,11 +57,11 @@ export function useFetchLecturesApi(
     // CookieManager.savePerPage("lectures", api.pageSet.perPage);
   }, [api.pageSet.page, api.pageSet.perPage]);
 
-  useEffectSkipFirst(() => {
-    execute();
-  }, [searchForm.object]);
-
-  return { ...api, execute: execute };
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
 }
 
 export type LectureResponse = BaseResponse & {
@@ -66,18 +78,32 @@ export function useFetchLectureApi(): ApiSet<LectureResponse> & {
   const execute = (id: number): void => {
     // const apiPath = `lectures/${id}/`;
     // api.execute(apiPath);
-    api.setResponse({
-      lecture: lectureData.find((l) => Number(l.id) === id) ?? {},
-    });
+    sleep(
+      0.5,
+      () => {
+        api.setLoading(true);
+      },
+      () => {
+        const lectures = CookieManager.getLecturesData();
+        api.setResponse({
+          lecture: lectures.find((l) => Number(l.id) === id) ?? {},
+        });
+        api.setLoading(false);
+      }
+    );
   };
 
-  return { ...api, execute: execute };
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
 }
 
 export function usePostLectureApi(): ApiSet<BaseResponse> & {
   execute: (form: Form<LectureForm>) => void;
 } {
-  const apiSet = usePostApi<BaseResponse, LectureForm>(
+  const api = usePostApi<BaseResponse, LectureForm>(
     new HttpClient(),
     {
       initialResponse: {},
@@ -87,9 +113,90 @@ export function usePostLectureApi(): ApiSet<BaseResponse> & {
 
   const execute = (form: Form<LectureForm>) => {
     // const apiPath = `lectures/`;
-    // apiSet.execute(apiPath, form);
+    // api.execute(apiPath, form);
+    api.setLoading(true);
     setTimeout(() => {}, 1000);
+    const lectures = CookieManager.getLecturesData();
+    const newId = String(Math.max(...lectures.map((l) => Number(l.id))) + 1);
+    CookieManager.saveLecturesData([
+      ...lectures,
+      { id: newId, ...form.object },
+    ]);
+    api.setLoading(false);
   };
 
-  return { ...apiSet, execute: execute };
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
+}
+
+export function usePutLectureApi(): ApiSet<BaseResponse> & {
+  execute: (object: Lecture) => void;
+} {
+  const api = usePutApi<BaseResponse, LectureForm>(
+    new HttpClient(),
+    {
+      initialResponse: {},
+    },
+    { formatJson: true }
+  );
+
+  const execute = (object: Lecture) => {
+    // const apiPath = `lectures/${object.id}/`;
+    // api.execute(apiPath, object);
+    sleep(
+      0.5,
+      () => {
+        api.setLoading(true);
+      },
+      () => {
+        const lectures = CookieManager.getLecturesData();
+        CookieManager.saveLecturesData(
+          lectures.map((l) => (l.id !== object.id ? l : object))
+        );
+        api.setLoading(false);
+      }
+    );
+  };
+
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
+}
+
+export function useDeleteLectureApi(): ApiSet<BaseResponse> & {
+  execute: (id: string) => void;
+} {
+  const api = useDeleteApi<BaseResponse>(new HttpClient(), {
+    initialResponse: {},
+  });
+
+  const execute = (id: string): void => {
+    // const apiPath = `tags/${id}/`;
+    // api.execute(apiPath);
+    sleep(
+      1.5,
+      () => {
+        api.setLoading(true);
+      },
+      () => {
+        const lectures = CookieManager.getLecturesData();
+        const lecture = lectures.find((l) => l.id === id);
+        CookieManager.saveLecturesData(lectures.filter((l) => l.id !== id));
+        !!lecture &&
+          notification.open({ message: `${lecture.name}を削除しました` });
+        api.setLoading(false);
+      }
+    );
+  };
+
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
 }

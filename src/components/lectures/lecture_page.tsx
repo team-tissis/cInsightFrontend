@@ -1,8 +1,14 @@
 import { useParams, withRouter } from "react-router";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+
 import * as H from "history";
 import { Flex } from "components/shared/flex";
 import { useContext, useEffect, useState } from "react";
-import { useFetchLectureApi } from "api/lecture";
+import {
+  useDeleteLectureApi,
+  useFetchLectureApi,
+  usePutLectureApi,
+} from "api/lecture";
 import { DiscussionList } from "components/discussion/discussion_list";
 import {
   Alert,
@@ -13,6 +19,7 @@ import {
   Descriptions,
   notification,
   PageHeader,
+  Popconfirm,
   Progress,
   Row,
   Skeleton,
@@ -23,7 +30,7 @@ import {
 import { LikeOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { GlobalStateContext } from "contexts/global_state_context";
-import { useEffectSkipFirst } from "utils/hooks";
+import { useEffectSkipFirst, useForm } from "utils/hooks";
 import { ContentBlock } from "components/shared/content_block";
 import { LectureStatusView, LectureTagsView } from "./lecture_view";
 import Countdown from "antd/lib/statistic/Countdown";
@@ -32,6 +39,7 @@ import moment from "moment";
 import { PurchaseMovieModal } from "components/purchase_movie_modal/purchase_movie_modal";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { sleep } from "utils/util";
+import { EditLectureForm } from "./lecture_form";
 
 type Props = {
   history: H.History;
@@ -43,22 +51,43 @@ const LecturePage = (props: Props) => {
   const globalState = useContext(GlobalStateContext);
   const [movieVisible, setMovieVisible] = useState(false);
   const [openPurchaseModal, setOpenPurchaseModal] = useState(false);
+  const [openEditLectureForm, setOpenEditLectureForm] = useState(false);
+  const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
+  const editLectureForm = useForm<Lecture>({});
+  const putLectureApi = usePutLectureApi();
+  const deleteLectureApi = useDeleteLectureApi();
 
   useEffect(() => {
-    sleep(
-      0.5,
-      () => globalState.setLoading(true),
-      () => globalState.setLoading(false)
-    );
     lectureApi.execute(Number(params.id));
   }, []);
 
-  // useEffectSkipFirst(() => {
-  //   globalState.setLoading(lectureApi.loading);
-  // }, [lectureApi.loading]);
+  useEffectSkipFirst(() => {
+    globalState.setLoading(lectureApi.loading);
+  }, [lectureApi.loading]);
+
+  useEffectSkipFirst(() => {
+    globalState.setLoading(putLectureApi.loading);
+    if (putLectureApi.isSuccess()) {
+      lectureApi.execute(Number(params.id));
+    }
+  }, [putLectureApi.loading]);
+
+  useEffectSkipFirst(() => {
+    globalState.setLoading(deleteLectureApi.loading);
+    if (deleteLectureApi.isSuccess()) {
+      setOpenDeleteConfirm(false);
+      lectureApi.execute(Number(params.id));
+      props.history.push("/lectures");
+    }
+  }, [deleteLectureApi.loading]);
 
   const lecture = (): Lecture | undefined => {
     return lectureApi.response?.lecture;
+  };
+
+  const handleEditModalOpen = () => {
+    setOpenEditLectureForm(true);
+    editLectureForm.set(() => lecture() ?? {});
   };
 
   return (
@@ -66,17 +95,54 @@ const LecturePage = (props: Props) => {
       onBack={() => props.history.push("/lectures")}
       title={lecture()?.name}
       tags={LectureStatusView(lecture() ?? {})}
-      extra={
-        lecture()?.status === "Not Started" && [
+      extra={[
+        <Popconfirm
+          key="delete confirm"
+          title="この処理は取り消せません。本当に削除してもよろしいですか？"
+          icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+          open={openDeleteConfirm}
+          onConfirm={() => {
+            deleteLectureApi.execute(String(lecture()?.id));
+          }}
+          okButtonProps={{ loading: deleteLectureApi.loading }}
+          onCancel={() => setOpenDeleteConfirm(false)}
+        >
           <Button
             key={"lecture apply button"}
             type="primary"
             style={{ width: "100%" }}
+            danger
+            onClick={() => setOpenDeleteConfirm(true)}
           >
-            この勉強会に応募する
-          </Button>,
-        ]
-      }
+            削除
+          </Button>
+        </Popconfirm>,
+        <Button
+          key={"lecture apply button"}
+          type="primary"
+          style={{ width: "100%" }}
+          onClick={handleEditModalOpen}
+        >
+          編集
+        </Button>,
+        <EditLectureForm
+          open={openEditLectureForm}
+          onCancel={() => setOpenEditLectureForm(false)}
+          onOk={() => {
+            putLectureApi.execute(editLectureForm.object);
+            setOpenEditLectureForm(false);
+          }}
+          key={"new lecture NewLectureForm"}
+          form={editLectureForm}
+        />,
+        <Button
+          key={"lecture apply button"}
+          type="primary"
+          style={{ width: "100%" }}
+        >
+          この勉強会に応募する
+        </Button>,
+      ]}
       // subTitle="This is a subtitle"
     >
       <PurchaseMovieModal

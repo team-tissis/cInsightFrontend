@@ -1,6 +1,6 @@
 import { Flex } from "components/shared/flex";
 import { lectureData } from "sample_data/lecture";
-import { Lecture } from "entities/lecture";
+import { Lecture, LectureSearchForm } from "entities/lecture";
 import React, { useContext, useEffect, useState } from "react";
 import { TableParams } from "utils/table_params";
 import { LecturesTable } from "./lectures_table";
@@ -8,13 +8,15 @@ import { GlobalStateContext } from "contexts/global_state_context";
 import { Button, PageHeader } from "antd";
 import { sleep } from "utils/util";
 import { NewLectureForm } from "./lecture_form";
-import { usePostLectureApi } from "api/lecture";
-import { useForm } from "utils/hooks";
+import { useFetchLecturesApi, usePostLectureApi } from "api/lecture";
+import { useEffectSkipFirst, useForm } from "utils/hooks";
+import { CookieManager } from "utils/cookie_manager";
 
 export const LecturesPage: React.FC = () => {
   const globalState = useContext(GlobalStateContext);
-  const [data, setData] = useState<Lecture[]>([]);
   const newLectureForm = useForm<Lecture>({});
+  const searchForm = useForm<LectureSearchForm>({});
+  const lecturesApi = useFetchLecturesApi(searchForm);
   const postLectureApi = usePostLectureApi();
   const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState<TableParams>({
@@ -25,20 +27,13 @@ export const LecturesPage: React.FC = () => {
   });
   const [openNewLectureForm, setOpenNewLectureForm] = useState(false);
 
-  const fetchData = () => {
-    setLoading(true);
-    setData(lectureData);
-    setLoading(false);
-  };
-
   useEffect(() => {
-    sleep(
-      0.5,
-      () => globalState.setLoading(true),
-      () => globalState.setLoading(false)
-    );
-    fetchData();
-  }, [JSON.stringify(tableParams)]);
+    lecturesApi.execute();
+  }, [searchForm.object]);
+
+  useEffectSkipFirst(() => {
+    globalState.setLoading(lecturesApi.loading);
+  }, [lecturesApi.loading]);
 
   return (
     <>
@@ -72,7 +67,7 @@ export const LecturesPage: React.FC = () => {
         ]}
       >
         <LecturesTable
-          data={data}
+          data={lecturesApi.response.results}
           loading={loading}
           tableParams={tableParams}
           setTableParams={setTableParams}

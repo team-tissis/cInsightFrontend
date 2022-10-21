@@ -1,11 +1,27 @@
+import { Lecture } from "entities/lecture";
 import Cookies from "js-cookie";
 
 enum Key {
   UserToken = "user_token",
   DisplaySettingsToken = "display_settings",
+  LecturesData = "lectures_data",
 }
 
 export class CookieManager {
+  public static saveLecturesData = (lectures: Lecture[]): void => {
+    const json = JSON.stringify(lectures);
+    console.log(json);
+    Cookies.set(Key.LecturesData, json);
+  };
+
+  public static getLecturesData = (): Lecture[] => {
+    const json = Cookies.get(Key.LecturesData) as string;
+    if (!json) {
+      return [];
+    }
+    return JSON.parse(json);
+  };
+
   public static saveUserToken(token: string): void {
     Cookies.set(Key.UserToken, token, { expires: 60 });
   }

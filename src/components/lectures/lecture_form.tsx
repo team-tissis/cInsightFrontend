@@ -23,7 +23,6 @@ const FormView = (form: Form<Lecture>): JSX.Element => {
     labelCol: { span: 6 },
     wrapperCol: { span: 24 },
   };
-  console.log(form.object);
   return (
     <AntdForm {...layout}>
       <InputField label="勉強会の名前" form={form} attr="name" />
@@ -80,6 +79,19 @@ export const NewLectureForm = (props: NewLectureFormProps) => {
   const { form, ...rest } = props;
   return (
     <Modal title="勉強会の新規作成" {...rest}>
+      {FormView(form)}
+    </Modal>
+  );
+};
+
+export type EditLectureFormProps = ModalProps & {
+  form: Form<Lecture>;
+};
+
+export const EditLectureForm = (props: NewLectureFormProps) => {
+  const { form, ...rest } = props;
+  return (
+    <Modal title="勉強会の編集" {...rest}>
       {FormView(form)}
     </Modal>
   );
