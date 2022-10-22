@@ -2,9 +2,11 @@ import { CommentProps, TagProps } from "antd";
 import { BaseSearchForm } from "entities";
 import { User } from "./user";
 
+export type LectureStatus = "Not Started" | "Held Now" | "End";
+
 export type Lecture = {
   id?: string;
-  date?: string;
+  date?: [string, string];
   name?: string;
   author?: User;
   nLike?: number;
@@ -13,7 +15,7 @@ export type Lecture = {
   tags?: string[];
   perticipants?: number;
   maxPerticipants?: number;
-  status?: "Not Started" | "Held Now" | "End";
+  status?: LectureStatus;
   materialUrl?: string;
   movieUrl?: string;
   moviePrice?: number;

@@ -1,5 +1,5 @@
 import { useParams, withRouter } from "react-router";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, StopOutlined } from "@ant-design/icons";
 
 import * as H from "history";
 import { Flex } from "components/shared/flex";
@@ -32,7 +32,11 @@ import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { GlobalStateContext } from "contexts/global_state_context";
 import { useEffectSkipFirst, useForm } from "utils/hooks";
 import { ContentBlock } from "components/shared/content_block";
-import { LectureStatusView, LectureTagsView } from "./lecture_view";
+import {
+  getLectureStatus,
+  LectureStatusView,
+  LectureTagsView,
+} from "./lecture_view";
 import Countdown from "antd/lib/statistic/Countdown";
 import { Lecture } from "entities/lecture";
 import moment from "moment";
@@ -53,7 +57,12 @@ const LecturePage = (props: Props) => {
   const [openPurchaseModal, setOpenPurchaseModal] = useState(false);
   const [openEditLectureForm, setOpenEditLectureForm] = useState(false);
   const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
-  const editLectureForm = useForm<Lecture>({});
+  const [applyStatus, setApplyStatus] = useState<
+    "open" | "allplyed" | "closed"
+  >("allplyed");
+  const editLectureForm = useForm<Lecture>({
+    author: { nickName: "nisshimo" },
+  });
   const putLectureApi = usePutLectureApi();
   const deleteLectureApi = useDeleteLectureApi();
 
@@ -119,7 +128,6 @@ const LecturePage = (props: Props) => {
         </Popconfirm>,
         <Button
           key={"lecture apply button"}
-          type="primary"
           style={{ width: "100%" }}
           onClick={handleEditModalOpen}
         >
@@ -135,13 +143,6 @@ const LecturePage = (props: Props) => {
           key={"new lecture NewLectureForm"}
           form={editLectureForm}
         />,
-        <Button
-          key={"lecture apply button"}
-          type="primary"
-          style={{ width: "100%" }}
-        >
-          この勉強会に応募する
-        </Button>,
       ]}
       // subTitle="This is a subtitle"
     >
@@ -188,15 +189,18 @@ const LecturePage = (props: Props) => {
           }
         })()}
         <ContentBlock title="基本情報">
-          <Descriptions>
+          <Descriptions column={2}>
             <Descriptions.Item label="主催者">
               {lecture()?.author?.firstName}
             </Descriptions.Item>
             <Descriptions.Item label="タグ">
               {LectureTagsView(lecture() ?? {})}
             </Descriptions.Item>
-            <Descriptions.Item label="開催日">
-              {moment(lecture()?.date).format("yyyy/MM/DD")}
+            <Descriptions.Item label="開始日時">
+              {moment((lecture()?.date ?? [])[0]).format("yyyy/MM/DD HH:mm")}
+            </Descriptions.Item>
+            <Descriptions.Item label="終了日時">
+              {moment((lecture()?.date ?? [])[1]).format("yyyy/MM/DD HH:mm")}
             </Descriptions.Item>
             {/* <Descriptions.Item label="Remark">empty</Descriptions.Item>
             <Descriptions.Item label="Address">
@@ -226,7 +230,7 @@ const LecturePage = (props: Props) => {
                 >
                   {lecture()?.movieUrl ?? ""}
                 </a>
-              ) : lecture()?.status === "End" ? (
+              ) : getLectureStatus(lecture() ?? {}) === "End" ? (
                 <Space style={{ alignItems: "center", paddingBottom: 10 }}>
                   <Button
                     type="primary"
@@ -266,18 +270,58 @@ const LecturePage = (props: Props) => {
               />
             </Col>
             <Col span={8}>
-              <Space>
+              <Space direction="vertical">
                 <Statistic
                   title="参加人数/参加可能枠"
                   value={lecture()?.perticipants}
                   suffix={`/ ${lecture()?.maxPerticipants}`}
                 />
+                {(() => {
+                  switch (applyStatus) {
+                    case "open":
+                      return (
+                        <Button key={"lecture apply button"} type="ghost">
+                          参加登録
+                        </Button>
+                      );
+                    case "closed":
+                      return (
+                        <Button
+                          key={"lecture apply button"}
+                          danger
+                          type="primary"
+                          style={{
+                            backgroundColor: "#ff4d4f",
+                            border: "0px",
+                            color: "#fff",
+                          }}
+                          icon={
+                            <StopOutlined
+                              style={{
+                                verticalAlign: "text-top",
+                              }}
+                            />
+                          }
+                          disabled
+                        >
+                          満席
+                        </Button>
+                      );
+                    case "allplyed":
+                      return (
+                        <Button key={"lecture apply button"} type="primary">
+                          参加登録
+                        </Button>
+                      );
+                  }
+                })()}
+                ,
               </Space>
             </Col>
             <Col span={8}>
               <Countdown
                 title={`開催日まで`}
-                value={lecture()?.date}
+                value={(lecture()?.date ?? [])[0]}
                 format="D日H時間m分s秒"
               />
             </Col>

@@ -32,7 +32,7 @@ const FormView = (form: Form<Lecture>): JSX.Element => {
         attr="createdAt"
         fieldProps={{
           disabled: true,
-          value: moment(),
+          value: moment(form.object.createdAt),
           showTime: true,
         }}
       />
@@ -48,10 +48,15 @@ const FormView = (form: Form<Lecture>): JSX.Element => {
               format: "HH時mm分",
             },
             format: "YYYY/MM/DD HH:mm",
+            defaultValue: [
+              moment(form.object.date?.[0]),
+              moment(form.object.date?.[1]),
+            ],
             disabledDate: (current) => {
               const customDate = moment().format("YYYY-MM-DD");
               return current && current < moment(customDate, "YYYY-MM-DD");
             },
+            // value: form.object.date,
           } as RangePickerProps
         }
       />
@@ -67,6 +72,20 @@ const FormView = (form: Form<Lecture>): JSX.Element => {
       <TextAreaField label="説明" form={form} attr="description" />
       <InputField form={form} label="資料URL" attr="materialUrl" />
       <InputField form={form} label="録画URL" attr="movieUrl" />
+      <InputField
+        type="number"
+        form={form}
+        label="参加人数"
+        attr="perticipants"
+        min={0}
+      />
+      <InputField
+        type="number"
+        form={form}
+        label="最大参加人数"
+        attr="maxPerticipants"
+        min={1}
+      />
     </AntdForm>
   );
 };

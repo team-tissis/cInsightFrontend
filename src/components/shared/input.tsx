@@ -474,6 +474,7 @@ export const RangeField = <T extends any>(props: RangeFieldProps<T>) => {
             props.onChange(formatStirng);
           } else {
             // 一般的な処理
+            console.log(formatStirng);
             props.form.updateObject(props.attr, formatStirng);
           }
         }}

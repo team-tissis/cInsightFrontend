@@ -15,7 +15,7 @@ import { HttpClient } from "../utils/network/axios";
 import { PagingResponse } from "entities";
 import { Lecture, LectureForm, LectureSearchForm } from "entities/lecture";
 import { CookieManager } from "utils/cookie_manager";
-import { lectureData } from "sample_data/lecture";
+import { comments, lectureData } from "sample_data/lecture";
 import { sleep } from "utils/util";
 import { message, notification } from "antd";
 
@@ -86,7 +86,11 @@ export function useFetchLectureApi(): ApiSet<LectureResponse> & {
       () => {
         const lectures = CookieManager.getLecturesData();
         api.setResponse({
-          lecture: lectures.find((l) => Number(l.id) === id) ?? {},
+          lecture:
+            {
+              ...lectures.find((l) => Number(l.id) === id),
+              comments: comments,
+            } ?? {},
         });
         api.setLoading(false);
       }
@@ -114,15 +118,24 @@ export function usePostLectureApi(): ApiSet<BaseResponse> & {
   const execute = (form: Form<LectureForm>) => {
     // const apiPath = `lectures/`;
     // api.execute(apiPath, form);
-    api.setLoading(true);
-    setTimeout(() => {}, 1000);
-    const lectures = CookieManager.getLecturesData();
-    const newId = String(Math.max(...lectures.map((l) => Number(l.id))) + 1);
-    CookieManager.saveLecturesData([
-      ...lectures,
-      { id: newId, ...form.object },
-    ]);
-    api.setLoading(false);
+    sleep(
+      0.5,
+      () => {
+        api.setLoading(true);
+      },
+      () => {
+        const lectures = CookieManager.getLecturesData();
+        const newId =
+          lectures.length === 0
+            ? "1"
+            : String(Math.max(...lectures.map((l) => Number(l.id))) + 1);
+        CookieManager.saveLecturesData([
+          ...lectures,
+          { id: newId, ...form.object },
+        ]);
+        api.setLoading(false);
+      }
+    );
   };
 
   return {

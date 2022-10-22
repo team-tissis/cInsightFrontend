@@ -1,5 +1,5 @@
 import { Space, Tag, TagProps } from "antd";
-import { Lecture } from "entities/lecture";
+import { Lecture, LectureStatus } from "entities/lecture";
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
@@ -9,10 +9,12 @@ import {
   SyncOutlined,
 } from "@ant-design/icons";
 import { CSSProperties } from "styled-components";
+import moment from "moment";
 
 export const LectureStatusView = (lecture: Lecture) => {
   const tagProps: TagProps = {};
-  switch (lecture.status) {
+
+  switch (getLectureStatus(lecture)) {
     case "Not Started":
       tagProps.color = "default";
       tagProps.icon = (
@@ -48,15 +50,27 @@ export const LectureStatusView = (lecture: Lecture) => {
       tagProps.children = "End";
       break;
   }
+
   return <Tag {...tagProps} />;
 };
 
-export const LectureTagsView = (lecture: Lecture) => {
-  return (
+export const LectureTagsView = (lecture?: Lecture) => {
+  return !lecture?.tags?.length ? (
+    "--"
+  ) : (
     <Space size={1}>
       {lecture.tags?.map((t, i) => (
         <Tag key={i}>{t}</Tag>
       ))}
     </Space>
   );
+};
+
+export const getLectureStatus = (lecture: Lecture): LectureStatus => {
+  const now = moment();
+  const start = moment((lecture.date ?? [])[0]);
+  const end = moment((lecture.date ?? [])[1]);
+  if (now < start) return "Not Started";
+  else if (start <= now && now <= end) return "Held Now";
+  else return "End";
 };

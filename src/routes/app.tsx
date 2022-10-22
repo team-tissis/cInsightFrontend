@@ -2,10 +2,9 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Error404Page from "../components/shared/error_404";
 import Layout from "components/shared/layout";
-import { MyPage } from "components/mypage/my_page";
+import { UserPage } from "components/user/user_page";
 import LecturePage from "components/lectures/lecture_page";
-import { LecturesPage } from "components/lectures/lectures_page";
-import UserAuth from "containers/user_auth";
+import LecturesPage from "components/lectures/lectures_page";
 import LandingPage from "components/landing/landing_page";
 
 const AppRoutes: React.FC = () => {
@@ -22,10 +21,10 @@ const AppRoutes: React.FC = () => {
           {/* <UserAuth> */}
           <Switch>
             <Route exact path={AppRouteHelper.main()}>
-              <MyPage />
+              <UserPage />
             </Route>
             <Route exact path={AppRouteHelper.myPage()}>
-              <MyPage />
+              <UserPage />
             </Route>
             <Route exact path={AppRouteHelper.lectures()}>
               <LecturesPage />

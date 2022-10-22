@@ -36,7 +36,7 @@ const columns: ColumnsType<Lecture> = [
     title: "主催者",
     sorter: true,
     width: "20%",
-    render: (object: Lecture) => `${object.author?.nickName ?? "nisshimo"}`,
+    render: (object: Lecture) => `${object.author?.firstName}`,
   },
   {
     title: "開始日時",

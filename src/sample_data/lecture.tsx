@@ -32,7 +32,7 @@ export const lectureData: Lecture[] = Array(2)
   .fill(0)
   .map((_, i) => ({
     id: String(i + 1),
-    date: "2022-11-02",
+    date: ["2022-11-02", "2022-11-02"],
     name: `勉強会${i + 1}`,
     author: {
       firstName: "nisshimo",
