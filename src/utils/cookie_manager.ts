@@ -10,7 +10,6 @@ enum Key {
 export class CookieManager {
   public static saveLecturesData = (lectures: Lecture[]): void => {
     const json = JSON.stringify(lectures);
-    console.log(json);
     Cookies.set(Key.LecturesData, json);
   };
 

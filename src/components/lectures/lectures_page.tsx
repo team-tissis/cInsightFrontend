@@ -13,7 +13,7 @@ import { useEffectSkipFirst, useForm } from "utils/hooks";
 
 import { ContentBlock } from "components/shared/content_block";
 
-import FullCalendar, { EventContentArg } from "@fullcalendar/react";
+import FullCalendar from "@fullcalendar/react";
 import { DatesSetArg } from "@fullcalendar/common";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -23,6 +23,7 @@ import moment from "moment";
 import * as H from "history";
 import { withRouter } from "react-router";
 import { getLectureStatus, LectureStatusView } from "./lecture_view";
+import { LecturesCalender } from "./lectures_calender";
 
 type Props = {
   history: H.History;
@@ -35,17 +36,19 @@ const LecturesPage = (props: Props): JSX.Element => {
   const lecturesApi = useFetchLecturesApi(searchForm);
   const postLectureApi = usePostLectureApi();
   const [loading, setLoading] = useState(false);
-  const [tableParams, setTableParams] = useState<TableParams>({
+  const [tab, setTab] = useState("calender");
+  const [tableParams, setTableParams] = useState<TableParams<Lecture>>({
     pagination: {
       current: 1,
       pageSize: 20,
     },
   });
+  console.log(tableParams);
   const [openNewLectureForm, setOpenNewLectureForm] = useState(false);
 
   useEffect(() => {
     lecturesApi.execute();
-  }, [searchForm.object]);
+  }, [searchForm.object, JSON.stringify(tableParams)]);
 
   useEffectSkipFirst(() => {
     globalState.setLoading(lecturesApi.loading);
@@ -94,8 +97,8 @@ const LecturesPage = (props: Props): JSX.Element => {
         >
           <Tabs
             type="card"
-            defaultActiveKey="calender"
-            onChange={(key: string) => console.log(key)}
+            defaultActiveKey={tab}
+            onChange={(key: string) => setTab(key)}
             items={[
               {
                 label: (
@@ -131,79 +134,10 @@ const LecturesPage = (props: Props): JSX.Element => {
                 ),
                 key: "calender",
                 children: (
-                  <FullCalendar
-                    plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-                    initialView="dayGridMonth"
-                    initialDate={new Date()}
-                    locale={"ja"}
-                    buttonText={{
-                      today: "今日",
-                      month: "月",
-                      week: "週",
-                      day: "日",
-                    }}
-                    headerToolbar={{
-                      left: "prev,next today",
-                      center: "title",
-                      right: "dayGridMonth,timeGridWeek,timeGridDay",
-                    }}
-                    eventClick={(arg) => {
-                      props.history.push(`/lectures/${arg.event.id}`);
-                    }}
-                    // eventContent={(eventInfo: EventContentArg) => {
-                    //   console.log(eventInfo);
-                    //   const lecture = lecturesApi.response.results.find(
-                    //     (r) => r.id === eventInfo.event.id
-                    //   );
-                    //   return (
-                    //     <div
-                    //       style={{
-                    //         paddingLeft: 5,
-                    //         color:
-                    //           getLectureStatus(lecture!) === "End"
-                    //             ? "#000"
-                    //             : "#fff",
-                    //       }}
-                    //     >
-                    //       {lecture?.name}
-                    //       {(() => {
-                    //         switch (getLectureStatus(lecture ?? {})) {
-                    //           case "End":
-                    //             return "(終了)";
-                    //           case "Held Now":
-                    //             return "(開催中)";
-                    //         }
-                    //       })()}
-                    //     </div>
-                    //   );
-                    // }}
-                    events={lecturesApi.response.results.map((lecture) => {
-                      return {
-                        id: lecture.id,
-                        start: moment(
-                          (lecture?.date ?? [])[0],
-                          "YYYY/MM/DD HH:mm"
-                        ).format(),
-                        end: moment(
-                          (lecture?.date ?? [])[1],
-                          "YYYY/MM/DD HH:mm"
-                        ).format(),
-                        // backgroundColor:
-                        //   getLectureStatus(lecture) === "End"
-                        //     ? "#FAFAFA"
-                        //     : "#1890FF",
-                        // borderColor: "rgb(217, 217, 217)",
-                        // display: "block",
-                        title: lecture.name,
-                      };
-                    })}
-                    height={700}
-                    // datesSet={(a) => {
-                    //   if (a?.endStr !== arg?.endStr) {
-                    //     setArg(a);
-                    //   }
-                    // }}
-                    // validRange={{ start: "2022-02-01", end: new Date() }}
+                  <LecturesCalender
+                    data={lecturesApi.response.results}
+                    loading={lecturesApi.loading}
+                    history={props.history}
                   />
                 ),
               },

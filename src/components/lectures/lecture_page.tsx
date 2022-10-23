@@ -26,6 +26,7 @@ import {
   Space,
   Statistic,
   Tag,
+  Typography,
 } from "antd";
 import { LikeOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
@@ -253,6 +254,13 @@ const LecturePage = (props: Props) => {
               )}
             </Descriptions.Item>
           </Descriptions>
+        </ContentBlock>
+        <ContentBlock title={"勉強会の説明"}>
+          <Typography>
+            <Typography.Paragraph>
+              {lecture()?.description}
+            </Typography.Paragraph>
+          </Typography>
         </ContentBlock>
         <ContentBlock title="統計情報">
           <Row gutter={16} style={{ width: "100%" }}>

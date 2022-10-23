@@ -341,7 +341,6 @@ export const getFontColorByBackground = (backgroundColor: string) => {
     parseInt(backgroundColor.substr(1, 2), 16) * 0.299 + // Red
     parseInt(backgroundColor.substr(3, 2), 16) * 0.587 + // Green
     parseInt(backgroundColor.substr(4, 2), 16) * 0.114; // Blue
-  console.log(backgroundColor, brightness);
   const color = brightness >= 140 ? "#000000" : "#FFFFFF";
   return color;
 };

@@ -1,9 +1,13 @@
 import { TablePaginationConfig } from "antd";
-import { FilterValue } from "antd/lib/table/interface";
+import {
+  FilterValue,
+  SorterResult,
+  TableCurrentDataSource,
+} from "antd/lib/table/interface";
 
-export type TableParams = {
+export type TableParams<T> = {
   pagination?: TablePaginationConfig;
-  sortField?: string;
-  sortOrder?: string;
   filters?: Record<string, FilterValue | null>;
+  sorter?: SorterResult<T> | SorterResult<T>[];
+  extra?: TableCurrentDataSource<T>;
 };

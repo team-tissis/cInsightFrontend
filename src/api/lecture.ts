@@ -167,7 +167,9 @@ export function usePutLectureApi(): ApiSet<BaseResponse> & {
       () => {
         const lectures = CookieManager.getLecturesData();
         CookieManager.saveLecturesData(
-          lectures.map((l) => (l.id !== object.id ? l : object))
+          lectures
+            .map((l) => (l.id !== object.id ? l : object))
+            .map((l) => ({ ...l, comments: undefined }))
         );
         api.setLoading(false);
       }

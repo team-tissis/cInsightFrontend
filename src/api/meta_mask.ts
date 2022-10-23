@@ -34,7 +34,6 @@ const useBaseMetaMaskApi = <T extends any>(
       );
       setResponse(response);
     } catch (e: any) {
-      console.log(e);
       setIsError(true);
     }
     setLoading(false);

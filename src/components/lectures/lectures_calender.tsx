@@ -1,94 +1,98 @@
-import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Flex } from "components/shared/flex";
 import { Lecture } from "entities/lecture";
-import { TableParams } from "utils/table_params";
-import { HeartFilled } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { GlobalStateContext } from "contexts/global_state_context";
 import { LectureStatusView, LectureTagsView } from "./lecture_view";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import * as H from "history";
+import moment from "moment";
 
-const columns: ColumnsType<Lecture> = [
-  {
-    title: "勉強会名",
-    width: "20%",
-    sorter: true,
-    render: (object: Lecture) => (
-      <Link style={{ textDecoration: "auto" }} to={`lectures/${object.id}`}>
-        {object.name}
-      </Link>
-    ),
-  },
-  {
-    title: "開催状況",
-    width: "20%",
-    sorter: true,
-    render: (lecture) => LectureStatusView(lecture),
-  },
-  {
-    title: "分野",
-    width: "20%",
-    sorter: true,
-    render: (lecture) => LectureTagsView(lecture),
-  },
-  {
-    title: "主催者",
-    sorter: true,
-    width: "20%",
-    render: (object: Lecture) => `${object.author?.firstName}`,
-  },
-  {
-    title: "開始日時",
-    width: "20%",
-    sorter: true,
-    render: (object: Lecture) => `${(object.date ?? [])[0]}`,
-  },
-  {
-    title: "終了日時",
-    width: "20%",
-    sorter: true,
-    render: (object: Lecture) => `${(object.date ?? [])[1]}`,
-  },
-  // {
-  //   title: "Number of Likes",
-  //   width: "20%",
-  //   render: (object: Lecture) => (
-  //     <Flex alignItems="center">
-  //       <HeartFilled style={{ color: "#f67578" }} />
-  //       <div style={{ marginLeft: 5, color: "#f67578" }}>{object.nLike}</div>
-  //     </Flex>
-  //   ),
-  //   sorter: true,
-  // },
-  {
-    title: "作成日",
-    dataIndex: "createdAt",
-    width: "20%",
-    sorter: true,
-  },
-];
-
-export type LecturesTableProps = {
+export type LecturesCalenderProps = {
   data: Lecture[];
   loading: boolean;
-  tableParams: TableParams;
-  setTableParams: (tableParams: TableParams) => void;
+  history: H.History;
 };
 
-export const LecturesTable = (props: LecturesTableProps) => {
+export const LecturesCalender = (props: LecturesCalenderProps) => {
   const globalState = useContext(GlobalStateContext);
   return (
-    <Table
-      columns={columns}
-      rowKey={(object) => String(object.id)}
-      dataSource={props.data}
-      pagination={props.tableParams.pagination}
-      loading={props.loading}
-      scroll={{
-        y: "calc(100vh - 280px)",
-        x: globalState.dimension.width - 120,
-      }}
-    />
+    <>
+      <FullCalendar
+        plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+        initialView="dayGridMonth"
+        initialDate={new Date()}
+        locale={"ja"}
+        buttonText={{
+          today: "今日",
+          month: "月",
+          week: "週",
+          day: "日",
+        }}
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek,timeGridDay",
+        }}
+        eventClick={(arg) => {
+          props.history.push(`/lectures/${arg.event.id}`);
+        }}
+        // eventContent={(eventInfo: EventContentArg) => {
+        //   console.log(eventInfo);
+        //   const lecture = lecturesApi.response.results.find(
+        //     (r) => r.id === eventInfo.event.id
+        //   );
+        //   return (
+        //     <div
+        //       style={{
+        //         paddingLeft: 5,
+        //         color:
+        //           getLectureStatus(lecture!) === "End"
+        //             ? "#000"
+        //             : "#fff",
+        //       }}
+        //     >
+        //       {lecture?.name}
+        //       {(() => {
+        //         switch (getLectureStatus(lecture ?? {})) {
+        //           case "End":
+        //             return "(終了)";
+        //           case "Held Now":
+        //             return "(開催中)";
+        //         }
+        //       })()}
+        //     </div>
+        //   );
+        // }}
+        events={props.data.map((lecture) => {
+          return {
+            id: lecture.id,
+            start: moment(
+              (lecture?.date ?? [])[0],
+              "YYYY/MM/DD HH:mm"
+            ).format(),
+            end: moment((lecture?.date ?? [])[1], "YYYY/MM/DD HH:mm").format(),
+            // backgroundColor:
+            //   getLectureStatus(lecture) === "End"
+            //     ? "#FAFAFA"
+            //     : "#1890FF",
+            // borderColor: "rgb(217, 217, 217)",
+            // display: "block",
+            title: lecture.name,
+          };
+        })}
+        height={700}
+        // datesSet={(a) => {
+        //   if (a?.endStr !== arg?.endStr) {
+        //     setArg(a);
+        //   }
+        // }}
+        // validRange={{ start: "2022-02-01", end: new Date() }}
+      />
+    </>
   );
 };
