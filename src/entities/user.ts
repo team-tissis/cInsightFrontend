@@ -11,6 +11,8 @@ export type User = BaseEntity & {
   isStaff?: string;
   likeRest?: number;
   avatorUrl?: string;
+  token?: string;
+  accountLink?: string;
 };
 
 export type UserForm = User;

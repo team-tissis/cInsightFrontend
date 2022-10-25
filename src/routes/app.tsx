@@ -5,6 +5,8 @@ import Layout from "components/shared/layout";
 import { UserPage } from "components/user/user_page";
 import LecturePage from "components/lectures/lecture_page";
 import LecturesPage from "components/lectures/lectures_page";
+import ProposalPage from "components/proposals/proposal_page";
+import ProposalsPage from "components/proposals/proposals_page";
 import LandingPage from "components/landing/landing_page";
 
 const AppRoutes: React.FC = () => {
@@ -32,6 +34,12 @@ const AppRoutes: React.FC = () => {
             <Route exact path={AppRouteHelper.lecture()}>
               <LecturePage />
             </Route>
+            <Route exact path={AppRouteHelper.proposals()}>
+              <ProposalsPage />
+            </Route>
+            <Route exact path={AppRouteHelper.proposal()}>
+              <ProposalPage />
+            </Route>
             <Route>
               <Error404Page />
             </Route>
@@ -54,6 +62,9 @@ export class AppRouteHelper {
   public static root = (): string => "/";
 
   // 勉強会一覧
+  public static proposals = (): string => AppRouteHelper.basePath("proposals");
+  public static proposal = (): string =>
+    AppRouteHelper.basePath("proposals/:id");
   public static lectures = (): string => AppRouteHelper.basePath("lectures");
   public static lecture = (): string => AppRouteHelper.basePath("lectures/:id");
   public static login = (): string => AppRouteHelper.basePath("login");

@@ -29,6 +29,9 @@ type LayoutProps = {
 const Layout = (props: LayoutProps): JSX.Element => {
   const globalState = useContext(GlobalStateContext);
   const location = useLocation();
+  const location2menuKey = (location: H.Location) => [
+    location.pathname.split("/").slice(0, 2).join("/"),
+  ];
   const items1: MenuItem[] = [
     {
       key: "/mypage",
@@ -44,6 +47,14 @@ const Layout = (props: LayoutProps): JSX.Element => {
       icon: <NotificationOutlined />,
       onClick: () => {
         props.history.push("/lectures");
+      },
+    },
+    {
+      key: "/proposals",
+      label: "ガバナンス",
+      icon: <NotificationOutlined />,
+      onClick: () => {
+        props.history.push("/proposals");
       },
     },
   ];
@@ -81,7 +92,7 @@ const Layout = (props: LayoutProps): JSX.Element => {
           )}
         </Flex>
         <Menu
-          selectedKeys={[location.pathname]}
+          selectedKeys={location2menuKey(location)}
           mode="inline"
           theme="dark"
           // style={{ height: "100%", borderRight: 0 }}

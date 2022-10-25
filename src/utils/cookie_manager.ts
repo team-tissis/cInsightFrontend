@@ -1,10 +1,12 @@
 import { Lecture } from "entities/lecture";
+import { Proposal } from "entities/proposal";
 import Cookies from "js-cookie";
 
 enum Key {
   UserToken = "user_token",
   DisplaySettingsToken = "display_settings",
   LecturesData = "lectures_data",
+  ProposalsData = "proposals_data",
 }
 
 export class CookieManager {
@@ -21,6 +23,18 @@ export class CookieManager {
     return JSON.parse(json);
   };
 
+  public static saveProposalsData = (proposals: Proposal[]): void => {
+    const json = JSON.stringify(proposals);
+    Cookies.set(Key.ProposalsData, json);
+  };
+
+  public static getProposalsData = (): Proposal[] => {
+    const json = Cookies.get(Key.ProposalsData) as string;
+    if (!json) {
+      return [];
+    }
+    return JSON.parse(json);
+  };
   public static saveUserToken(token: string): void {
     Cookies.set(Key.UserToken, token, { expires: 60 });
   }
