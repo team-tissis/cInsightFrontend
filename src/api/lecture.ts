@@ -191,7 +191,7 @@ export function useDeleteLectureApi(): ApiSet<BaseResponse> & {
   });
 
   const execute = (id: string): void => {
-    // const apiPath = `tags/${id}/`;
+    // const apiPath = `comments/${id}/`;
     // api.execute(apiPath);
     sleep(
       1.5,

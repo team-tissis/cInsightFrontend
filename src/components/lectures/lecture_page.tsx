@@ -15,7 +15,6 @@ import {
   Button,
   Card,
   Col,
-  Comment,
   Descriptions,
   notification,
   PageHeader,
@@ -45,6 +44,8 @@ import { PurchaseMovieModal } from "components/purchase_movie_modal/purchase_mov
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { sleep } from "utils/util";
 import { EditLectureForm } from "./lecture_form";
+import { useFetchCommentsApi } from "api/comment";
+import { CommentSearchForm } from "entities/comment";
 
 type Props = {
   history: H.History;
@@ -53,6 +54,8 @@ type Props = {
 const LecturePage = (props: Props) => {
   const params = useParams<{ id: string }>();
   const lectureApi = useFetchLectureApi();
+  const searchForm = useForm<CommentSearchForm>({});
+  const commentsApi = useFetchCommentsApi(searchForm);
   const globalState = useContext(GlobalStateContext);
   const [movieVisible, setMovieVisible] = useState(false);
   const [openPurchaseModal, setOpenPurchaseModal] = useState(false);
@@ -69,6 +72,7 @@ const LecturePage = (props: Props) => {
 
   useEffect(() => {
     lectureApi.execute(Number(params.id));
+    commentsApi.execute();
   }, []);
 
   useEffectSkipFirst(() => {

@@ -69,7 +69,8 @@ export const axios = (option?: {
   const headers: { "Content-Type": string; Authorization?: string } = {
     "Content-Type": "application/json",
   };
-  const token = CookieManager.getUserToken();
+  const token = process.env.REACT_APP_TOKEN;
+  console.log(process.env);
   if (token) {
     headers["Authorization"] = `Token ${token}`;
   }
