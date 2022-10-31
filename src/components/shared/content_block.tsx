@@ -20,7 +20,12 @@ export const ContentBlock = (props: ContentBlockProps) => {
   return (
     <PageHeader
       title={props.title && <div style={{ fontSize: 16 }}>{props.title}</div>}
-      style={{ width: "100%", backgroundColor: "#fff", ...props.style }}
+      style={{
+        height: "100%",
+        width: "100%",
+        backgroundColor: "#fff",
+        ...props.style,
+      }}
       {...props.pageHeaderProps}
     >
       {globalState.loading ? (

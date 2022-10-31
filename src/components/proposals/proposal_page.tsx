@@ -4,11 +4,7 @@ import { QuestionCircleOutlined, StopOutlined } from "@ant-design/icons";
 import * as H from "history";
 import { Flex } from "components/shared/flex";
 import { useContext, useEffect, useState } from "react";
-import {
-  useDeleteProposalApi,
-  useFetchProposalApi,
-  usePutProposalApi,
-} from "api/proposal";
+import { useFetchProposalApi, usePutProposalApi } from "api/proposal";
 import { DiscussionList } from "components/discussion/discussion_list";
 import {
   Alert,
@@ -40,6 +36,9 @@ import moment from "moment";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { sleep } from "utils/util";
 import { EditProposalForm } from "./proposal_form";
+import { red, green, grey } from "@ant-design/colors";
+import { ProposalStatusView, ProposalVoteView } from "./proposal_view";
+const { Title, Paragraph, Text, Link } = Typography;
 
 type Props = {
   history: H.History;
@@ -51,7 +50,7 @@ const ProposalPage = (props: Props) => {
   const globalState = useContext(GlobalStateContext);
 
   const [openEditProposalForm, setOpenEditProposalForm] = useState(false);
-  const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
+  const [openCancelConfirm, setOpenCancelConfirm] = useState(false);
   const [applyStatus, setApplyStatus] = useState<
     "open" | "allplyed" | "closed"
   >("allplyed");
@@ -59,7 +58,6 @@ const ProposalPage = (props: Props) => {
     proposedBy: { token: "nisshimo" },
   });
   const putProposalApi = usePutProposalApi();
-  const deleteProposalApi = useDeleteProposalApi();
 
   useEffect(() => {
     proposalApi.execute(Number(params.id));
@@ -76,15 +74,6 @@ const ProposalPage = (props: Props) => {
     }
   }, [putProposalApi.loading]);
 
-  useEffectSkipFirst(() => {
-    globalState.setLoading(deleteProposalApi.loading);
-    if (deleteProposalApi.isSuccess()) {
-      setOpenDeleteConfirm(false);
-      proposalApi.execute(Number(params.id));
-      props.history.push("/proposals");
-    }
-  }, [deleteProposalApi.loading]);
-
   const proposal = (): Proposal | undefined => {
     return proposalApi.response?.proposal;
   };
@@ -98,26 +87,30 @@ const ProposalPage = (props: Props) => {
     <PageHeader
       onBack={() => props.history.push("/proposals")}
       title={`Proposal ${proposal()?.id}: ${proposal()?.title}`}
+      tags={[ProposalStatusView(proposal()!)]}
       extra={[
         <Popconfirm
           key="delete confirm"
-          title="この処理は取り消せません。本当に削除してもよろしいですか？"
+          title="この処理は取り消せません。本当にProposalをCancelしてもよろしいですか？"
           icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-          open={openDeleteConfirm}
+          open={openCancelConfirm}
+          okButtonProps={{ danger: true }}
+          okText="OK"
+          cancelText="戻る"
           onConfirm={() => {
-            deleteProposalApi.execute(String(proposal()?.id));
+            putProposalApi.execute({ ...proposal(), status: "Canceled" });
           }}
-          okButtonProps={{ loading: deleteProposalApi.loading }}
-          onCancel={() => setOpenDeleteConfirm(false)}
+          onCancel={() => setOpenCancelConfirm(false)}
         >
           <Button
             key={"proposal apply button"}
             type="primary"
             style={{ width: "100%" }}
             danger
-            onClick={() => setOpenDeleteConfirm(true)}
+            disabled={proposal()?.status !== "Active"}
+            onClick={() => setOpenCancelConfirm(true)}
           >
-            削除
+            Cancel
           </Button>
         </Popconfirm>,
         <Button
@@ -139,7 +132,81 @@ const ProposalPage = (props: Props) => {
         />,
       ]}
       // subTitle="This is a subtitle"
-    ></PageHeader>
+    >
+      <Space style={{ width: "100%" }} size={20} direction="vertical">
+        <Space size={20}>
+          <ContentBlock
+            title="投票"
+            style={{
+              width: 268,
+              minHeight: 344,
+            }}
+          >
+            <div style={{ textAlign: "center" }}>
+              <div style={{ padding: 10 }}>{ProposalVoteView(proposal()!)}</div>
+              <Button
+                size="large"
+                type="primary"
+                disabled={proposal()?.status !== "Active"}
+              >
+                投票
+              </Button>
+            </div>
+          </ContentBlock>
+          <ContentBlock
+            style={{
+              minHeight: 344,
+              width: globalState.collapsed
+                ? globalState.dimension.width - 128 - 248 - 40
+                : globalState.dimension.width - 248 - 248 - 40,
+            }}
+            title="統計情報"
+          >
+            <Row>
+              <Col span={12}>
+                <StatistcsLikeBlock title="投票締切日">
+                  {proposal()?.endDate}
+                </StatistcsLikeBlock>
+              </Col>
+              <Col>
+                <Countdown
+                  title={`投票締め切りまで`}
+                  value={proposal()?.endDate + " 23:59:59"}
+                  format="D日H時間m分s秒"
+                />
+              </Col>
+            </Row>
+            <Row style={{ marginTop: 30 }}>
+              <Col span={12}>
+                <StatistcsLikeBlock title="トランザクション">
+                  <div
+                    style={{
+                      fontSize: 20,
+                      whiteSpace: "pre-line",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {proposal()?.transactionCommand}
+                  </div>
+                </StatistcsLikeBlock>
+              </Col>
+            </Row>
+          </ContentBlock>
+        </Space>
+        <ContentBlock
+          style={{
+            width: "100%",
+          }}
+          title="提案内容の詳細"
+        >
+          <Typography>
+            <Paragraph style={{ whiteSpace: "pre-line" }}>
+              {proposal()?.descriptions}
+            </Paragraph>
+          </Typography>
+        </ContentBlock>
+      </Space>
+    </PageHeader>
   );
 };
 

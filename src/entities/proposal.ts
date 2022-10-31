@@ -16,9 +16,10 @@ export type Proposal = {
   title?: string;
   status?: ProposalStatus;
   proposedBy?: User;
-  forUsers?: User[];
-  againstUsers?: User[];
+  forCount?: number;
+  againstCount?: number;
   threashold?: number; // threshold of votes
+  transactionCommand?: string;
   endDate?: string;
   snapshot?: number;
   descriptions?: string;

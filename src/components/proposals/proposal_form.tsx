@@ -35,6 +35,21 @@ const FormView = (form: Form<Proposal>): JSX.Element => {
           value: s,
         }))}
       />
+      <DateField label="投票期日" form={form} attr="endDate" />
+      <TextAreaField
+        label="トランザクション"
+        form={form}
+        attr="transactionCommand"
+      />
+      <TextAreaField label="詳細" form={form} attr="descriptions" />
+      <InputField type="number" label="定足数" form={form} attr="threashold" />
+      <InputField type="number" label="賛成数" form={form} attr="forCount" />
+      <InputField
+        type="number"
+        label="反対数"
+        form={form}
+        attr="againstCount"
+      />
     </AntdForm>
   );
 };
