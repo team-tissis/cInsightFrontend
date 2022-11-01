@@ -18,7 +18,7 @@ import { User } from "entities/user";
 import moment, { Moment } from "moment";
 import { Form, useForm } from "utils/hooks";
 
-const FormView = (form: Form<User>): JSX.Element => {
+const FormView = (form: Form<User>, isNew = false): JSX.Element => {
   const layout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 24 },
@@ -27,6 +27,13 @@ const FormView = (form: Form<User>): JSX.Element => {
     <AntdForm {...layout}>
       <InputField label="ニックネーム" form={form} attr="nickName" />
       <InputField label="メールアドレス" form={form} attr="email" />
+      {isNew && (
+        <InputField
+          label="紹介者アドレス"
+          form={form}
+          attr="referencerAddress"
+        />
+      )}
     </AntdForm>
   );
 };
@@ -40,6 +47,40 @@ export const EditUserForm = (props: EditUserFormProps) => {
   return (
     <Modal title="勉強会の編集" {...rest}>
       {FormView(form)}
+    </Modal>
+  );
+};
+
+export type CreateUserSbtFormProps = ModalProps & {
+  form: Form<User>;
+};
+
+export const CreateUserSbtForm = (props: CreateUserSbtFormProps) => {
+  const { form, ...rest } = props;
+  return (
+    <Modal title="新規SBTの発行" {...rest}>
+      {FormView(form, true)}
+    </Modal>
+  );
+};
+
+export type ReferalForm = {
+  walletAddress?: string;
+};
+
+export type ReferalFormProps = ModalProps & {
+  form: Form<ReferalForm>;
+};
+
+export const ReferalForm = (props: ReferalFormProps) => {
+  const { form, ...rest } = props;
+  return (
+    <Modal title="新規リファラル" {...rest}>
+      <InputField
+        form={form}
+        attr="walletAddress"
+        label="ウォレット アドレス"
+      />
     </Modal>
   );
 };

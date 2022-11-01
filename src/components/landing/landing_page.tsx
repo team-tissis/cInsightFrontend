@@ -1,6 +1,6 @@
 import { Image, PageHeader } from "antd";
 import {
-  usecheckMetaMaskInstalledApi,
+  useCheckMetaMaskInstalledApi,
   useFetchMetaMaskAccountsApi,
   useRequestMetaMaskAccountsApi,
 } from "api/meta_mask";
@@ -17,7 +17,7 @@ type Props = {
 export const LandingPage = (props: Props) => {
   const fetchAccountsApi = useFetchMetaMaskAccountsApi();
   const requestAccountsApi = useRequestMetaMaskAccountsApi();
-  const checkMetaMaskInstalledApi = usecheckMetaMaskInstalledApi();
+  const checkMetaMaskInstalledApi = useCheckMetaMaskInstalledApi();
 
   useEffect(() => {
     fetchAccountsApi.execute();

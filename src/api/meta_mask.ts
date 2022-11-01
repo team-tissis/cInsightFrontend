@@ -53,7 +53,7 @@ export type checkMetaMaskInstalledApiResponse = {
   metaMaskInstalled?: boolean;
 };
 
-export const usecheckMetaMaskInstalledApi =
+export const useCheckMetaMaskInstalledApi =
   (): BaseMetaMaskApiSet<checkMetaMaskInstalledApiResponse> => {
     const formatter = (metaMaskInstalled: boolean) => ({
       metaMaskInstalled,
@@ -118,4 +118,18 @@ export const useFetchChainIdApi =
 export const useSwitchEvmChainApi = (): BaseMetaMaskApiSet<null> => {
   const baseApiSet = useBaseMetaMaskApi<null>("wallet_switchEthereumChain");
   return baseApiSet;
+};
+
+export type CheckHasSbtApiResponse = {
+  hasSbt: boolean;
+};
+
+export const useCheckHasSbtApi = () => {
+  const baseApiSet = useBaseMetaMaskApi<CheckHasSbtApiResponse>(
+    "command to check hasApi"
+  );
+  const execute = () => {
+    baseApiSet.setResponse({ hasSbt: false });
+  };
+  return { ...baseApiSet, execute };
 };

@@ -13,6 +13,7 @@ export type User = BaseEntity & {
   avatorUrl?: string;
   token?: string;
   accountLink?: string;
+  referencerAddress?: string;
 };
 
 export type UserForm = User;
