@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import contractFunctions from "../broadcast/PLMGachaScript.s.sol/31337/run-latest.json";
+import contractFunctions from "../broadcast/cInsightScript.s.sol/31337/run-latest.json";
 import Sbt from "../abi/Sbt.sol/Sbt.json";
 import SkinNft from "../abi/SkinNft.sol/SkinNft.json";
 
