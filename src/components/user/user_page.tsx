@@ -204,8 +204,6 @@ const UserPageWithoutSbt = () => {
         onCancel={() => setOpenCreateUserSbtForm(false)}
         onOk={() => {
           // postする処理
-          // mint();
-          // console.log(createUserSbtForm.object.referencerAddress);
           mint(createUserSbtForm.object.referencerAddress);
           setOpenCreateUserSbtForm(false);
         }}
