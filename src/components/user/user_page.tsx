@@ -23,7 +23,7 @@ import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { BooleanSwitchField } from "components/shared/input";
-import { fetchConnectedAccountInfo, fetchMonthlyDistributedFavoNum } from "api/fetch_sol/sbt";
+import { fetchConnectedAccountInfo, fetchConnectedAccountReferralNum, fetchMonthlyDistributedFavoNum } from "api/fetch_sol/sbt";
 
 export const UserPage = () => {
   const checkHasSbtApi = useCheckHasSbtApi();
@@ -76,6 +76,7 @@ const UserPageWithSbt = () => {
   const [grade, setGrade] = useState();
   const [makiMemory, setMakiMemory] = useState();
   const [referral, setReferral] = useState();
+  const [referralRemain, setReferralRemain] = useState();
   const [monthlyDistributedFavoNum, setMonthlyDistributedFavoNum] = useState();
 
   useEffect(() => {
@@ -84,6 +85,7 @@ const UserPageWithSbt = () => {
       setGrade(await fetchConnectedAccountInfo("gradeOf"));
       setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
       setReferral(await fetchConnectedAccountInfo("referralOf"));
+      setReferralRemain(await fetchConnectedAccountReferralNum());
       setMonthlyDistributedFavoNum(await fetchMonthlyDistributedFavoNum());
     })();
   }, []);
@@ -157,8 +159,8 @@ const UserPageWithSbt = () => {
           </Row>
         </ContentBlock>
         <ContentBlock title="リファラル">
-          <StatistcsLikeBlock title="累計リファラル数">
-            100人
+          <StatistcsLikeBlock title="残りリファラル数（翌月にリセットされます）">
+            {referral} / {referralRemain}
           </StatistcsLikeBlock>
           <Button
             type="primary"

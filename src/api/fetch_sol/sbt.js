@@ -32,6 +32,18 @@ async function fetchFunction(contract, address, method) {
     return response
 }
 
+export async function fetchReferralRate() {
+    const { contract } = getContract("Sbt");
+    const message = await contract.referralRate();
+    console.log({ referralRate: message });
+    return message;
+}
+
+export async function fetchConnectedAccountReferralNum() {
+    const referralRate = await fetchReferralRate();
+    const grade = await fetchConnectedAccountInfo("gradeOf");
+    return referralRate[grade];
+}
 
 export async function fetchMonthlyDistributedFavoNum() {
     const { contract } = getContract("Sbt");
@@ -40,7 +52,7 @@ export async function fetchMonthlyDistributedFavoNum() {
     return message.toString();
 }
 
-export async function mintedTokenNumber() {
+export async function fetchMintedTokenNumber() {
     const { contract } = getContract("Sbt");
     const message = await contract.mintedTokenNumber();
     console.log({ mintedTokenNumber: message.toString() });
