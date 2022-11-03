@@ -43,7 +43,6 @@ const LecturesPage = (props: Props): JSX.Element => {
       pageSize: 20,
     },
   });
-  console.log(tableParams);
   const [openNewLectureForm, setOpenNewLectureForm] = useState(false);
 
   useEffect(() => {

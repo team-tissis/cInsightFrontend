@@ -1,5 +1,17 @@
-import { Avatar, Col, Descriptions, Image, Row, Space } from "antd";
+import {
+  Avatar,
+  Card,
+  Col,
+  Descriptions,
+  Image,
+  List,
+  Row,
+  Skeleton,
+  Space,
+} from "antd";
+import SkeletonButton from "antd/lib/skeleton/Button";
 import { User } from "entities/user";
+import { useState } from "react";
 
 export const UserProfileView = (user: User) => {
   return (
@@ -10,5 +22,33 @@ export const UserProfileView = (user: User) => {
         <Descriptions.Item label="メール">{user.email}</Descriptions.Item>
       </Descriptions>
     </Space>
+  );
+};
+
+export const UserListView = (user: User, loading = false) => {
+  const [isHover, setIsHover] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHover(true);
+  };
+  const handleMouseLeave = () => {
+    setIsHover(false);
+  };
+  return (
+    <Card
+      style={{
+        backgroundColor: isHover ? "#fafafa" : "#fff",
+      }}
+      onMouseOver={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Skeleton avatar title={false} loading={loading} active>
+        <List.Item.Meta
+          avatar={<Avatar src={user.avatorUrl} />}
+          title={user.nickName}
+          description={<div>token: {user.token}</div>}
+        />
+      </Skeleton>
+    </Card>
   );
 };

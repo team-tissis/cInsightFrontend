@@ -1,25 +1,28 @@
-import { CommentProps, TagProps } from "antd";
 import { BaseSearchForm } from "entities";
 import { User } from "./user";
+import { Comment } from "./comment";
 
 export type LectureStatus = "Not Started" | "Held Now" | "End";
 
 export type Lecture = {
   id?: string;
-  date?: [string, string];
   name?: string;
-  author?: User;
-  nLike?: number;
-  createdAt?: string;
-  comments?: CommentProps[];
+  fromDate?: string;
+  toDate?: string;
   tags?: string[];
-  perticipants?: number;
-  maxPerticipants?: number;
-  status?: LectureStatus;
+  description?: string;
   materialUrl?: string;
   movieUrl?: string;
+  attendeeNum?: number;
+  attendeeMaxNum?: number;
+  comments?: Comment[];
+
   moviePrice?: number;
-  description?: string;
+  author?: User;
+  nLike?: number;
+  status?: LectureStatus;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type LectureSearchForm = BaseSearchForm & Lecture;

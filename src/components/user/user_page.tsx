@@ -21,46 +21,34 @@ import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { useEffect, useState } from "react";
 import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
 import { useForm } from "utils/hooks";
-import { useCheckHasSbtApi } from "api/meta_mask";
-import { BooleanSwitchField } from "components/shared/input";
+import * as H from "history";
+import { withRouter } from "react-router";
 
-export const UserPage = () => {
-  const checkHasSbtApi = useCheckHasSbtApi();
+type UserPageProps = {
+  history: H.History;
+  isMyPage?: boolean;
+};
 
-  useEffect(() => {
-    checkHasSbtApi.execute();
-  }, []);
-
+export const UserPage = (props: UserPageProps): JSX.Element => {
   return (
     <PageHeader
+      onBack={() => props.history.push("/users")}
       style={{
         width: "100%",
         backgroundColor: "inherit",
       }}
-      title={"マイページ"}
-      extra={[
-        <Form.Item label="SBT" key="switch has sbt flag">
-          <Switch
-            checkedChildren={"Exist"}
-            unCheckedChildren={"Not Exist"}
-            checked={checkHasSbtApi.response?.hasSbt}
-            onChange={(hasSbt) => {
-              checkHasSbtApi.setResponse({ hasSbt });
-            }}
-          />
-        </Form.Item>,
-      ]}
+      title={"利用者"}
     >
-      {checkHasSbtApi.response?.hasSbt ? (
-        <UserPageWithSbt />
-      ) : (
-        <UserPageWithoutSbt />
-      )}
+      <UserPageContent />
     </PageHeader>
   );
 };
 
-const UserPageWithSbt = () => {
+type UserPageContentProps = {
+  isMyPage?: boolean;
+};
+
+export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const user: User = {
     avatorUrl: "https://joeschmoe.io/api/v1/random",
     firstName: "にしもと",
@@ -88,7 +76,7 @@ const UserPageWithSbt = () => {
         <ContentBlock
           title="基本情報"
           pageHeaderProps={{
-            extra: [
+            extra: props.isMyPage && [
               <Button
                 key={"edit user"}
                 onClick={() => setOpenEditUserForm(true)}
@@ -140,56 +128,25 @@ const UserPageWithSbt = () => {
             </Col>
           </Row>
         </ContentBlock>
-        <ContentBlock title="リファラル">
-          <StatistcsLikeBlock title="累計リファラル数">
-            100人
-          </StatistcsLikeBlock>
-          <Button
-            type="primary"
-            style={{ marginTop: 20 }}
-            onClick={() => {
-              setOpenRefaralForm(true);
-            }}
-          >
-            新規リファラル
-          </Button>
-        </ContentBlock>
+        {props.isMyPage && (
+          <ContentBlock title="リファラル">
+            <StatistcsLikeBlock title="累計リファラル数">
+              100人
+            </StatistcsLikeBlock>
+            <Button
+              type="primary"
+              style={{ marginTop: 20 }}
+              onClick={() => {
+                setOpenRefaralForm(true);
+              }}
+            >
+              新規リファラル
+            </Button>
+          </ContentBlock>
+        )}
       </Space>
     </>
   );
 };
 
-const UserPageWithoutSbt = () => {
-  const user: User = {
-    avatorUrl: "https://joeschmoe.io/api/v1/random",
-    firstName: "にしもと",
-    email: "shozemi.nishimotp@icloud.com",
-  };
-  const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
-  const editUserForm = useForm<User>(user);
-  return (
-    <>
-      <CreateUserSbtForm
-        open={openCreateUserSbtForm}
-        form={editUserForm}
-        onCancel={() => setOpenCreateUserSbtForm(false)}
-        onOk={() => {
-          // postする処理
-          setOpenCreateUserSbtForm(false);
-        }}
-      />
-      <Space size={20} direction="vertical" style={{ width: "100%" }}>
-        <ContentBlock title="SBTの発行">
-          <Button
-            onClick={() => {
-              setOpenCreateUserSbtForm(true);
-            }}
-            type="primary"
-          >
-            SBTを発行する
-          </Button>
-        </ContentBlock>
-      </Space>
-    </>
-  );
-};
+export default withRouter(UserPage);

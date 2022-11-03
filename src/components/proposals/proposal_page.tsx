@@ -5,7 +5,7 @@ import * as H from "history";
 import { Flex } from "components/shared/flex";
 import { useContext, useEffect, useState } from "react";
 import { useFetchProposalApi, usePutProposalApi } from "api/proposal";
-import { DiscussionList } from "components/discussion/discussion_list";
+import { LectureCommetnsList } from "components/comments/comments";
 import {
   Alert,
   Button,

@@ -3,7 +3,7 @@ import { BaseResponse } from "utils/network/api_hooks";
 /**
  * IDのtype alias
  */
-export type ID = number;
+export type ID = string;
 
 /**
  * Entityのベース

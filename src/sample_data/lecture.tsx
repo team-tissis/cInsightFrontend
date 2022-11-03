@@ -42,8 +42,8 @@ export const lectureData: Lecture[] = Array(2)
     status: i % 3 == 0 ? "Not Started" : i % 3 == 1 ? "Held Now" : "End",
     // comments: comments,
     tags: i % 3 == 0 ? ["物理", "数学"] : ["英語", "国語"],
-    perticipants: 21,
-    maxPerticipants: 100,
+    attendeeNum: 21,
+    attendeeMaxNum: 100,
     materialUrl: "http://localhost:3000/lectures/3",
     movieUrl:
       "https://www.youtube.com/watch?v=SSo_EIwHSd4&ab_channel=SimplyExplained",

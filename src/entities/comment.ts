@@ -8,8 +8,10 @@ export type CommentStatus = "Not Started" | "Held Now" | "End";
 export type Comment = {
   id?: string;
   content?: string;
-  commenter_eoa?: string;
+  commenterEoa?: string;
   lecture?: Lecture;
+  lectureId?: string;
+  createdAt?: string;
 };
 
 export type CommentSearchForm = BaseSearchForm & Comment;

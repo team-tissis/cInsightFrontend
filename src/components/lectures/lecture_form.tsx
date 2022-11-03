@@ -17,6 +17,7 @@ import {
 import { Lecture } from "entities/lecture";
 import moment, { Moment } from "moment";
 import { Form, useForm } from "utils/hooks";
+import { RangeValue } from "rc-picker/lib/interface";
 
 const FormView = (form: Form<Lecture>): JSX.Element => {
   const layout = {
@@ -39,7 +40,14 @@ const FormView = (form: Form<Lecture>): JSX.Element => {
       <RangeField
         label="日付"
         form={form}
-        attr="date"
+        attr="fromDate"
+        onChange={(formatStirng: [string, string]) => {
+          console.log(formatStirng[0]);
+          form.update((f) => {
+            f.fromDate = moment(formatStirng[0], "YYYY/MM/DD HH:mm").format();
+            f.toDate = moment(formatStirng[1], "YYYY/MM/DD HH:mm").format();
+          });
+        }}
         fieldProps={
           {
             showTime: {
@@ -49,8 +57,8 @@ const FormView = (form: Form<Lecture>): JSX.Element => {
             },
             format: "YYYY/MM/DD HH:mm",
             defaultValue: [
-              moment(form.object.date?.[0]),
-              moment(form.object.date?.[1]),
+              moment(form.object.fromDate),
+              moment(form.object.toDate),
             ],
             disabledDate: (current) => {
               const customDate = moment().format("YYYY-MM-DD");
@@ -76,14 +84,14 @@ const FormView = (form: Form<Lecture>): JSX.Element => {
         type="number"
         form={form}
         label="参加人数"
-        attr="perticipants"
+        attr="attendeeNum"
         min={0}
       />
       <InputField
         type="number"
         form={form}
         label="最大参加人数"
-        attr="maxPerticipants"
+        attr="attendeeMaxNum"
         min={1}
       />
     </AntdForm>

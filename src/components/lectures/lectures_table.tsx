@@ -12,6 +12,7 @@ import { ColumnType } from "antd/lib/table";
 import { SearchOutlined } from "@ant-design/icons";
 import { FilterConfirmProps } from "antd/lib/table/interface";
 import { SorterResult } from "antd/es/table/interface";
+import moment from "moment";
 
 export type TableProps<T> = {
   data: Lecture[];
@@ -145,16 +146,18 @@ export const LecturesTable = <T extends any>(props: LecturesTableProps) => {
       title: "開始日時",
       width: "20%",
       sorter: true,
-      ...getColumnSearchProps("date"),
-      render: (object: Lecture) => `${(object.date ?? [])[0]}`,
+      ...getColumnSearchProps("fromDate"),
+      render: (object: Lecture) =>
+        moment(object.fromDate).format("YYYY/MM/DD HH:mm"),
     },
     {
       title: "終了日時",
       width: "20%",
       sorter: true,
       filtered: true,
-      ...getColumnSearchProps("date"),
-      render: (object: Lecture) => `${(object.date ?? [])[1]}`,
+      ...getColumnSearchProps("toDate"),
+      render: (object: Lecture) =>
+        moment(object.toDate).format("YYYY/MM/DD HH:mm"),
     },
     // {
     //   title: "Number of Likes",

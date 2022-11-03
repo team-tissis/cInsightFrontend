@@ -3,12 +3,8 @@ import { Lecture, LectureStatus } from "entities/lecture";
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
-  CloseCircleOutlined,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
-import { CSSProperties } from "styled-components";
 import moment from "moment";
 
 export const LectureStatusView = (lecture: Lecture) => {
@@ -68,8 +64,8 @@ export const LectureTagsView = (lecture?: Lecture) => {
 
 export const getLectureStatus = (lecture: Lecture): LectureStatus => {
   const now = moment();
-  const start = moment((lecture.date ?? [])[0]);
-  const end = moment((lecture.date ?? [])[1]);
+  const start = moment(lecture.fromDate);
+  const end = moment(lecture.toDate);
   if (now < start) return "Not Started";
   else if (start <= now && now <= end) return "Held Now";
   else return "End";

@@ -34,14 +34,12 @@ const ProposalsPage = (props: Props): JSX.Element => {
   const proposalsApi = useFetchProposalsApi(searchForm);
   const postProposalApi = usePostProposalApi();
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("calender");
   const [tableParams, setTableParams] = useState<TableParams<Proposal>>({
     pagination: {
       current: 1,
       pageSize: 20,
     },
   });
-  console.log(tableParams);
   const [openNewProposalForm, setOpenNewProposalForm] = useState(false);
 
   useEffect(() => {

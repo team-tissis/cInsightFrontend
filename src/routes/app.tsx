@@ -2,7 +2,9 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Error404Page from "../components/shared/error_404";
 import Layout from "components/shared/layout";
-import { UserPage } from "components/user/user_page";
+import UserPage from "components/user/user_page";
+import MyPage from "components/user/my_page";
+import UsersPage from "components/user/users_page";
 import LecturePage from "components/lectures/lecture_page";
 import LecturesPage from "components/lectures/lectures_page";
 import ProposalPage from "components/proposals/proposal_page";
@@ -23,10 +25,10 @@ const AppRoutes: React.FC = () => {
           {/* <UserAuth> */}
           <Switch>
             <Route exact path={AppRouteHelper.main()}>
-              <UserPage />
+              <MyPage />
             </Route>
             <Route exact path={AppRouteHelper.myPage()}>
-              <UserPage />
+              <MyPage />
             </Route>
             <Route exact path={AppRouteHelper.lectures()}>
               <LecturesPage />
@@ -39,6 +41,12 @@ const AppRoutes: React.FC = () => {
             </Route>
             <Route exact path={AppRouteHelper.proposal()}>
               <ProposalPage />
+            </Route>
+            <Route exact path={AppRouteHelper.users()}>
+              <UsersPage />
+            </Route>
+            <Route exact path={AppRouteHelper.user()}>
+              <UserPage />
             </Route>
             <Route>
               <Error404Page />
@@ -67,6 +75,8 @@ export class AppRouteHelper {
     AppRouteHelper.basePath("proposals/:id");
   public static lectures = (): string => AppRouteHelper.basePath("lectures");
   public static lecture = (): string => AppRouteHelper.basePath("lectures/:id");
+  public static users = (): string => AppRouteHelper.basePath("users");
+  public static user = (): string => AppRouteHelper.basePath("users/:id");
   public static login = (): string => AppRouteHelper.basePath("login");
   public static main = (): string => AppRouteHelper.basePath("main");
 

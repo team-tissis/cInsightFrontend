@@ -468,14 +468,14 @@ export const RangeField = <T extends any>(props: RangeFieldProps<T>) => {
         style={{ width: "100%" }}
         onChange={(
           values: RangeValue<Moment> | null,
-          formatStirng: [string, string]
+          formatString: [string, string]
         ) => {
           if (props.onChange) {
-            props.onChange(formatStirng);
+            console.log(formatString);
+            props.onChange(formatString);
           } else {
             // 一般的な処理
-            console.log(formatStirng);
-            props.form.updateObject(props.attr, formatStirng);
+            props.form.updateObject(props.attr, formatString);
           }
         }}
         {...props.fieldProps}

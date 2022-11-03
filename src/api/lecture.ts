@@ -27,26 +27,13 @@ export function useFetchLecturesApi(
   searchForm: Form<LectureSearchForm>
 ): IndexApiSet<LecturesResponse> & { execute: () => void } {
   const apiPath = "lectures/";
-  //   const perPage = CookieManager.getPerPage(apiPath);
   const api = useIndexApi<LecturesResponse>(new HttpClient(), {
-    initialState: { page: 1, perPage: 50 },
+    initialState: { page: 1, perPage: 10 },
     initialResponse: { count: 0, results: [] },
   });
 
   const execute = (): void => {
-    // api.execute(apiPath, { params: searchForm.object });
-
-    sleep(
-      1,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const results = CookieManager.getLecturesData();
-        api.setResponse({ results, count: 50 });
-        api.setLoading(false);
-      }
-    );
+    api.execute(apiPath, { params: searchForm.object });
   };
 
   useEffectSkipFirst(() => {
@@ -54,7 +41,6 @@ export function useFetchLecturesApi(
       if (api.pageSet.page) f.page = api.pageSet.page;
       if (api.pageSet.perPage) f.perPage = api.pageSet.perPage;
     });
-    // CookieManager.savePerPage("lectures", api.pageSet.perPage);
   }, [api.pageSet.page, api.pageSet.perPage]);
 
   return {
@@ -76,25 +62,8 @@ export function useFetchLectureApi(): ApiSet<LectureResponse> & {
   });
 
   const execute = (id: number): void => {
-    // const apiPath = `lectures/${id}/`;
-    // api.execute(apiPath);
-    sleep(
-      0.5,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const lectures = CookieManager.getLecturesData();
-        api.setResponse({
-          lecture:
-            {
-              ...lectures.find((l) => Number(l.id) === id),
-              comments: comments,
-            } ?? {},
-        });
-        api.setLoading(false);
-      }
-    );
+    const apiPath = `lectures/${id}/`;
+    api.execute(apiPath);
   };
 
   return {
@@ -116,26 +85,8 @@ export function usePostLectureApi(): ApiSet<BaseResponse> & {
   );
 
   const execute = (form: Form<LectureForm>) => {
-    // const apiPath = `lectures/`;
-    // api.execute(apiPath, form);
-    sleep(
-      0.5,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const lectures = CookieManager.getLecturesData();
-        const newId =
-          lectures.length === 0
-            ? "1"
-            : String(Math.max(...lectures.map((l) => Number(l.id))) + 1);
-        CookieManager.saveLecturesData([
-          ...lectures,
-          { id: newId, ...form.object },
-        ]);
-        api.setLoading(false);
-      }
-    );
+    const apiPath = `lectures/`;
+    api.execute(apiPath, form);
   };
 
   return {
@@ -157,23 +108,8 @@ export function usePutLectureApi(): ApiSet<BaseResponse> & {
   );
 
   const execute = (object: Lecture) => {
-    // const apiPath = `lectures/${object.id}/`;
-    // api.execute(apiPath, object);
-    sleep(
-      0.5,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const lectures = CookieManager.getLecturesData();
-        CookieManager.saveLecturesData(
-          lectures
-            .map((l) => (l.id !== object.id ? l : object))
-            .map((l) => ({ ...l, comments: undefined }))
-        );
-        api.setLoading(false);
-      }
-    );
+    const apiPath = `lectures/${object.id}/`;
+    api.execute(apiPath, object);
   };
 
   return {
@@ -191,24 +127,9 @@ export function useDeleteLectureApi(): ApiSet<BaseResponse> & {
   });
 
   const execute = (id: string): void => {
-    // const apiPath = `comments/${id}/`;
-    // api.execute(apiPath);
-    sleep(
-      1.5,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const lectures = CookieManager.getLecturesData();
-        const lecture = lectures.find((l) => l.id === id);
-        CookieManager.saveLecturesData(lectures.filter((l) => l.id !== id));
-        !!lecture &&
-          notification.open({ message: `${lecture.name}を削除しました` });
-        api.setLoading(false);
-      }
-    );
+    const apiPath = `lectures/${id}/`;
+    api.execute(apiPath);
   };
-
   return {
     ...api,
     isSuccess: () => !api.loading && !api.isError,

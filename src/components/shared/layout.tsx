@@ -10,10 +10,11 @@ import {
   MenuProps,
 } from "antd";
 import {
-  LaptopOutlined,
+  HomeOutlined,
   NotificationOutlined,
   UserOutlined,
   FireTwoTone,
+  GoldOutlined,
 } from "@ant-design/icons";
 import { useQuery } from "utils/hooks";
 import { GlobalStateContext } from "contexts/global_state_context";
@@ -36,9 +37,17 @@ const Layout = (props: LayoutProps): JSX.Element => {
     {
       key: "/mypage",
       label: "マイページ",
-      icon: <UserOutlined />,
+      icon: <HomeOutlined />,
       onClick: () => {
         props.history.push("/mypage");
+      },
+    },
+    {
+      key: "/users",
+      label: "利用者",
+      icon: <UserOutlined />,
+      onClick: () => {
+        props.history.push("/users");
       },
     },
     {
@@ -52,7 +61,7 @@ const Layout = (props: LayoutProps): JSX.Element => {
     {
       key: "/proposals",
       label: "ガバナンス",
-      icon: <NotificationOutlined />,
+      icon: <GoldOutlined />,
       onClick: () => {
         props.history.push("/proposals");
       },

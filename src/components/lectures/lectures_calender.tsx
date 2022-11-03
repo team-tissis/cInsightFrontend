@@ -27,6 +27,7 @@ export const LecturesCalender = (props: LecturesCalenderProps) => {
         initialView="dayGridMonth"
         initialDate={new Date()}
         locale={"ja"}
+        timeZone="Asia/Tokyo"
         buttonText={{
           today: "今日",
           month: "月",
@@ -41,6 +42,7 @@ export const LecturesCalender = (props: LecturesCalenderProps) => {
         eventClick={(arg) => {
           props.history.push(`/lectures/${arg.event.id}`);
         }}
+        height={700}
         // eventContent={(eventInfo: EventContentArg) => {
         //   console.log(eventInfo);
         //   const lecture = lecturesApi.response.results.find(
@@ -71,11 +73,8 @@ export const LecturesCalender = (props: LecturesCalenderProps) => {
         events={props.data.map((lecture) => {
           return {
             id: lecture.id,
-            start: moment(
-              (lecture?.date ?? [])[0],
-              "YYYY/MM/DD HH:mm"
-            ).format(),
-            end: moment((lecture?.date ?? [])[1], "YYYY/MM/DD HH:mm").format(),
+            start: moment(lecture.fromDate).format(),
+            end: moment(lecture.toDate).format(),
             // backgroundColor:
             //   getLectureStatus(lecture) === "End"
             //     ? "#FAFAFA"
@@ -85,13 +84,6 @@ export const LecturesCalender = (props: LecturesCalenderProps) => {
             title: lecture.name,
           };
         })}
-        height={700}
-        // datesSet={(a) => {
-        //   if (a?.endStr !== arg?.endStr) {
-        //     setArg(a);
-        //   }
-        // }}
-        // validRange={{ start: "2022-02-01", end: new Date() }}
       />
     </>
   );

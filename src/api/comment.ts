@@ -26,7 +26,6 @@ export function useFetchCommentsApi(
   searchForm: Form<CommentSearchForm>
 ): IndexApiSet<CommentsResponse> & { execute: () => void } {
   const apiPath = "comments/";
-  //   const perPage = CookieManager.getPerPage(apiPath);
   const api = useIndexApi<CommentsResponse>(new HttpClient(), {
     initialState: { page: 1, perPage: 50 },
     initialResponse: { count: 0, results: [] },
@@ -42,7 +41,6 @@ export function useFetchCommentsApi(
       if (api.pageSet.page) f.page = api.pageSet.page;
       if (api.pageSet.perPage) f.perPage = api.pageSet.perPage;
     });
-    // CookieManager.savePerPage("comments", api.pageSet.perPage);
   }, [api.pageSet.page, api.pageSet.perPage]);
 
   return {

@@ -9,7 +9,7 @@ import {
   useFetchLectureApi,
   usePutLectureApi,
 } from "api/lecture";
-import { DiscussionList } from "components/discussion/discussion_list";
+import { LectureCommetnsList } from "components/comments/comments";
 import {
   Alert,
   Button,
@@ -55,7 +55,6 @@ const LecturePage = (props: Props) => {
   const params = useParams<{ id: string }>();
   const lectureApi = useFetchLectureApi();
   const searchForm = useForm<CommentSearchForm>({});
-  const commentsApi = useFetchCommentsApi(searchForm);
   const globalState = useContext(GlobalStateContext);
   const [movieVisible, setMovieVisible] = useState(false);
   const [openPurchaseModal, setOpenPurchaseModal] = useState(false);
@@ -72,11 +71,13 @@ const LecturePage = (props: Props) => {
 
   useEffect(() => {
     lectureApi.execute(Number(params.id));
-    commentsApi.execute();
   }, []);
 
   useEffectSkipFirst(() => {
     globalState.setLoading(lectureApi.loading);
+    if (lectureApi.isSuccess()) {
+      console.log(lectureApi.response);
+    }
   }, [lectureApi.loading]);
 
   useEffectSkipFirst(() => {
@@ -142,6 +143,7 @@ const LecturePage = (props: Props) => {
           open={openEditLectureForm}
           onCancel={() => setOpenEditLectureForm(false)}
           onOk={() => {
+            console.log(editLectureForm.object);
             putLectureApi.execute(editLectureForm.object);
             setOpenEditLectureForm(false);
           }}
@@ -202,10 +204,10 @@ const LecturePage = (props: Props) => {
               {LectureTagsView(lecture() ?? {})}
             </Descriptions.Item>
             <Descriptions.Item label="開始日時">
-              {moment((lecture()?.date ?? [])[0]).format("yyyy/MM/DD HH:mm")}
+              {moment(lecture()?.fromDate).format("yyyy/MM/DD HH:mm")}
             </Descriptions.Item>
             <Descriptions.Item label="終了日時">
-              {moment((lecture()?.date ?? [])[1]).format("yyyy/MM/DD HH:mm")}
+              {moment(lecture()?.toDate).format("yyyy/MM/DD HH:mm")}
             </Descriptions.Item>
             {/* <Descriptions.Item label="Remark">empty</Descriptions.Item>
             <Descriptions.Item label="Address">
@@ -285,8 +287,8 @@ const LecturePage = (props: Props) => {
               <Space direction="vertical">
                 <Statistic
                   title="参加人数/参加可能枠"
-                  value={lecture()?.perticipants}
-                  suffix={`/ ${lecture()?.maxPerticipants}`}
+                  value={lecture()?.attendeeNum}
+                  suffix={`/ ${lecture()?.attendeeMaxNum}`}
                 />
                 {(() => {
                   switch (applyStatus) {
@@ -333,14 +335,14 @@ const LecturePage = (props: Props) => {
             <Col span={8}>
               <Countdown
                 title={`開催日まで`}
-                value={(lecture()?.date ?? [])[0]}
+                value={lecture()?.fromDate}
                 format="D日H時間m分s秒"
               />
             </Col>
           </Row>
         </ContentBlock>
         <ContentBlock title="コメント">
-          <DiscussionList data={lecture()?.comments ?? []} />
+          <LectureCommetnsList lectureApi={lectureApi} />
         </ContentBlock>
       </Space>
     </PageHeader>
