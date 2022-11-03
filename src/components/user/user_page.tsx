@@ -19,7 +19,7 @@ import { UserProfileView } from "./user_view";
 import { User } from "entities/user";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { useEffect, useState } from "react";
-import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
+import { CreateUserSbtForm, EditUserForm, ReferralForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { BooleanSwitchField } from "components/shared/input";
@@ -75,8 +75,8 @@ const UserPageWithSbt = () => {
   };
   const [openEditUserForm, setOpenEditUserForm] = useState(false);
   const editUserForm = useForm<User>(user);
-  const [openReferalForm, setOpenRefaralForm] = useState(false);
-  const referalForm = useForm<ReferalForm>({});
+  const [openReferralForm, setOpenRefaralForm] = useState(false);
+  const referralForm = useForm<ReferralForm>({});
 
   const [favo, setFavo] = useState();
   const [grade, setGrade] = useState();
@@ -104,12 +104,12 @@ const UserPageWithSbt = () => {
         onCancel={() => setOpenEditUserForm(false)}
         onOk={() => setOpenEditUserForm(false)}
       />
-      <ReferalForm
-        open={openReferalForm}
-        form={referalForm}
+      <ReferralForm
+        open={openReferralForm}
+        form={referralForm}
         onCancel={() => setOpenRefaralForm(false)}
         onOk={() => {
-          refer(referalForm.object.walletAddress);
+          refer(referralForm.object.walletAddress);
           setOpenRefaralForm(false)
         }
         }

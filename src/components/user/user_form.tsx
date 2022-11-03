@@ -64,15 +64,15 @@ export const CreateUserSbtForm = (props: CreateUserSbtFormProps) => {
   );
 };
 
-export type ReferalForm = {
+export type ReferralForm = {
   walletAddress?: string;
 };
 
-export type ReferalFormProps = ModalProps & {
-  form: Form<ReferalForm>;
+export type ReferralFormProps = ModalProps & {
+  form: Form<ReferralForm>;
 };
 
-export const ReferalForm = (props: ReferalFormProps) => {
+export const ReferralForm = (props: ReferralFormProps) => {
   const { form, ...rest } = props;
   return (
     <Modal title="新規リファラル" {...rest}>
