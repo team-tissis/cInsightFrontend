@@ -85,7 +85,6 @@ export async function mint(address) {
     else {
         const { contract } = getContract("Sbt", sbtAbi);
         const options = { value: ethers.utils.parseEther("20.0") };
-        console.log({ mint_address: address });
         mintIndex = contract.mintWithReferral(address, options);
     }
 
@@ -97,7 +96,12 @@ export async function mint(address) {
 export async function refer(address) {
     const { contract } = getContract("Sbt");
     contract.refer(address);
-    console.log({ address: address });
 
     //TODO; refer listen
+}
+
+export async function addFavos(address, num) {
+    const { contract } = getContract("Sbt", sbtAbi);
+    contract.addFavos(address, num);
+    console.log({ address: address });
 }
