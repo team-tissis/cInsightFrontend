@@ -73,10 +73,22 @@ export async function fetchMintedTokenNumber() {
     return message.toString();
 }
 
-export async function mint() {
-    const { contract } = getContract("Sbt");
-    const options = { value: ethers.utils.parseEther("20.0") }
-    const mintIndex = contract.mint(options);
+export async function mint(address) {
+    // mint
+    let mintIndex;
+    if (address === undefined) {
+        const { contract } = getContract("Sbt");
+        const options = { value: ethers.utils.parseEther("20.0") };
+        mintIndex = contract.mint(options);
+    }
+    // mint with referral
+    else {
+        const { contract } = getContract("Sbt", sbtAbi);
+        const options = { value: ethers.utils.parseEther("20.0") };
+        console.log({ mint_address: address });
+        mintIndex = contract.mintWithReferral(address, options);
+    }
+
     console.log({ mintIndex: mintIndex });
 
     //TODO; minted listen
@@ -84,9 +96,8 @@ export async function mint() {
 
 export async function refer(address) {
     const { contract } = getContract("Sbt");
-    const options = { value: ethers.utils.parseEther("20.0") }
-    contract.refer(address, options);
+    contract.refer(address);
     console.log({ address: address });
 
-    //TODO; minted listen
+    //TODO; refer listen
 }

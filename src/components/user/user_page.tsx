@@ -108,7 +108,11 @@ const UserPageWithSbt = () => {
         open={openReferalForm}
         form={referalForm}
         onCancel={() => setOpenRefaralForm(false)}
-        onOk={() => setOpenRefaralForm(false)}
+        onOk={() => {
+          refer(referalForm.object.walletAddress);
+          setOpenRefaralForm(false)
+        }
+        }
       />
       <Space size={20} direction="vertical" style={{ width: "100%" }}>
         <ContentBlock
@@ -165,14 +169,13 @@ const UserPageWithSbt = () => {
           </Row>
         </ContentBlock>
         <ContentBlock title="リファラル">
-          <StatistcsLikeBlock title="残りリファラル数（翌月にリセットされます）">
+          <StatistcsLikeBlock title="リファラル数（翌月にリセットされます）">
             {referral} / {referralRemain}
           </StatistcsLikeBlock>
           <Button
             type="primary"
             style={{ marginTop: 20 }}
             onClick={() => {
-              refer(referalForm.object.walletAddress);
               setOpenRefaralForm(true);
             }}
           >
@@ -191,17 +194,19 @@ const UserPageWithoutSbt = () => {
     email: "shozemi.nishimotp@icloud.com",
   };
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
-  const editUserForm = useForm<User>(user);
+  const createUserSbtForm = useForm<User>(user);
 
   return (
     <>
       <CreateUserSbtForm
         open={openCreateUserSbtForm}
-        form={editUserForm}
+        form={createUserSbtForm}
         onCancel={() => setOpenCreateUserSbtForm(false)}
         onOk={() => {
           // postする処理
-          mint();
+          // mint();
+          // console.log(createUserSbtForm.object.referencerAddress);
+          mint(createUserSbtForm.object.referencerAddress);
           setOpenCreateUserSbtForm(false);
         }}
       />
