@@ -1,14 +1,15 @@
-import { getContract } from "./utils";
+import { getContract, getCurrentAccountAddress } from "./utils";
 
-export async function fetchAccountInfo(address, method) {
+export async function fetchConnectedAccountInfo(method) {
     const { contract } = getContract("Sbt");
-    const response = await fetchFunction(contract, address, method);
-    console.log({ method: response.toString() });
-    return response.toString;
+    const currentAccount = await getCurrentAccountAddress();
+    const response = await fetchFunction(contract, currentAccount, method);
+    console.log({ address: currentAccount, method: method, value: response.toString() });
+    return response.toString();
 }
 
 async function fetchFunction(contract, address, method) {
-    let response = -1;
+    let response;
     if (method == "favoOf") {
         response = contract.favoOf(address);
     }
@@ -26,6 +27,7 @@ async function fetchFunction(contract, address, method) {
     }
     else {
         console.error("Method Not Found")
+        response = "none";
     }
     return response
 }

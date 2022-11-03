@@ -1,11 +1,7 @@
 import { ethers } from "ethers";
-import contractFunctions from "../broadcast/cInsightScript.s.sol/31337/run-latest.json";
-import Sbt from "../abi/Sbt.sol/Sbt.json";
-import SkinNft from "../abi/SkinNft.sol/SkinNft.json";
-
-function stringToBytes32(str) {
-    return ethers.utils.formatBytes32String(str);
-}
+import contractFunctions from "../../broadcast/cInsightScript.s.sol/31337/run-latest.json";
+import Sbt from "../../abi/Sbt.sol/Sbt.json";
+import SkinNft from "../../abi/SkinNft.sol/SkinNft.json";
 
 // スマコンのアドレスを取得
 function getContractAddress(contractName) {
@@ -18,7 +14,8 @@ function getAbi(contractName) {
     else if (contractName === "SkinNft") return SkinNft.abi;
 }
 
-function getSigner() {
+// 1番目のアカウントアドレスを msg.sender としている．
+export function getSigner() {
     // ローカルネットワークにアクセスする方法（ http://localhost:8545 が指定される）
     const provider = new ethers.providers.JsonRpcProvider();
     const signer = provider.getSigner(1); // 2番目の account（1番目は deployer）
@@ -29,13 +26,17 @@ function getSigner() {
     return signer;
 }
 
-function getContract(contractName) {
+// 1番目のアカウントアドレスを msg.sender としている．
+export async function getCurrentAccountAddress() {
+    const provider = new ethers.providers.JsonRpcProvider();
+    const accounts = await provider.listAccounts();
+    return accounts[1];
+}
+
+export function getContract(contractName) {
     const contractAddress = getContractAddress(contractName);
     const abi = getAbi(contractName);
     const signer = getSigner();
     const contract = new ethers.Contract(contractAddress, abi, signer);
     return { contractAddress, signer, contract };
 }
-
-export { getContract };
-

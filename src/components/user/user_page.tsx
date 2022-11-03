@@ -23,6 +23,7 @@ import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { BooleanSwitchField } from "components/shared/input";
+import { fetchConnectedAccountInfo } from "api/fetch_sol/sbt";
 
 export const UserPage = () => {
   const checkHasSbtApi = useCheckHasSbtApi();
@@ -70,6 +71,16 @@ const UserPageWithSbt = () => {
   const editUserForm = useForm<User>(user);
   const [openReferalForm, setOpenRefaralForm] = useState(false);
   const referalForm = useForm<ReferalForm>({});
+
+  const [grade, setGrade] = useState();
+
+  useEffect(() => {
+    (async function () {
+
+      setGrade(await fetchConnectedAccountInfo("gradeOf"));
+    })();
+  }, []);
+
   return (
     <>
       <EditUserForm
@@ -103,6 +114,13 @@ const UserPageWithSbt = () => {
         <ContentBlock title="統計情報">
           <Row>
             <Col span={8}>
+              <Statistic
+                title="Grade"
+                value={grade}
+                valueStyle={{ color: "#3f8600" }}
+              />
+            </Col>
+            <Col span={8}>
               <StatistcsLikeBlock title="残いいね">
                 <Space direction="vertical">
                   <Space style={{ alignItems: "center" }}>
@@ -127,6 +145,16 @@ const UserPageWithSbt = () => {
                   付与
                 </div>
               </StatistcsLikeBlock>
+            </Col>
+            <Col span={8}>
+              <Statistic
+                title="Rating"
+                value={11.28}
+                precision={2}
+                valueStyle={{ color: "#3f8600" }}
+                prefix={<ArrowUpOutlined />}
+                suffix="%"
+              />
             </Col>
             <Col span={8}>
               <Statistic
