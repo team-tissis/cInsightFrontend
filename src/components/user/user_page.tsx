@@ -23,7 +23,7 @@ import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { BooleanSwitchField } from "components/shared/input";
-import { fetchConnectedAccountInfo, fetchConnectedAccountReferralNum, fetchMonthlyDistributedFavoNum } from "api/fetch_sol/sbt";
+import { fetchConnectedAccountInfo, fetchConnectedAccountReferralNum, fetchMonthlyDistributedFavoNum, mint } from "api/fetch_sol/sbt";
 
 export const UserPage = () => {
   const checkHasSbtApi = useCheckHasSbtApi();
@@ -185,6 +185,7 @@ const UserPageWithoutSbt = () => {
   };
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
   const editUserForm = useForm<User>(user);
+
   return (
     <>
       <CreateUserSbtForm
@@ -193,6 +194,7 @@ const UserPageWithoutSbt = () => {
         onCancel={() => setOpenCreateUserSbtForm(false)}
         onOk={() => {
           // postする処理
+          mint();
           setOpenCreateUserSbtForm(false);
         }}
       />

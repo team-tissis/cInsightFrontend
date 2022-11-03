@@ -1,7 +1,21 @@
-import { getContract, getCurrentAccountAddress } from "./utils";
+import { ethers } from "ethers";
+import { getContract, getAbi, getCurrentAccountAddress } from "./utils";
+
+
+function getSbtAbiAddedImp(_functionNames) {
+    const abi = getAbi("Sbt");
+    const abiImp = getAbi("SbtImp");
+    for (var i = 0; i < _functionNames.length; i++) {
+        abi.push(abiImp.find((v) => v.name === _functionNames[i]));
+    }
+    return abi;
+}
+
+const functionNames = ["mint", "mintWithReferral", "burn", "monthInit", "addFavos", "refer"];
+const sbtAbi = getSbtAbiAddedImp(functionNames);
 
 export async function fetchConnectedAccountInfo(method) {
-    const { contract } = getContract("Sbt");
+    const { contract } = getContract("Sbt", sbtAbi);
     const currentAccount = await getCurrentAccountAddress();
     const response = await fetchFunction(contract, currentAccount, method);
     console.log({ address: currentAccount, method: method, value: response.toString() });
@@ -57,4 +71,13 @@ export async function fetchMintedTokenNumber() {
     const message = await contract.mintedTokenNumber();
     console.log({ mintedTokenNumber: message.toString() });
     return message.toString();
+}
+
+export async function mint() {
+    const { contract } = getContract("Sbt");
+    const options = { value: ethers.utils.parseEther("20.0") }
+    const mintIndex = contract.mint(options);
+    console.log({ mintIndex: mintIndex });
+
+    //TODO; minted listen
 }
