@@ -15,10 +15,11 @@ function getAbi(contractName) {
 }
 
 // 1番目のアカウントアドレスを msg.sender としている．
+const accountIndex = 2;
 export function getSigner() {
     // ローカルネットワークにアクセスする方法（ http://localhost:8545 が指定される）
     const provider = new ethers.providers.JsonRpcProvider();
-    const signer = provider.getSigner(1); // 2番目の account（1番目は deployer）
+    const signer = provider.getSigner(accountIndex); // 2番目の account（1番目は deployer）
     // MetaMask を使う方法 (うまくいかない)
     // const provider = new ethers.providers.Web3Provider(window.ethereum, 31337);
     // const signer = provider.getSigner();
@@ -30,7 +31,7 @@ export function getSigner() {
 export async function getCurrentAccountAddress() {
     const provider = new ethers.providers.JsonRpcProvider();
     const accounts = await provider.listAccounts();
-    return accounts[1];
+    return accounts[accountIndex];
 }
 
 export function getContract(contractName) {

@@ -33,10 +33,10 @@ async function fetchFunction(contract, address, method) {
 }
 
 
-export async function lastUpdatedMonth() {
+export async function fetchMonthlyDistributedFavoNum() {
     const { contract } = getContract("Sbt");
-    const message = await contract.lastUpdatedMonth();
-    console.log({ lastUpdatedMonth: message });
+    const message = await contract.monthlyDistributedFavoNum();
+    console.log({ monthlyDistributedFavoNum: message.toString() });
     return message.toString();
 }
 

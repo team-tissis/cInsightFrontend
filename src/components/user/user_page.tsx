@@ -23,7 +23,7 @@ import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { BooleanSwitchField } from "components/shared/input";
-import { fetchConnectedAccountInfo } from "api/fetch_sol/sbt";
+import { fetchConnectedAccountInfo, fetchMonthlyDistributedFavoNum } from "api/fetch_sol/sbt";
 
 export const UserPage = () => {
   const checkHasSbtApi = useCheckHasSbtApi();
@@ -72,12 +72,19 @@ const UserPageWithSbt = () => {
   const [openReferalForm, setOpenRefaralForm] = useState(false);
   const referalForm = useForm<ReferalForm>({});
 
+  const [favo, setFavo] = useState();
   const [grade, setGrade] = useState();
+  const [makiMemory, setMakiMemory] = useState();
+  const [referral, setReferral] = useState();
+  const [monthlyDistributedFavoNum, setMonthlyDistributedFavoNum] = useState();
 
   useEffect(() => {
     (async function () {
-
+      setFavo(await fetchConnectedAccountInfo("favoOf"));
       setGrade(await fetchConnectedAccountInfo("gradeOf"));
+      setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
+      setReferral(await fetchConnectedAccountInfo("referralOf"));
+      setMonthlyDistributedFavoNum(await fetchMonthlyDistributedFavoNum());
     })();
   }, []);
 
@@ -111,7 +118,7 @@ const UserPageWithSbt = () => {
         >
           {UserProfileView(user)}
         </ContentBlock>
-        <ContentBlock title="統計情報">
+        <ContentBlock title="SBT INFO">
           <Row>
             <Col span={8}>
               <Statistic
@@ -121,7 +128,17 @@ const UserPageWithSbt = () => {
               />
             </Col>
             <Col span={8}>
-              <StatistcsLikeBlock title="残いいね">
+              <Statistic
+                title="Current Rate"
+                value={makiMemory}
+                valueStyle={{ color: "#3f8600" }}
+              />
+              <div style={{ fontSize: 14, paddingTop: 10 }}>
+                翌月にgradeに反映されます
+              </div>
+            </Col>
+            <Col span={8}>
+              <StatistcsLikeBlock title="今月のいいね付与数">
                 <Space direction="vertical">
                   <Space style={{ alignItems: "center" }}>
                     <LikeOutlined
@@ -129,42 +146,13 @@ const UserPageWithSbt = () => {
                         verticalAlign: 2,
                       }}
                     />
-                    10
+                    {favo} / {monthlyDistributedFavoNum}
                   </Space>
                 </Space>
                 <div style={{ fontSize: 14, paddingTop: 10 }}>
-                  次回、2022/11/01に、
-                  <Space size={0}>
-                    <LikeOutlined
-                      style={{
-                        verticalAlign: 2,
-                      }}
-                    />
-                    +10
-                  </Space>
-                  付与
+                  翌月にリセットされます
                 </div>
               </StatistcsLikeBlock>
-            </Col>
-            <Col span={8}>
-              <Statistic
-                title="Rating"
-                value={11.28}
-                precision={2}
-                valueStyle={{ color: "#3f8600" }}
-                prefix={<ArrowUpOutlined />}
-                suffix="%"
-              />
-            </Col>
-            <Col span={8}>
-              <Statistic
-                title="Rating"
-                value={11.28}
-                precision={2}
-                valueStyle={{ color: "#3f8600" }}
-                prefix={<ArrowUpOutlined />}
-                suffix="%"
-              />
             </Col>
           </Row>
         </ContentBlock>
