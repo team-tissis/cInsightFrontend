@@ -2,12 +2,16 @@ import { BaseEntity, BaseSearchForm } from ".";
 
 export type User = BaseEntity & {
   id?: string;
+  name?: string;
+  mail?: string;
+  eoa?: string;
+  createdAt?: string;
+  updatedAt?: string;
+
   fullName?: string;
   firstName?: string;
   lastName?: string;
   username?: string;
-  nickName?: string;
-  email?: string;
   isStaff?: string;
   likeRest?: number;
   avatorUrl?: string;

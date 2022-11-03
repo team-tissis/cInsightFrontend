@@ -55,7 +55,7 @@ const ProposalPage = (props: Props) => {
     "open" | "allplyed" | "closed"
   >("allplyed");
   const editProposalForm = useForm<Proposal>({
-    proposedBy: { token: "nisshimo" },
+    proposerEoa: "nisshimo",
   });
   const putProposalApi = usePutProposalApi();
 
@@ -186,7 +186,7 @@ const ProposalPage = (props: Props) => {
                       lineHeight: 1.2,
                     }}
                   >
-                    {proposal()?.transactionCommand}
+                    {proposal()?.transaction}
                   </div>
                 </StatistcsLikeBlock>
               </Col>
@@ -201,7 +201,7 @@ const ProposalPage = (props: Props) => {
         >
           <Typography>
             <Paragraph style={{ whiteSpace: "pre-line" }}>
-              {proposal()?.descriptions}
+              {proposal()?.description}
             </Paragraph>
           </Typography>
         </ContentBlock>

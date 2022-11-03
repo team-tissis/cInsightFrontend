@@ -20,7 +20,6 @@ export type Lecture = {
   moviePrice?: number;
   author?: User;
   nLike?: number;
-  status?: LectureStatus;
   createdAt?: string;
   updatedAt?: string;
 };

@@ -1,13 +1,26 @@
-import { Avatar, Button, Comment as AntdComment, Form, List } from "antd";
+import {
+  Avatar,
+  Button,
+  Comment as AntdComment,
+  Form,
+  List,
+  Tooltip,
+} from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Comment, CommentForm } from "entities/comment";
-import { useState } from "react";
+import React, { createElement, useState } from "react";
 import { useEffectSkipFirst, useForm } from "utils/hooks";
 import { usePostCommentApi } from "api/comment";
 import { ApiSet } from "utils/network/api_hooks";
 import { LectureResponse } from "api/lecture";
 import { useParams } from "react-router";
 import moment from "moment";
+import {
+  DislikeFilled,
+  DislikeOutlined,
+  LikeFilled,
+  LikeOutlined,
+} from "@ant-design/icons";
 
 export type EditorProps = {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -58,21 +71,76 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
         <List
           itemLayout="horizontal"
           dataSource={comments}
-          renderItem={(item: Comment) => (
-            <li>
-              <AntdComment
-                author={item.commenterEoa}
-                avatar={
-                  <Avatar
-                    src="https://joeschmoe.io/api/v1/random"
-                    alt="Han Solo"
-                  />
-                }
-                content={item.content}
-                datetime={moment(item.createdAt).fromNow()}
-              />
-            </li>
-          )}
+          renderItem={(item: Comment) => {
+            const action =
+              Number(item.id) % 3 === 0
+                ? "liked"
+                : Number(item.id) % 3 === 1
+                ? "disliked"
+                : undefined;
+            return (
+              <li>
+                <AntdComment
+                  actions={[
+                    <Tooltip key="comment-basic-like" title="Like">
+                      <span
+                        onClick={() => {
+                          // なにかの処理
+                        }}
+                      >
+                        {action === "liked" ? (
+                          <LikeFilled
+                            style={{
+                              verticalAlign: "middle",
+                            }}
+                          />
+                        ) : (
+                          <LikeOutlined
+                            style={{
+                              verticalAlign: "middle",
+                            }}
+                          />
+                        )}
+                        <span className="comment-action">{3}</span>
+                      </span>
+                    </Tooltip>,
+                    <Tooltip key="comment-basic-dislike" title="Dislike">
+                      <span
+                        onClick={() => {
+                          // 何かの処理
+                        }}
+                      >
+                        {action === "disliked" ? (
+                          <DislikeFilled
+                            style={{
+                              verticalAlign: "middle",
+                            }}
+                          />
+                        ) : (
+                          <DislikeOutlined
+                            style={{
+                              verticalAlign: "middle",
+                            }}
+                          />
+                        )}
+                        <span className="comment-action">{1}</span>
+                      </span>
+                    </Tooltip>,
+                    <span key="comment-basic-reply-to">Reply to</span>,
+                  ]}
+                  author={item.commenterEoa}
+                  avatar={
+                    <Avatar
+                      src="https://joeschmoe.io/api/v1/random"
+                      alt="Han Solo"
+                    />
+                  }
+                  content={item.content}
+                  datetime={moment(item.createdAt).fromNow()}
+                />
+              </li>
+            );
+          }}
         />
       )}
       <AntdComment

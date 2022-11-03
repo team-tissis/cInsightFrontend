@@ -27,26 +27,14 @@ export function useFetchProposalsApi(
   searchForm: Form<ProposalSearchForm>
 ): IndexApiSet<ProposalsResponse> & { execute: () => void } {
   const apiPath = "proposals/";
-  //   const perPage = CookieManager.getPerPage(apiPath);
+  // const perPage = CookieManager.getPerPage(apiPath);
   const api = useIndexApi<ProposalsResponse>(new HttpClient(), {
     initialState: { page: 1, perPage: 50 },
     initialResponse: { count: 0, results: [] },
   });
 
   const execute = (): void => {
-    // api.execute(apiPath, { params: searchForm.object });
-
-    sleep(
-      1,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const results = CookieManager.getProposalsData();
-        api.setResponse({ results, count: 50 });
-        api.setLoading(false);
-      }
-    );
+    api.execute(apiPath, { params: searchForm.object });
   };
 
   useEffectSkipFirst(() => {
@@ -54,7 +42,6 @@ export function useFetchProposalsApi(
       if (api.pageSet.page) f.page = api.pageSet.page;
       if (api.pageSet.perPage) f.perPage = api.pageSet.perPage;
     });
-    // CookieManager.savePerPage("proposals", api.pageSet.perPage);
   }, [api.pageSet.page, api.pageSet.perPage]);
 
   return {
@@ -76,21 +63,8 @@ export function useFetchProposalApi(): ApiSet<ProposalResponse> & {
   });
 
   const execute = (id: number): void => {
-    // const apiPath = `proposals/${id}/`;
-    // api.execute(apiPath);
-    sleep(
-      0.5,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const proposals = CookieManager.getProposalsData();
-        api.setResponse({
-          proposal: proposals.find((l) => Number(l.id) === id) ?? {},
-        });
-        api.setLoading(false);
-      }
-    );
+    const apiPath = `proposals/${id}/`;
+    api.execute(apiPath);
   };
 
   return {
@@ -112,26 +86,8 @@ export function usePostProposalApi(): ApiSet<BaseResponse> & {
   );
 
   const execute = (form: Form<ProposalForm>) => {
-    // const apiPath = `proposals/`;
-    // api.execute(apiPath, form);
-    sleep(
-      0.5,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const proposals = CookieManager.getProposalsData();
-        const newId =
-          proposals.length === 0
-            ? "1"
-            : String(Math.max(...proposals.map((l) => Number(l.id))) + 1);
-        CookieManager.saveProposalsData([
-          ...proposals,
-          { id: newId, ...form.object },
-        ]);
-        api.setLoading(false);
-      }
-    );
+    const apiPath = `proposals/`;
+    api.execute(apiPath, form);
   };
 
   return {
@@ -153,23 +109,8 @@ export function usePutProposalApi(): ApiSet<BaseResponse> & {
   );
 
   const execute = (object: Proposal) => {
-    // const apiPath = `proposals/${object.id}/`;
-    // api.execute(apiPath, object);
-    sleep(
-      0.5,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const proposals = CookieManager.getProposalsData();
-        CookieManager.saveProposalsData(
-          proposals
-            .map((l) => (l.id !== object.id ? l : object))
-            .map((l) => ({ ...l, comments: undefined }))
-        );
-        api.setLoading(false);
-      }
-    );
+    const apiPath = `proposals/${object.id}/`;
+    api.execute(apiPath, object);
   };
 
   return {
@@ -187,24 +128,8 @@ export function useDeleteProposalApi(): ApiSet<BaseResponse> & {
   });
 
   const execute = (id: string): void => {
-    // const apiPath = `tags/${id}/`;
-    // api.execute(apiPath);
-    sleep(
-      1.5,
-      () => {
-        api.setLoading(true);
-      },
-      () => {
-        const proposals = CookieManager.getProposalsData();
-        const proposal = proposals.find((l) => l.id === id);
-        CookieManager.saveProposalsData(proposals.filter((l) => l.id !== id));
-        !!proposal &&
-          notification.open({
-            message: `(${proposal.id})を削除しました`,
-          });
-        api.setLoading(false);
-      }
-    );
+    const apiPath = `tags/${id}/`;
+    api.execute(apiPath);
   };
 
   return {

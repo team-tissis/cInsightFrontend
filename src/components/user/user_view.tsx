@@ -19,7 +19,7 @@ export const UserProfileView = (user: User) => {
       <Avatar size={128} src={<Image src={user.avatorUrl} />} />
       <Descriptions column={1} bordered>
         <Descriptions.Item label="名前">{user.firstName}</Descriptions.Item>
-        <Descriptions.Item label="メール">{user.email}</Descriptions.Item>
+        <Descriptions.Item label="メール">{user.mail}</Descriptions.Item>
       </Descriptions>
     </Space>
   );
@@ -45,7 +45,7 @@ export const UserListView = (user: User, loading = false) => {
       <Skeleton avatar title={false} loading={loading} active>
         <List.Item.Meta
           avatar={<Avatar src={user.avatorUrl} />}
-          title={user.nickName}
+          title={user.name}
           description={<div>token: {user.token}</div>}
         />
       </Skeleton>

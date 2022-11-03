@@ -58,7 +58,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const user: User = {
     avatorUrl: "https://joeschmoe.io/api/v1/random",
     firstName: "にしもと",
-    email: "shozemi.nishimotp@icloud.com",
+    mail: "shozemi.nishimotp@icloud.com",
   };
   const [openEditUserForm, setOpenEditUserForm] = useState(false);
   const editUserForm = useForm<User>(user);

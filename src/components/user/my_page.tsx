@@ -72,7 +72,7 @@ const MyPageWithoutSbt = () => {
   const user: User = {
     avatorUrl: "https://joeschmoe.io/api/v1/random",
     firstName: "にしもと",
-    email: "shozemi.nishimotp@icloud.com",
+    mail: "shozemi.nishimotp@icloud.com",
   };
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
   const editUserForm = useForm<User>(user);

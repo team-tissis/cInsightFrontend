@@ -25,8 +25,8 @@ const FormView = (form: Form<User>, isNew = false): JSX.Element => {
   };
   return (
     <AntdForm {...layout}>
-      <InputField label="ニックネーム" form={form} attr="nickName" />
-      <InputField label="メールアドレス" form={form} attr="email" />
+      <InputField label="ニックネーム" form={form} attr="name" />
+      <InputField label="メールアドレス" form={form} attr="mail" />
       {isNew && (
         <InputField
           label="紹介者アドレス"

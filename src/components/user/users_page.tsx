@@ -38,19 +38,14 @@ type Props = {
 
 const UsersPage = (props: Props): JSX.Element => {
   const globalState = useContext(GlobalStateContext);
-  const newUserForm = useForm<User>({});
   const searchForm = useForm<UserSearchForm>({});
   const usersApi = useFetchUsersApi(searchForm);
-  const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("calender");
   const [tableParams, setTableParams] = useState<TableParams<User>>({
     pagination: {
       current: 1,
       pageSize: 20,
     },
   });
-
-  const [openNewUserForm, setOpenNewUserForm] = useState(false);
 
   useEffect(() => {
     usersApi.execute();
@@ -59,13 +54,6 @@ const UsersPage = (props: Props): JSX.Element => {
   useEffectSkipFirst(() => {
     globalState.setLoading(usersApi.loading);
   }, [usersApi.loading]);
-
-  const data = Array.from({ length: 50 }).map((_, i) => ({
-    id: "3",
-    nickName: `User ${i}`,
-    avatorUrl: "https://joeschmoe.io/api/v1/random",
-    token: "0xargs4364sf",
-  }));
 
   return (
     <>
@@ -89,7 +77,7 @@ const UsersPage = (props: Props): JSX.Element => {
               },
               pageSize: 5,
             }}
-            dataSource={data}
+            dataSource={usersApi.response.results}
             renderItem={(item) => (
               <List.Item
                 onClick={() => props.history.push(`/users/${item.id}`)}

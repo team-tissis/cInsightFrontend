@@ -14,16 +14,20 @@ export type ProposalStatus = typeof ProposalStatusList[number];
 export type Proposal = {
   id?: string;
   title?: string;
+
+  transaction?: string;
+  description?: string;
+  quorum?: number; // threshold of votes
+  proposedTransactions?: Transaction;
+  createdAt?: string;
+  updatedAt?: string;
+
+  proposerEoa?: string;
   status?: ProposalStatus;
-  proposedBy?: User;
+  snapshot?: number;
+  endDate?: string;
   forCount?: number;
   againstCount?: number;
-  threashold?: number; // threshold of votes
-  transactionCommand?: string;
-  endDate?: string;
-  snapshot?: number;
-  descriptions?: string;
-  proposedTransactions?: Transaction;
 };
 
 export type ProposalSearchForm = BaseSearchForm & Proposal;

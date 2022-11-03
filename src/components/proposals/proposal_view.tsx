@@ -78,7 +78,7 @@ export const ProposalVoteView = (proposal: Proposal) => {
               <div>{proposal.againstCount ?? 0}</div>
             </Space>
             <div style={{ color: "#8c8c8c", fontSize: 20 }}>
-              定足数: {proposal.threashold ?? 0}
+              定足数: {proposal.quorum ?? 0}
             </div>
           </Space>
         )}

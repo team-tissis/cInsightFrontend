@@ -54,7 +54,7 @@ export type InputFieldProps<T> = {
     | "color"
     | "date"
     | "datetime-local"
-    | "email"
+    | "mail"
     | "file"
     | "hidden"
     | "image"

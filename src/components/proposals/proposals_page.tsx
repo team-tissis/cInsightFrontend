@@ -12,13 +12,6 @@ import { useEffectSkipFirst, useForm } from "utils/hooks";
 
 import { ContentBlock } from "components/shared/content_block";
 
-import FullCalendar from "@fullcalendar/react";
-import { DatesSetArg } from "@fullcalendar/common";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import { CalendarOutlined, TableOutlined } from "@ant-design/icons";
-import moment from "moment";
 import * as H from "history";
 import { withRouter } from "react-router";
 import { ProposalListView } from "./proposal_view";
@@ -33,7 +26,6 @@ const ProposalsPage = (props: Props): JSX.Element => {
   const searchForm = useForm<ProposalSearchForm>({});
   const proposalsApi = useFetchProposalsApi(searchForm);
   const postProposalApi = usePostProposalApi();
-  const [loading, setLoading] = useState(false);
   const [tableParams, setTableParams] = useState<TableParams<Proposal>>({
     pagination: {
       current: 1,

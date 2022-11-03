@@ -64,7 +64,7 @@ const LecturePage = (props: Props) => {
     "open" | "allplyed" | "closed"
   >("allplyed");
   const editLectureForm = useForm<Lecture>({
-    author: { nickName: "nisshimo" },
+    author: { name: "nisshimo" },
   });
   const putLectureApi = usePutLectureApi();
   const deleteLectureApi = useDeleteLectureApi();
@@ -177,7 +177,7 @@ const LecturePage = (props: Props) => {
       />
       <Space size={20} direction="vertical">
         {(() => {
-          switch (lecture()?.status) {
+          switch (getLectureStatus(lecture() ?? {})) {
             // case "Not Started":
             //   return (
 
@@ -271,17 +271,26 @@ const LecturePage = (props: Props) => {
         <ContentBlock title="統計情報">
           <Row gutter={16} style={{ width: "100%" }}>
             <Col span={8}>
-              <Statistic
-                title="いいね"
-                value={lecture()?.nLike ?? 0}
-                prefix={
-                  <LikeOutlined
-                    style={{
-                      verticalAlign: "middle",
-                    }}
-                  />
-                }
-              />
+              <Space direction="vertical">
+                <Statistic
+                  title="いいね"
+                  value={lecture()?.nLike ?? 0}
+                  prefix={
+                    <LikeOutlined
+                      style={{
+                        verticalAlign: "middle",
+                      }}
+                    />
+                  }
+                />
+                <Button
+                  key={"lecture like button"}
+                  type="primary"
+                  disabled={getLectureStatus(lecture() ?? {}) !== "End"}
+                >
+                  勉強会にいいねを押す
+                </Button>
+              </Space>
             </Col>
             <Col span={8}>
               <Space direction="vertical">
