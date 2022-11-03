@@ -23,7 +23,13 @@ import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { BooleanSwitchField } from "components/shared/input";
-import { fetchConnectedAccountInfo, fetchConnectedAccountReferralNum, fetchMonthlyDistributedFavoNum, mint } from "api/fetch_sol/sbt";
+import {
+  fetchConnectedAccountInfo,
+  fetchConnectedAccountReferralNum,
+  fetchMonthlyDistributedFavoNum,
+  mint,
+  refer
+} from "api/fetch_sol/sbt";
 
 export const UserPage = () => {
   const checkHasSbtApi = useCheckHasSbtApi();
@@ -166,6 +172,7 @@ const UserPageWithSbt = () => {
             type="primary"
             style={{ marginTop: 20 }}
             onClick={() => {
+              refer();
               setOpenRefaralForm(true);
             }}
           >

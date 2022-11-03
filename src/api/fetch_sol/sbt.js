@@ -81,3 +81,12 @@ export async function mint() {
 
     //TODO; minted listen
 }
+
+export async function refer(address) {
+    const { contract } = getContract("Sbt");
+    const options = { value: ethers.utils.parseEther("20.0") }
+    contract.refer(address, options);
+    console.log({ address: address });
+
+    //TODO; minted listen
+}
