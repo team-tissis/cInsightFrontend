@@ -172,7 +172,7 @@ const UserPageWithSbt = () => {
             type="primary"
             style={{ marginTop: 20 }}
             onClick={() => {
-              refer();
+              refer(referalForm.object.walletAddress);
               setOpenRefaralForm(true);
             }}
           >
