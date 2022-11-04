@@ -70,6 +70,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const [userState, setUserState] = useState<any>(); // errorハンドリング
   const [favo, setFavo] = useState();
   const [grade, setGrade] = useState();
+  const [maki, setMaki] = useState();
   const [makiMemory, setMakiMemory] = useState();
   const [referral, setReferral] = useState();
   const [referralRemain, setReferralRemain] = useState();
@@ -91,6 +92,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
       // setUserState(await setUser());
       setFavo(await fetchConnectedAccountInfo("favoOf"));
       setGrade(await fetchConnectedAccountInfo("gradeOf"));
+      setMaki(await fetchConnectedAccountInfo("makiOf"));
       setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
       setReferral(await fetchConnectedAccountInfo("referralOf"));
       setReferralRemain(await fetchConnectedAccountReferralNum());
@@ -144,12 +146,22 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             </Col>
             <Col span={8}>
               <Statistic
-                title="Current Rate"
+                title="Firewood"
+                value={maki}
+                valueStyle={{ color: "#3f8600" }}
+              />
+              <div style={{ fontSize: 14, paddingTop: 10 }}>
+                現在のレートです
+              </div>
+            </Col>
+            <Col span={8}>
+              <Statistic
+                title="Firewood of the month"
                 value={makiMemory}
                 valueStyle={{ color: "#3f8600" }}
               />
               <div style={{ fontSize: 14, paddingTop: 10 }}>
-                翌月にgradeに反映されます
+                翌月にレートに反映されます
               </div>
             </Col>
             <Col span={8}>

@@ -46,6 +46,7 @@ import { sleep } from "utils/util";
 import { EditLectureForm } from "./lecture_form";
 import { useFetchCommentsApi } from "api/comment";
 import { CommentSearchForm } from "entities/comment";
+import { addFavos } from "api/fetch_sol/sbt";
 
 type Props = {
   history: H.History;
@@ -151,7 +152,7 @@ const LecturePage = (props: Props) => {
           form={editLectureForm}
         />,
       ]}
-      // subTitle="This is a subtitle"
+    // subTitle="This is a subtitle"
     >
       <PurchaseMovieModal
         open={openPurchaseModal}
@@ -287,6 +288,7 @@ const LecturePage = (props: Props) => {
                   key={"lecture like button"}
                   type="primary"
                   disabled={getLectureStatus(lecture() ?? {}) !== "End"}
+                  onClick={() => { handleEditModalOpen; addFavos("0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc", 1) }}
                 >
                   勉強会にいいねを押す
                 </Button>
@@ -354,7 +356,7 @@ const LecturePage = (props: Props) => {
           <LectureCommetnsList lectureApi={lectureApi} />
         </ContentBlock>
       </Space>
-    </PageHeader>
+    </PageHeader >
   );
 };
 

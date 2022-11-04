@@ -87,8 +87,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                       <span
                         onClick={() => {
                           // なにかの処理
-                          addFavos()
-
+                          // DBからcommeter_EOAを取得．
+                          addFavos("0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc", 1);
                         }}
                       >
                         {action === "liked" ? (
