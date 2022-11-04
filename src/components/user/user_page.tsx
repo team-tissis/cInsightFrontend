@@ -19,15 +19,16 @@ import { UserProfileView } from "./user_view";
 import { User } from "entities/user";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { useEffect, useState } from "react";
-import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
+import { CreateUserSbtForm, EditUserForm, ReferralForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import * as H from "history";
 import { withRouter } from "react-router";
 import { useCheckHasSbtApi } from "api/meta_mask";
-import { BooleanSwitchField } from "components/shared/input";
 import {
   fetchConnectedAccountInfo,
+  fetchConnectedAccountReferralNum,
   fetchMonthlyDistributedFavoNum,
+  refer
 } from "api/fetch_sol/sbt";
 
 type UserPageProps = {
@@ -62,13 +63,14 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   };
   const [openEditUserForm, setOpenEditUserForm] = useState(false);
   const editUserForm = useForm<User>(user);
-  const [openReferalForm, setOpenRefaralForm] = useState(false);
-  const referalForm = useForm<ReferalForm>({});
+  const [openReferralForm, setOpenRefaralForm] = useState(false);
+  const referralForm = useForm<ReferralForm>({});
 
   const [favo, setFavo] = useState();
   const [grade, setGrade] = useState();
   const [makiMemory, setMakiMemory] = useState();
   const [referral, setReferral] = useState();
+  const [referralRemain, setReferralRemain] = useState();
   const [monthlyDistributedFavoNum, setMonthlyDistributedFavoNum] = useState();
 
   useEffect(() => {
@@ -77,6 +79,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
       setGrade(await fetchConnectedAccountInfo("gradeOf"));
       setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
       setReferral(await fetchConnectedAccountInfo("referralOf"));
+      setReferralRemain(await fetchConnectedAccountReferralNum());
       setMonthlyDistributedFavoNum(await fetchMonthlyDistributedFavoNum());
     })();
   }, []);
@@ -89,11 +92,15 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
         onCancel={() => setOpenEditUserForm(false)}
         onOk={() => setOpenEditUserForm(false)}
       />
-      <ReferalForm
-        open={openReferalForm}
-        form={referalForm}
+      <ReferralForm
+        open={openReferralForm}
+        form={referralForm}
         onCancel={() => setOpenRefaralForm(false)}
-        onOk={() => setOpenRefaralForm(false)}
+        onOk={() => {
+          refer(referralForm.object.walletAddress);
+          setOpenRefaralForm(false)
+        }
+        }
       />
       <Space size={20} direction="vertical" style={{ width: "100%" }}>
         <ContentBlock
@@ -151,8 +158,8 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
         </ContentBlock>
         {props.isMyPage && (
           <ContentBlock title="リファラル">
-            <StatistcsLikeBlock title="累計リファラル数">
-              100人
+            <StatistcsLikeBlock title="リファラル数（翌月にリセットされます）">
+              {referral} / {referralRemain}
             </StatistcsLikeBlock>
             <Button
               type="primary"
@@ -165,7 +172,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             </Button>
           </ContentBlock>
         )}
-      </Space>
+      </Space >
     </>
   );
 };

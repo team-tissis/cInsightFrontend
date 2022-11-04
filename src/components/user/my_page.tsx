@@ -19,12 +19,13 @@ import { UserProfileView } from "./user_view";
 import { User } from "entities/user";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { useEffect, useState } from "react";
-import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
+import { CreateUserSbtForm, EditUserForm, ReferralForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import * as H from "history";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { UserPage, UserPageContent } from "./user_page";
 import { withRouter } from "react-router";
+import { mint } from "api/fetch_sol/sbt";
 
 type Props = {
   history: H.History;
@@ -75,15 +76,16 @@ const MyPageWithoutSbt = () => {
     mail: "shozemi.nishimotp@icloud.com",
   };
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
-  const editUserForm = useForm<User>(user);
+  const createUserSbtForm = useForm<User>(user);
   return (
     <>
       <CreateUserSbtForm
         open={openCreateUserSbtForm}
-        form={editUserForm}
+        form={createUserSbtForm}
         onCancel={() => setOpenCreateUserSbtForm(false)}
         onOk={() => {
           // postする処理
+          mint(createUserSbtForm.object.referencerAddress);
           setOpenCreateUserSbtForm(false);
         }}
       />

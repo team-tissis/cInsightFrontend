@@ -1,7 +1,21 @@
-import { getContract, getCurrentAccountAddress } from "./utils";
+import { ethers } from "ethers";
+import { getContract, getAbi, getCurrentAccountAddress } from "./utils";
+
+
+function getSbtAbiAddedImp(_functionNames) {
+    const abi = getAbi("Sbt");
+    const abiImp = getAbi("SbtImp");
+    for (var i = 0; i < _functionNames.length; i++) {
+        abi.push(abiImp.find((v) => v.name === _functionNames[i]));
+    }
+    return abi;
+}
+
+const functionNames = ["mint", "mintWithReferral", "burn", "monthInit", "addFavos", "refer"];
+const sbtAbi = getSbtAbiAddedImp(functionNames);
 
 export async function fetchConnectedAccountInfo(method) {
-    const { contract } = getContract("Sbt");
+    const { contract } = getContract("Sbt", sbtAbi);
     const currentAccount = await getCurrentAccountAddress();
     const response = await fetchFunction(contract, currentAccount, method);
     console.log({ address: currentAccount, method: method, value: response.toString() });
@@ -32,6 +46,18 @@ async function fetchFunction(contract, address, method) {
     return response
 }
 
+export async function fetchReferralRate() {
+    const { contract } = getContract("Sbt");
+    const message = await contract.referralRate();
+    console.log({ referralRate: message });
+    return message;
+}
+
+export async function fetchConnectedAccountReferralNum() {
+    const referralRate = await fetchReferralRate();
+    const grade = await fetchConnectedAccountInfo("gradeOf");
+    return referralRate[grade];
+}
 
 export async function fetchMonthlyDistributedFavoNum() {
     const { contract } = getContract("Sbt");
@@ -40,9 +66,42 @@ export async function fetchMonthlyDistributedFavoNum() {
     return message.toString();
 }
 
-export async function mintedTokenNumber() {
+export async function fetchMintedTokenNumber() {
     const { contract } = getContract("Sbt");
     const message = await contract.mintedTokenNumber();
     console.log({ mintedTokenNumber: message.toString() });
     return message.toString();
+}
+
+export async function mint(address) {
+    // mint
+    let mintIndex;
+    if (address === undefined) {
+        const { contract } = getContract("Sbt");
+        const options = { value: ethers.utils.parseEther("20.0") };
+        mintIndex = contract.mint(options);
+    }
+    // mint with referral
+    else {
+        const { contract } = getContract("Sbt", sbtAbi);
+        const options = { value: ethers.utils.parseEther("20.0") };
+        mintIndex = contract.mintWithReferral(address, options);
+    }
+
+    console.log({ mintIndex: mintIndex });
+
+    //TODO; minted listen
+}
+
+export async function refer(address) {
+    const { contract } = getContract("Sbt");
+    contract.refer(address);
+
+    //TODO; refer listen
+}
+
+export async function addFavos(address, num) {
+    const { contract } = getContract("Sbt", sbtAbi);
+    contract.addFavos(address, num);
+    console.log({ address: address });
 }
