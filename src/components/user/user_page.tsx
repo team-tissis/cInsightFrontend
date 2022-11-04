@@ -57,17 +57,12 @@ type UserPageContentProps = {
 };
 
 export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
-  const user: User = {
-    avatorUrl: "https://raw.githubusercontent.com/theChainInsight/theChainInsight.github.io/main/sbt/img/hackathondemo/1.gif",
-    firstName: "hoge",
-    mail: "hoge",
-  };
   const [openEditUserForm, setOpenEditUserForm] = useState(false);
-  const editUserForm = useForm<User>(user);
+  const editUserForm = useForm<User>({});
   const [openReferralForm, setOpenRefaralForm] = useState(false);
   const referralForm = useForm<ReferralForm>({});
 
-  const [userState, setUserState] = useState<any>(); // errorハンドリング
+  const [userState, setUserState] = useState<any>("none"); // errorハンドリング
   const [favo, setFavo] = useState();
   const [grade, setGrade] = useState();
   const [maki, setMaki] = useState();
@@ -83,13 +78,12 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
       firstName: "hoge",
       mail: "",
     };
-    console.log({ url: url });
     return user;
   }
 
   useEffect(() => {
     (async function () {
-      // setUserState(await setUser());
+      setUserState(await setUser());
       setFavo(await fetchConnectedAccountInfo("favoOf"));
       setGrade(await fetchConnectedAccountInfo("gradeOf"));
       setMaki(await fetchConnectedAccountInfo("makiOf"));
@@ -132,8 +126,8 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             ],
           }}
         >
-          {/* {UserProfileView(userState)} */}
-          {UserProfileView(user)}
+          {UserProfileView(userState)}
+          {/* {UserProfileView(user)} */}
         </ContentBlock>
         <ContentBlock title="SBT INFO">
           <Row>
@@ -146,7 +140,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             </Col>
             <Col span={8}>
               <Statistic
-                title="Firewood"
+                title="Current Rate"
                 value={maki}
                 valueStyle={{ color: "#3f8600" }}
               />
@@ -156,7 +150,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             </Col>
             <Col span={8}>
               <Statistic
-                title="Firewood of the month"
+                title="Current Rate"
                 value={makiMemory}
                 valueStyle={{ color: "#3f8600" }}
               />

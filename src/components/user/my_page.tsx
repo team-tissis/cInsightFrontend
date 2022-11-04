@@ -81,13 +81,8 @@ export const MyPage = (props: Props) => {
 export default withRouter(MyPage);
 
 const MyPageWithoutSbt = () => {
-  const user: User = {
-    avatorUrl: "https://joeschmoe.io/api/v1/random",
-    firstName: "にしもと",
-    mail: "shozemi.nishimotp@icloud.com",
-  };
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
-  const createUserSbtForm = useForm<User>(user);
+  const createUserSbtForm = useForm<User>({});
   return (
     <>
       <CreateUserSbtForm

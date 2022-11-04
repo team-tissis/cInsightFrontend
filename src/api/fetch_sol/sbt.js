@@ -52,12 +52,19 @@ async function fetchFunction(contract, address, method) {
     return response
 }
 
+var result;
 export async function fetchConnectedAccountImageUrl() {
     const { contract } = getContract("Sbt", sbtAbi);
     const currentAccount = await getCurrentAccountAddress();
     const response = await fetchFunction(contract, currentAccount, "tokenURI");
-    console.log(response);
-    return response.image.toString();
+
+    // image uriを取る処理
+    var request = new XMLHttpRequest();
+    request.open('GET', response, false);
+    request.send(null);
+    result = JSON.parse(request.responseText).image;
+
+    return result;
 }
 
 export async function fetchReferralRate() {
@@ -114,8 +121,16 @@ export async function refer(address) {
     //TODO; refer listen
 }
 
-export async function addFavos(address, num) {
+export async function _addFavos(address, num) {
     const { contract } = getContract("Sbt", sbtAbi);
     contract.addFavos(address, num);
-    console.log({ address: address });
+}
+
+export async function addFavos(address, num) {
+    try {
+        await _addFavos(address, num);
+        console.log("why");
+    } catch (e) {
+        console.alert(e);
+    }
 }
