@@ -21,7 +21,8 @@ import {
   LikeFilled,
   LikeOutlined,
 } from "@ant-design/icons";
-import { addFavos } from "api/fetch_sol/sbt";
+import { fetchConnectedAccountImageUrl, addFavos } from "api/fetch_sol/sbt";
+import { getCurrentAccountAddress } from "api/fetch_sol/utils";
 
 export type EditorProps = {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -134,7 +135,7 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                   author={item.commenterEoa}
                   avatar={
                     <Avatar
-                      src="https://joeschmoe.io/api/v1/random"
+                      src={fetchConnectedAccountImageUrl(getCurrentAccountAddress())}
                       alt="Han Solo"
                     />
                   }

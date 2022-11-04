@@ -52,13 +52,12 @@ async function fetchFunction(contract, address, method) {
     return response
 }
 
-var result;
-export async function fetchConnectedAccountImageUrl() {
+export async function fetchConnectedAccountImageUrl(address) {
     const { contract } = getContract("Sbt", sbtAbi);
-    const currentAccount = await getCurrentAccountAddress();
-    const response = await fetchFunction(contract, currentAccount, "tokenURI");
+    const response = await fetchFunction(contract, address, "tokenURI");
 
     // image uriを取る処理
+    var result;
     var request = new XMLHttpRequest();
     request.open('GET', response, false);
     request.send(null);

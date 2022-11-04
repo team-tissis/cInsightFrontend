@@ -31,6 +31,7 @@ import {
   fetchMonthlyDistributedFavoNum,
   refer
 } from "api/fetch_sol/sbt";
+import { getCurrentAccountAddress } from "api/fetch_sol/utils";
 
 type UserPageProps = {
   history: H.History;
@@ -72,7 +73,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const [monthlyDistributedFavoNum, setMonthlyDistributedFavoNum] = useState();
 
   async function setUser() {
-    const url = await fetchConnectedAccountImageUrl();
+    const url = await fetchConnectedAccountImageUrl(await getCurrentAccountAddress());
     const user: User = {
       avatorUrl: url,
       firstName: "hoge",
