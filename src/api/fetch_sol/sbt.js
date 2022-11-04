@@ -39,11 +39,25 @@ async function fetchFunction(contract, address, method) {
     else if (method == "referralOf") {
         response = contract.referralOf(address);
     }
+    else if (method == "tokenIdOf") {
+        response = contract.tokenIdOf(address);
+    }
+    else if (method == "tokenURI") {
+        response = contract.tokenURI(contract.tokenIdOf(address));
+    }
     else {
         console.error("Method Not Found")
         response = "none";
     }
     return response
+}
+
+export async function fetchConnectedAccountImageUrl() {
+    const { contract } = getContract("Sbt", sbtAbi);
+    const currentAccount = await getCurrentAccountAddress();
+    const response = await fetchFunction(contract, currentAccount, "tokenURI");
+    console.log(response);
+    return response.image.toString();
 }
 
 export async function fetchReferralRate() {

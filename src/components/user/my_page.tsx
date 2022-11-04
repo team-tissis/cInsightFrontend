@@ -26,6 +26,9 @@ import { useCheckHasSbtApi } from "api/meta_mask";
 import { UserPage, UserPageContent } from "./user_page";
 import { withRouter } from "react-router";
 import { mint } from "api/fetch_sol/sbt";
+import {
+  fetchConnectedAccountInfo,
+} from "api/fetch_sol/sbt";
 
 type Props = {
   history: H.History;
@@ -34,9 +37,16 @@ type Props = {
 export const MyPage = (props: Props) => {
   const checkHasSbtApi = useCheckHasSbtApi();
 
+  const [hasSbt, setHasSbt] = useState();
   useEffect(() => {
-    checkHasSbtApi.execute();
+    (async function () {
+      setHasSbt(await fetchConnectedAccountInfo("gradeOf"));
+    })();
   }, []);
+
+  // useEffect(() => {
+  //   checkHasSbtApi.execute();
+  // }, []);
 
   return (
     <PageHeader
@@ -45,25 +55,26 @@ export const MyPage = (props: Props) => {
         backgroundColor: "inherit",
       }}
       title={"マイページ"}
-      extra={[
-        <Form.Item label="SBT" key="switch has sbt flag">
-          <Switch
-            checkedChildren={"Exist"}
-            unCheckedChildren={"Not Exist"}
-            checked={checkHasSbtApi.response?.hasSbt}
-            onChange={(hasSbt) => {
-              checkHasSbtApi.setResponse({ hasSbt });
-            }}
-          />
-        </Form.Item>,
-      ]}
+    // extra={[
+    //   <Form.Item label="SBT" key="switch has sbt flag">
+    //     <Switch
+    //       checkedChildren={"Exist"}
+    //       unCheckedChildren={"Not Exist"}
+    //       checked={checkHasSbtApi.response?.hasSbt}
+    //       onChange={(hasSbt) => {
+    //         checkHasSbtApi.setResponse({ hasSbt });
+    //       }}
+    //     />
+    //   </Form.Item>,
+    // ]}
     >
-      {checkHasSbtApi.response?.hasSbt ? (
+      {/* {checkHasSbtApi.response?.hasSbt ? ( */}
+      {hasSbt != 0 ? (
         <UserPageContent isMyPage />
       ) : (
         <MyPageWithoutSbt />
       )}
-    </PageHeader>
+    </PageHeader >
   );
 };
 

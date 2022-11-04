@@ -25,6 +25,7 @@ import * as H from "history";
 import { withRouter } from "react-router";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import {
+  fetchConnectedAccountImageUrl,
   fetchConnectedAccountInfo,
   fetchConnectedAccountReferralNum,
   fetchMonthlyDistributedFavoNum,
@@ -57,15 +58,16 @@ type UserPageContentProps = {
 
 export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const user: User = {
-    avatorUrl: "https://joeschmoe.io/api/v1/random",
-    firstName: "にしもと",
-    mail: "shozemi.nishimotp@icloud.com",
+    avatorUrl: "https://raw.githubusercontent.com/theChainInsight/theChainInsight.github.io/main/sbt/img/hackathondemo/1.gif",
+    firstName: "hoge",
+    mail: "hoge",
   };
   const [openEditUserForm, setOpenEditUserForm] = useState(false);
   const editUserForm = useForm<User>(user);
   const [openReferralForm, setOpenRefaralForm] = useState(false);
   const referralForm = useForm<ReferralForm>({});
 
+  const [userState, setUserState] = useState<any>(); // errorハンドリング
   const [favo, setFavo] = useState();
   const [grade, setGrade] = useState();
   const [makiMemory, setMakiMemory] = useState();
@@ -73,8 +75,20 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const [referralRemain, setReferralRemain] = useState();
   const [monthlyDistributedFavoNum, setMonthlyDistributedFavoNum] = useState();
 
+  async function setUser() {
+    const url = await fetchConnectedAccountImageUrl();
+    const user: User = {
+      avatorUrl: url,
+      firstName: "hoge",
+      mail: "",
+    };
+    console.log({ url: url });
+    return user;
+  }
+
   useEffect(() => {
     (async function () {
+      // setUserState(await setUser());
       setFavo(await fetchConnectedAccountInfo("favoOf"));
       setGrade(await fetchConnectedAccountInfo("gradeOf"));
       setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
@@ -116,6 +130,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             ],
           }}
         >
+          {/* {UserProfileView(userState)} */}
           {UserProfileView(user)}
         </ContentBlock>
         <ContentBlock title="SBT INFO">

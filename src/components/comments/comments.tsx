@@ -21,6 +21,7 @@ import {
   LikeFilled,
   LikeOutlined,
 } from "@ant-design/icons";
+import { addFavos } from "api/fetch_sol/sbt";
 
 export type EditorProps = {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -76,8 +77,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
               Number(item.id) % 3 === 0
                 ? "liked"
                 : Number(item.id) % 3 === 1
-                ? "disliked"
-                : undefined;
+                  ? "disliked"
+                  : undefined;
             return (
               <li>
                 <AntdComment
@@ -86,6 +87,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                       <span
                         onClick={() => {
                           // なにかの処理
+                          addFavos()
+
                         }}
                       >
                         {action === "liked" ? (
@@ -104,28 +107,28 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                         <span className="comment-action">{3}</span>
                       </span>
                     </Tooltip>,
-                    <Tooltip key="comment-basic-dislike" title="Dislike">
-                      <span
-                        onClick={() => {
-                          // 何かの処理
-                        }}
-                      >
-                        {action === "disliked" ? (
-                          <DislikeFilled
-                            style={{
-                              verticalAlign: "middle",
-                            }}
-                          />
-                        ) : (
-                          <DislikeOutlined
-                            style={{
-                              verticalAlign: "middle",
-                            }}
-                          />
-                        )}
-                        <span className="comment-action">{1}</span>
-                      </span>
-                    </Tooltip>,
+                    // <Tooltip key="comment-basic-dislike" title="Dislike">
+                    //   <span
+                    //     onClick={() => {
+                    //       // 何かの処理
+                    //     }}
+                    //   >
+                    //     {action === "disliked" ? (
+                    //       <DislikeFilled
+                    //         style={{
+                    //           verticalAlign: "middle",
+                    //         }}
+                    //       />
+                    //     ) : (
+                    //       <DislikeOutlined
+                    //         style={{
+                    //           verticalAlign: "middle",
+                    //         }}
+                    //       />
+                    //     )}
+                    //     <span className="comment-action">{1}</span>
+                    //   </span>
+                    // </Tooltip>,
                     <span key="comment-basic-reply-to">Reply to</span>,
                   ]}
                   author={item.commenterEoa}

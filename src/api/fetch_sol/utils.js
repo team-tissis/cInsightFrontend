@@ -6,7 +6,6 @@ import SkinNft from "../../abi/SkinNft.sol/SkinNft.json";
 
 // スマコンのアドレスを取得
 function getContractAddress(contractName) {
-  console.log(contractName);
   const contractAddress = contractFunctions.transactions.find((v) => v.contractName === contractName).contractAddress;
   return contractAddress;
 }
