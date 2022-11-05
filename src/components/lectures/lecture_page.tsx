@@ -216,12 +216,12 @@ const LecturePage = (props: Props) => {
             </Descriptions.Item> */}
             <Descriptions.Item span={3} label="資料URL">
               <a
-                className="linked-text"
-                href={lecture()?.materialUrl ?? ""}
+                className={lecture()?.materialUrl && "linked-text"}
+                href={lecture()?.materialUrl}
                 target="_blank"
                 rel="noreferrer"
               >
-                {lecture()?.materialUrl ?? ""}
+                {lecture()?.materialUrl ?? "--"}
               </a>
             </Descriptions.Item>
             <Descriptions.Item
@@ -229,7 +229,15 @@ const LecturePage = (props: Props) => {
               style={{ alignItems: "center" }}
               label="動画URL"
             >
-              {movieVisible ? (
+              <a
+                className={lecture()?.movieUrl && "linked-text"}
+                href={lecture()?.movieUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {lecture()?.movieUrl ?? "--"}
+              </a>
+              {/* {movieVisible ? (
                 <a
                   className="linked-text"
                   href={lecture()?.movieUrl ?? ""}
@@ -258,7 +266,7 @@ const LecturePage = (props: Props) => {
                 </Space>
               ) : (
                 "--"
-              )}
+              )} */}
             </Descriptions.Item>
           </Descriptions>
         </ContentBlock>
