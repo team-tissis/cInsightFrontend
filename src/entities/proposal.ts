@@ -28,6 +28,12 @@ export type Proposal = {
   endDate?: string;
   forCount?: number;
   againstCount?: number;
+  targets?: string;
+  values?: string;
+  signatures?: string;
+  datas?: string;
+  datatypes?: string;
+  calldatas?: string; // uniquely determined from datas and datatypes
 };
 
 export type ProposalSearchForm = BaseSearchForm & Proposal;
