@@ -32,7 +32,6 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
   props: GlobalStateContainerProps
 ) => {
   const [user, setUser] = React.useState<User>({});
-  const [users, setUsers] = React.useState<User[]>([]);
   const [collapsed, setCollapsed] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState(false);
   const [apiError, setApiError] = React.useState<ApiError>({});
@@ -48,7 +47,7 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
     option?: ConfirmOption;
   }>({
     message: <></>,
-    callback: () => {},
+    callback: () => { },
   });
   const [openConfirm, setOpenConfirm] = React.useState(false);
   const [showToast, setShowToast] = React.useState(false);
@@ -161,10 +160,10 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
             >
               {typeof notificationMessage.body === "string"
                 ? notificationMessage.body
-                    .split("\n")
-                    .map((line, index) => (
-                      <div key={"message-line-" + index}>{line}</div>
-                    ))
+                  .split("\n")
+                  .map((line, index) => (
+                    <div key={"message-line-" + index}>{line}</div>
+                  ))
                 : notificationMessage.body}
             </Toast.Body>
           </Toast>

@@ -33,18 +33,18 @@ type GlobalState = {
 
 export const initialGlobalState: GlobalState = {
   user: {},
-  setUser: () => {},
+  setUser: () => { },
   loading: false,
-  setLoading: () => {},
+  setLoading: () => { },
   apiError: {},
-  setError: () => {},
+  setError: () => { },
   notificationMessage: { body: "" },
-  setNotificationMessage: () => {},
-  showConfirm: () => {},
+  setNotificationMessage: () => { },
+  showConfirm: () => { },
   collapsed: false,
-  setCollapsed: () => {},
+  setCollapsed: () => { },
   dimension: { width: 1000, height: 700 },
-  setDimension: () => {},
+  setDimension: () => { },
 };
 
 export const GlobalStateContext = React.createContext(initialGlobalState);

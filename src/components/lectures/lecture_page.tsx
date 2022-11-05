@@ -288,7 +288,7 @@ const LecturePage = (props: Props) => {
                   key={"lecture like button"}
                   type="primary"
                   disabled={getLectureStatus(lecture() ?? {}) !== "End"}
-                  onClick={() => { handleEditModalOpen; addFavos("0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc", 1) }}
+                  onClick={() => { handleEditModalOpen; addFavos(lecture()?.author?.eoa, 1) }}
                 >
                   勉強会にいいねを押す
                 </Button>

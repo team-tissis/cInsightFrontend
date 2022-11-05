@@ -8,6 +8,7 @@ export type CommentStatus = "Not Started" | "Held Now" | "End";
 export type Comment = {
   id?: string;
   content?: string;
+  commenter?: User;
   commenterEoa?: string;
   lecture?: Lecture;
   lectureId?: string;

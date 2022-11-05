@@ -130,13 +130,14 @@ export async function refer(address) {
 
 export async function _addFavos(address, num) {
     const { contract } = getContract("Sbt", sbtAbi);
+    console.log(address);
     contract.addFavos(address, num);
 }
 
 export async function addFavos(address, num) {
+    console.log({ addFavos: address });
     try {
         await _addFavos(address, num);
-        console.log("why");
     } catch (e) {
         console.alert(e);
     }

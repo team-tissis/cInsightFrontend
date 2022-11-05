@@ -8,7 +8,7 @@ import {
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Comment, CommentForm } from "entities/comment";
-import React, { createElement, useState } from "react";
+import React, { createElement, useEffect, useState } from "react";
 import { useEffectSkipFirst, useForm } from "utils/hooks";
 import { usePostCommentApi } from "api/comment";
 import { ApiSet } from "utils/network/api_hooks";
@@ -23,6 +23,7 @@ import {
 } from "@ant-design/icons";
 import { fetchAccountImageUrl, addFavos } from "api/fetch_sol/sbt";
 import { getCurrentAccountAddress } from "api/fetch_sol/utils";
+import { useFetchUserApi } from "api/user";
 
 export type EditorProps = {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -55,11 +56,30 @@ export type LectureCommentsListProps = {
 
 export const LectureCommetnsList = (props: LectureCommentsListProps) => {
   const postCommentApi = usePostCommentApi();
+  const userApi = useFetchUserApi();
   const params = useParams<{ id: string }>();
   const commentForm = useForm<CommentForm>({ lectureId: params.id });
   const [comments, setComments] = useState<Comment[]>(
     props.lectureApi.response.lecture.comments ?? []
   );
+  const [account, setAccount] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    (async () => (setAccount(await getCurrentAccountAddress())))()
+  }, [])
+
+  useEffectSkipFirst(() => {
+    if (account !== undefined) {
+      // userApi.execute(account)
+      commentForm.updateObject("commenterEoa", account);
+    }
+  }, [account])
+
+  // useEffectSkipFirst(() => {
+  //   if (userApi.isSuccess()) {
+  //     commentForm.updateObject("commenterEoa", userApi.response.user.eoa);
+  //   }
+  // }, [userApi.loading])
 
   useEffectSkipFirst(() => {
     if (postCommentApi.isSuccess()) {
@@ -87,9 +107,7 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                     <Tooltip key="comment-basic-like" title="Like">
                       <span
                         onClick={() => {
-                          // なにかの処理
-                          // DBからcommeter_EOAを取得．
-                          addFavos("0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc", 1);
+                          addFavos(item.commenterEoa, 1);
                         }}
                       >
                         {action === "liked" ? (
@@ -132,7 +150,7 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                     // </Tooltip>,
                     <span key="comment-basic-reply-to">Reply to</span>,
                   ]}
-                  author={item.commenterEoa}
+                  author={item.commenter?.eoa}
                   avatar={
                     <Avatar
                       // src={fetchAccountImageUrl(item.commenterEoa)} // null
