@@ -25,7 +25,7 @@ import * as H from "history";
 import { withRouter } from "react-router";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import {
-  fetchConnectedAccountImageUrl,
+  fetchAccountImageUrl,
   fetchConnectedAccountInfo,
   fetchConnectedAccountReferralNum,
   fetchMonthlyDistributedFavoNum,
@@ -73,7 +73,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const [monthlyDistributedFavoNum, setMonthlyDistributedFavoNum] = useState();
 
   async function setUser() {
-    const url = await fetchConnectedAccountImageUrl(await getCurrentAccountAddress());
+    const url = await fetchAccountImageUrl(await getCurrentAccountAddress());
     const user: User = {
       avatorUrl: url,
       firstName: "hoge",

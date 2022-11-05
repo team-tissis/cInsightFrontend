@@ -21,7 +21,7 @@ import {
   LikeFilled,
   LikeOutlined,
 } from "@ant-design/icons";
-import { fetchConnectedAccountImageUrl, addFavos } from "api/fetch_sol/sbt";
+import { fetchAccountImageUrl, addFavos } from "api/fetch_sol/sbt";
 import { getCurrentAccountAddress } from "api/fetch_sol/utils";
 
 export type EditorProps = {
@@ -135,7 +135,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                   author={item.commenterEoa}
                   avatar={
                     <Avatar
-                      src={fetchConnectedAccountImageUrl(getCurrentAccountAddress())}
+                      // src={fetchAccountImageUrl(item.commenterEoa)} // null
+                      src={""} // null
                       alt="Han Solo"
                     />
                   }
@@ -149,7 +150,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
       )}
       <AntdComment
         avatar={
-          <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
+          // <Avatar src={fetchAccountImageUrl(} alt="Han Solo" />
+          <Avatar src={"https://thechaininsight.github.io/img/0/1.gif"} alt="Han Solo" />
         }
         content={
           <Editor
