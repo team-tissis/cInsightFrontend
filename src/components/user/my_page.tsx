@@ -95,15 +95,13 @@ const MyPageWithoutSbt = () => {
         onOk={() => {
           console.log({ user: account })
           // postする処理
-          // createUserSbtForm.updateObject("eoa", account);
-          // createUserSbtForm.updateObject("name", "hoge");
-          console.log(createUserSbtForm.object);
-          createUserSbtForm.object = { name: createUserSbtForm.object.name, mail: createUserSbtForm.object.mail, eoa: account };
-          console.log(createUserSbtForm.object);
-          // createUserSbtForm.object
-          postUserApi.execute(createUserSbtForm);
-          mint(createUserSbtForm.object.referencerAddress);
-          // window.location.replace("/mypage");
+          try {
+            mint(createUserSbtForm.object.referencerAddress);
+            createUserSbtForm.object = { name: createUserSbtForm.object.name, mail: createUserSbtForm.object.mail, eoa: account };
+            postUserApi.execute(createUserSbtForm);
+          } catch (e) {
+            console.error(e);
+          }
           setOpenCreateUserSbtForm(false);
         }}
       />
