@@ -12,7 +12,7 @@ import {
   Col,
   Comment,
   Descriptions,
-  Form,
+  Form as AntdForm,
   Modal,
   ModalProps,
   PageHeader,
@@ -28,7 +28,7 @@ import {
 import { LikeOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { GlobalStateContext } from "contexts/global_state_context";
-import { useEffectSkipFirst, useForm } from "utils/hooks";
+import { Form, useEffectSkipFirst, useForm } from "utils/hooks";
 import { ContentBlock } from "components/shared/content_block";
 
 import Countdown from "antd/lib/statistic/Countdown";
@@ -162,6 +162,7 @@ const ProposalPage = (props: Props) => {
                 title="投票"
                 open={voteModalOpen}
                 onCancel={() => setVoteModalOpen(false)}
+                onSubmit={(form: Form<VoteForm>) => {}}
               />
             </div>
           </ContentBlock>
@@ -223,16 +224,17 @@ const ProposalPage = (props: Props) => {
 };
 
 export default withRouter(ProposalPage);
+export type VoteForm = {
+  proposal: Proposal;
+  voteResult?: "for" | "against" | "abstention";
+};
 
 type VoteModalProps = ModalProps & {
   proposal: Proposal;
+  onSubmit: (form: Form<VoteForm>) => void;
 };
 
 const VoteModal = (props: VoteModalProps) => {
-  type VoteForm = {
-    proposal: Proposal;
-    voteResult?: "for" | "against" | "abstention";
-  };
   const voteForm = useForm<VoteForm>({
     proposal: props.proposal,
   });
@@ -241,8 +243,8 @@ const VoteModal = (props: VoteModalProps) => {
     voteForm.updateObject("proposal", props.proposal);
   }, [JSON.stringify(props.proposal)]);
   return (
-    <Modal {...props}>
-      <Form>
+    <Modal {...props} onOk={() => props.onSubmit(voteForm)}>
+      <AntdForm>
         <SelectRadioField
           form={voteForm}
           attr="voteResult"
@@ -262,7 +264,7 @@ const VoteModal = (props: VoteModalProps) => {
             },
           ]}
         />
-      </Form>
+      </AntdForm>
     </Modal>
   );
 };
