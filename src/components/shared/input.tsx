@@ -14,6 +14,7 @@ import {
   Row,
   Select,
   Skeleton,
+  Space,
   Switch,
 } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
@@ -283,7 +284,7 @@ export const TextAreaField = <T extends any>(props: TextAreaFieldProps<T>) => {
 };
 
 export type SelectItem = {
-  label: string;
+  label: ReactNode;
   value: any;
 };
 
@@ -636,6 +637,7 @@ type SelectRadioFieldProps<T> = {
   fieldProps?: OptionProps;
   required?: boolean;
   validationResultForm?: MyForm<any>;
+  direction?: "horizontal" | "vertical";
   children?: ReactNode;
 };
 
@@ -678,11 +680,13 @@ export const SelectRadioField = <T extends any>(
           }}
           value={props.form.getValue(props.attr)}
         >
-          {props.selectItems.map((item, i) => (
-            <Radio key={`${i}`} value={item.value}>
-              {item.label}
-            </Radio>
-          ))}
+          <Space direction={props.direction}>
+            {props.selectItems.map((item, i) => (
+              <Radio key={`${i}`} value={item.value}>
+                {item.label}
+              </Radio>
+            ))}
+          </Space>
         </Radio.Group>
         {props.children}
       </Form.Item>

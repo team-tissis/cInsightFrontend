@@ -97,9 +97,29 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
   };
 
   useEffectSkipFirst(() => {
+    let backgroundColor: string;
+    switch (notificationMessage.colorType) {
+      case "error":
+        backgroundColor = "#FFF2F0";
+        break;
+      case "info":
+        backgroundColor = "#E6F7FF";
+        break;
+      case "success":
+        backgroundColor = "#F6FFED";
+        break;
+      case "warning":
+        backgroundColor = "#FFFBE6";
+        break;
+      default:
+        backgroundColor = "inherit";
+    }
     if (notificationMessage.body) {
       notification[notificationMessage.colorType!]({
         message: notificationMessage.body,
+        style: {
+          backgroundColor,
+        },
       });
     }
   }, [notificationMessage.body]);

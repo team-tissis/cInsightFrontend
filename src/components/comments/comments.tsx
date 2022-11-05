@@ -1,16 +1,19 @@
 import {
+  Alert,
   Avatar,
   Button,
   Comment as AntdComment,
   Form,
   List,
+  message,
+  notification,
   Tooltip,
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Comment, CommentForm } from "entities/comment";
 import React, { createElement, useEffect, useState } from "react";
 import { useEffectSkipFirst, useForm } from "utils/hooks";
-import { usePostCommentApi } from "api/comment";
+import { useFavoCommentApi, usePostCommentApi } from "api/comment";
 import { ApiSet } from "utils/network/api_hooks";
 import { LectureResponse } from "api/lecture";
 import { useParams } from "react-router";
@@ -24,6 +27,8 @@ import {
 import { fetchAccountImageUrl, addFavos } from "api/fetch_sol/sbt";
 import { getCurrentAccountAddress } from "api/fetch_sol/utils";
 import { useFetchUserApi, useFetchUserByAccountAddressApi } from "api/user";
+import { AvatorView } from "components/user/user_view";
+import * as H from "history";
 
 export type EditorProps = {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -52,16 +57,15 @@ const Editor = ({ onChange, onSubmit, submitting, value }: EditorProps) => (
 
 export type LectureCommentsListProps = {
   lectureApi: ApiSet<LectureResponse> & { execute: (id: number) => void };
+  histroy: H.History;
 };
 
 export const LectureCommetnsList = (props: LectureCommentsListProps) => {
   const postCommentApi = usePostCommentApi();
+  const favoCommentApi = useFavoCommentApi();
   const userApi = useFetchUserByAccountAddressApi();
   const params = useParams<{ id: string }>();
   const commentForm = useForm<CommentForm>({ lectureId: params.id });
-  const [comments, setComments] = useState<Comment[]>(
-    props.lectureApi.response.lecture.comments ?? []
-  );
   const [account, setAccount] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -77,7 +81,7 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
 
   useEffectSkipFirst(() => {
     if (userApi.isSuccess()) {
-      commentForm.updateObject("commenter", userApi.response.user);
+      commentForm.updateObject("commenterId", userApi.response.user.id);
     }
   }, [userApi.loading]);
 
@@ -87,12 +91,18 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
     }
   }, [postCommentApi.loading]);
 
+  useEffectSkipFirst(() => {
+    if (favoCommentApi.isSuccess()) {
+      props.lectureApi.execute(Number(props.lectureApi.response.lecture.id));
+    }
+  }, [favoCommentApi.loading]);
+
   return (
     <>
-      {!!comments.length && (
+      {!!(props.lectureApi.response.lecture.comments ?? []).length && (
         <List
           itemLayout="horizontal"
-          dataSource={comments}
+          dataSource={props.lectureApi.response.lecture.comments ?? []}
           renderItem={(item: Comment) => {
             const action =
               Number(item.id) % 3 === 0
@@ -107,57 +117,36 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                     <Tooltip key="comment-basic-like" title="Like">
                       <span
                         onClick={() => {
-                          addFavos(item.commenter?.eoa, 1);
+                          if (item.commenter?.eoa === account) {
+                            notification["error"]({
+                              message: "自分のコメントにはいいねを押せません",
+                              style: {
+                                backgroundColor: "#FFF2F0",
+                              },
+                            });
+                          } else {
+                            addFavos(item.commenter?.eoa, 1);
+                            notification["info"]({
+                              message: "コメントに「いいね」を押しました",
+                              style: {
+                                backgroundColor: "#E6F7FF",
+                              },
+                            });
+                            favoCommentApi.execute(item);
+                          }
                         }}
                       >
-                        {action === "liked" ? (
-                          <LikeFilled
-                            style={{
-                              verticalAlign: "middle",
-                            }}
-                          />
-                        ) : (
-                          <LikeOutlined
-                            style={{
-                              verticalAlign: "middle",
-                            }}
-                          />
-                        )}
-                        <span className="comment-action">{3}</span>
+                        <LikeOutlined
+                          style={{
+                            verticalAlign: "middle",
+                          }}
+                        />
+                        <span className="comment-action">{item.favo ?? 0}</span>
                       </span>
                     </Tooltip>,
-                    // <Tooltip key="comment-basic-dislike" title="Dislike">
-                    //   <span
-                    //     onClick={() => {
-                    //       // 何かの処理
-                    //     }}
-                    //   >
-                    //     {action === "disliked" ? (
-                    //       <DislikeFilled
-                    //         style={{
-                    //           verticalAlign: "middle",
-                    //         }}
-                    //       />
-                    //     ) : (
-                    //       <DislikeOutlined
-                    //         style={{
-                    //           verticalAlign: "middle",
-                    //         }}
-                    //       />
-                    //     )}
-                    //     <span className="comment-action">{1}</span>
-                    //   </span>
-                    // </Tooltip>,
-                    <span key="comment-basic-reply-to">Reply to</span>,
                   ]}
                   author={item.commenter?.eoa}
-                  avatar={
-                    <Avatar
-                      src={fetchAccountImageUrl(item.commenter?.eoa)} // null
-                      // src={""} // null
-                      alt="Han Solo"
-                    />
-                  }
+                  avatar={AvatorView(item.commenter?.eoa)}
                   content={item.content}
                   datetime={moment(item.createdAt).fromNow()}
                 />
@@ -167,13 +156,7 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
         />
       )}
       <AntdComment
-        avatar={
-          // <Avatar src={fetchAccountImageUrl(} alt="Han Solo" />
-          <Avatar
-            src={"https://thechaininsight.github.io/img/0/1.gif"}
-            alt="Han Solo"
-          />
-        }
+        avatar={AvatorView(account)}
         content={
           <Editor
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {

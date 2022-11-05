@@ -152,7 +152,7 @@ const LecturePage = (props: Props) => {
           form={editLectureForm}
         />,
       ]}
-    // subTitle="This is a subtitle"
+      // subTitle="This is a subtitle"
     >
       <PurchaseMovieModal
         open={openPurchaseModal}
@@ -288,7 +288,10 @@ const LecturePage = (props: Props) => {
                   key={"lecture like button"}
                   type="primary"
                   disabled={getLectureStatus(lecture() ?? {}) !== "End"}
-                  onClick={() => { handleEditModalOpen; addFavos(lecture()?.author?.eoa, 1) }}
+                  onClick={() => {
+                    handleEditModalOpen;
+                    addFavos(lecture()?.author?.eoa, 1);
+                  }}
                 >
                   勉強会にいいねを押す
                 </Button>
@@ -353,10 +356,13 @@ const LecturePage = (props: Props) => {
           </Row>
         </ContentBlock>
         <ContentBlock title="コメント">
-          <LectureCommetnsList lectureApi={lectureApi} />
+          <LectureCommetnsList
+            histroy={props.history}
+            lectureApi={lectureApi}
+          />
         </ContentBlock>
       </Space>
-    </PageHeader >
+    </PageHeader>
   );
 };
 

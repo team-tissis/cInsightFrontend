@@ -9,8 +9,10 @@ export type Comment = {
   id?: string;
   content?: string;
   commenter?: User;
+  commenterId?: string;
   lecture?: Lecture;
   lectureId?: string;
+  favo?: number;
   createdAt?: string;
   // favo?: number;
 };

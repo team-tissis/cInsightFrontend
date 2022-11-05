@@ -275,7 +275,6 @@ export function useShowApi<T extends BaseResponse>(
       if (p.json) {
         p.json = JSON.stringify(p.json);
       }
-      console.log(p);
       const result = await httpClient.get(apiPath, p);
       const data: T = result.data;
       setResponse(() => data);
