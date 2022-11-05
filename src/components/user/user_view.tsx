@@ -19,9 +19,11 @@ import { LoadingOutlined } from "@ant-design/icons";
 export const UserProfileView = (user: User) => {
   return (
     <Space size={20}>
-      <Avatar size={128} src={<Image src={user.avatorUrl} />} />
+      {AvatorView(user.eoa, 180)}
       <Descriptions column={1} bordered>
-        <Descriptions.Item label="名前">{user.firstName}</Descriptions.Item>
+        <Descriptions.Item style={{ minWidth: 300 }} label="名前">
+          {user.name}
+        </Descriptions.Item>
         <Descriptions.Item label="メール">{user.mail}</Descriptions.Item>
       </Descriptions>
     </Space>
@@ -47,7 +49,7 @@ export const UserListView = (user: User, loading = false) => {
     >
       <Skeleton avatar title={false} loading={loading} active>
         <List.Item.Meta
-          avatar={<Avatar src={user.avatorUrl} />}
+          avatar={AvatorView(user.eoa)}
           title={user.name}
           description={<div>token: {user.token}</div>}
         />
@@ -56,7 +58,7 @@ export const UserListView = (user: User, loading = false) => {
   );
 };
 
-export const AvatorView = (address?: string) => {
+export const AvatorView = (address?: string, size?: number) => {
   const [src, setSrc] = useState<string | undefined>(address);
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
   useEffect(() => {
@@ -68,6 +70,6 @@ export const AvatorView = (address?: string) => {
   return src === undefined ? (
     <Spin indicator={antIcon} />
   ) : (
-    <Avatar src={src} />
+    <Avatar src={src} size={size} />
   );
 };

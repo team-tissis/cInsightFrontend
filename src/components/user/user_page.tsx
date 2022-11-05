@@ -18,11 +18,11 @@ import Countdown from "antd/lib/statistic/Countdown";
 import { UserProfileView } from "./user_view";
 import { User } from "entities/user";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CreateUserSbtForm, EditUserForm, ReferralForm } from "./user_form";
-import { useForm } from "utils/hooks";
+import { useEffectSkipFirst, useForm } from "utils/hooks";
 import * as H from "history";
-import { withRouter } from "react-router";
+import { useParams, withRouter } from "react-router";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import {
   fetchAccountImageUrl,
@@ -32,6 +32,12 @@ import {
   refer,
 } from "api/fetch_sol/sbt";
 import { getCurrentAccountAddress } from "api/fetch_sol/utils";
+import {
+  useFetchUserApi,
+  useFetchUserByAccountAddressApi,
+  usePutUserApi,
+} from "api/user";
+import { GlobalStateContext } from "contexts/global_state_context";
 
 type UserPageProps = {
   history: H.History;
@@ -63,42 +69,94 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const [openReferralForm, setOpenRefaralForm] = useState(false);
   const referralForm = useForm<ReferralForm>({});
 
-  const [userState, setUserState] = useState<any>("none"); // errorハンドリング
   const [favo, setFavo] = useState();
   const [grade, setGrade] = useState();
   const [maki, setMaki] = useState();
-  const [url, setUrl] = useState();
+
   const [makiMemory, setMakiMemory] = useState();
   const [referral, setReferral] = useState();
   const [referralRemain, setReferralRemain] = useState();
   const [monthlyDistributedFavoNum, setMonthlyDistributedFavoNum] = useState();
+  const globalState = useContext(GlobalStateContext);
 
-  async function setUser() {
-    try {
-      setUrl(await fetchAccountImageUrl(await getCurrentAccountAddress()));
-    } catch {
-      console.log("error!");
-    }
-    const user: User = {
-      avatorUrl: url,
-      firstName: "hoge",
-      mail: "",
-    };
-    return user;
-  }
+  const userApi = useFetchUserApi();
+  const putUserApi = usePutUserApi();
+  const userApiByAccountAddress = useFetchUserByAccountAddressApi();
+  const [accountAddress, setAccountAddress] = useState<string | undefined>(
+    undefined
+  );
+
+  const params = useParams<{ id: string }>();
 
   useEffect(() => {
-    (async function () {
-      setUserState(await setUser());
-      setFavo(await fetchConnectedAccountInfo("favoOf"));
-      setGrade(await fetchConnectedAccountInfo("gradeOf"));
-      setMaki(await fetchConnectedAccountInfo("makiOf"));
-      setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
-      setReferral(await fetchConnectedAccountInfo("referralOf"));
-      setReferralRemain(await fetchConnectedAccountReferralNum());
-      setMonthlyDistributedFavoNum(await fetchMonthlyDistributedFavoNum());
-    })();
+    if (!props.isMyPage) {
+      // マイページではないとき
+      userApi.execute(Number(params.id));
+    } else {
+      // マイページのとき
+      // ToDo1: アカウントアドレスを取得
+      //
+      (async () => {
+        // const _accountAddress =  await ...
+        // setAccountAddress(_accountAddress)
+        setAccountAddress("0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
+      })();
+    }
   }, []);
+
+  useEffect(() => {
+    if (accountAddress !== undefined) {
+      // マイページのとき
+      // このスコープ内はこのままでよき
+      userApiByAccountAddress.execute(accountAddress);
+      (async function () {
+        setFavo(await fetchConnectedAccountInfo("favoOf"));
+        setGrade(await fetchConnectedAccountInfo("gradeOf"));
+        setMaki(await fetchConnectedAccountInfo("makiOf"));
+        setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
+        setReferral(await fetchConnectedAccountInfo("referralOf"));
+        setReferralRemain(await fetchConnectedAccountReferralNum());
+        setMonthlyDistributedFavoNum(await fetchMonthlyDistributedFavoNum());
+      })();
+    }
+  }, [accountAddress]);
+
+  useEffect(() => {
+    globalState.setLoading(userApiByAccountAddress.loading);
+    // この部分が実行されるのは、マイページのときのみ
+    // このスコープ内もこのままでよき
+    if (userApiByAccountAddress.isSuccess()) {
+      console.log(userApiByAccountAddress.response.user);
+      editUserForm.set(userApiByAccountAddress.response.user);
+    }
+  }, [userApiByAccountAddress.loading]);
+
+  useEffect(() => {
+    globalState.setLoading(userApi.loading);
+    if (userApi.isSuccess()) {
+      // この部分が実行されるのは、マイページではないときのみ
+      (async function () {
+        console.log(userApi.response.user.eoa); // eoaはこれで取れる
+        // ToDo2. 以下を、↑のeoaを渡す形に書き換える
+        //
+        setFavo(await fetchConnectedAccountInfo("favoOf"));
+        setGrade(await fetchConnectedAccountInfo("gradeOf"));
+        setMaki(await fetchConnectedAccountInfo("makiOf"));
+        setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
+        setReferral(await fetchConnectedAccountInfo("referralOf"));
+        setReferralRemain(await fetchConnectedAccountReferralNum());
+        setMonthlyDistributedFavoNum(await fetchMonthlyDistributedFavoNum());
+      })();
+    }
+  }, [userApi.loading]);
+
+  useEffectSkipFirst(() => {
+    if (putUserApi.isSuccess()) {
+      // マイページのとき
+      // このスコープ内はこのままでよき
+      userApiByAccountAddress.execute(accountAddress!);
+    }
+  }, [putUserApi.loading]);
 
   return (
     <>
@@ -106,7 +164,11 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
         open={openEditUserForm}
         form={editUserForm}
         onCancel={() => setOpenEditUserForm(false)}
-        onOk={() => setOpenEditUserForm(false)}
+        onOk={() => {
+          putUserApi.execute(editUserForm.object);
+          setOpenEditUserForm(false);
+          putUserApi.execute(editUserForm.object);
+        }}
       />
       <ReferralForm
         open={openReferralForm}
@@ -114,7 +176,6 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
         onCancel={() => setOpenRefaralForm(false)}
         onOk={() => {
           refer(referralForm.object.walletAddress);
-          setOpenRefaralForm(false);
         }}
       />
       <Space size={20} direction="vertical" style={{ width: "100%" }}>
@@ -131,7 +192,11 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             ],
           }}
         >
-          {UserProfileView(userState)}
+          {UserProfileView(
+            props.isMyPage
+              ? userApiByAccountAddress.response.user
+              : userApi.response.user
+          )}
           {/* {UserProfileView(user)} */}
         </ContentBlock>
         <ContentBlock title="SBT INFO">
