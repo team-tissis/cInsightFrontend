@@ -27,6 +27,7 @@ import { UserPage, UserPageContent } from "./user_page";
 import { withRouter } from "react-router";
 import { mint } from "api/fetch_sol/sbt";
 import { fetchConnectedAccountInfo } from "api/fetch_sol/sbt";
+import { getCurrentAccountAddress } from "api/fetch_sol/utils";
 
 type Props = {
   history: H.History;
@@ -77,6 +78,12 @@ export default withRouter(MyPage);
 const MyPageWithoutSbt = () => {
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
   const createUserSbtForm = useForm<User>({});
+  const [account, setAccount] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    (async () => setAccount(await getCurrentAccountAddress()))();
+  }, []);
+
   return (
     <>
       <CreateUserSbtForm
@@ -94,6 +101,7 @@ const MyPageWithoutSbt = () => {
         <ContentBlock title="SBTの発行">
           <Button
             onClick={() => {
+              console.log({ user: account })
               setOpenCreateUserSbtForm(true);
             }}
             type="primary"
