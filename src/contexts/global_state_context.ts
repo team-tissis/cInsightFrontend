@@ -2,7 +2,7 @@ import { User } from "entities/user";
 import { ConfirmOption, Dimension } from "containers/global_state_container";
 import React, { ReactNode, SetStateAction } from "react";
 
-export type NotificationColor = "success" | "danger" | "warning" | "info";
+export type NotificationColor = "success" | "info" | "warning" | "error";
 
 type GlobalState = {
   user: User;
@@ -33,18 +33,18 @@ type GlobalState = {
 
 export const initialGlobalState: GlobalState = {
   user: {},
-  setUser: () => { },
+  setUser: () => {},
   loading: false,
-  setLoading: () => { },
+  setLoading: () => {},
   apiError: {},
-  setError: () => { },
+  setError: () => {},
   notificationMessage: { body: "" },
-  setNotificationMessage: () => { },
-  showConfirm: () => { },
+  setNotificationMessage: () => {},
+  showConfirm: () => {},
   collapsed: false,
-  setCollapsed: () => { },
+  setCollapsed: () => {},
   dimension: { width: 1000, height: 700 },
-  setDimension: () => { },
+  setDimension: () => {},
 };
 
 export const GlobalStateContext = React.createContext(initialGlobalState);

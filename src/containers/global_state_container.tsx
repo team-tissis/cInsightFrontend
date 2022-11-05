@@ -10,7 +10,7 @@ import { useEffectSkipFirst } from "utils/hooks";
 import { NestedModal } from "components/shared/widget";
 import { User } from "entities/user";
 import { ThemeContext } from "contexts/theme_context";
-import { Spin } from "antd";
+import { notification, Spin } from "antd";
 
 export type ConfirmOption = {
   confirmWord?: string;
@@ -47,7 +47,7 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
     option?: ConfirmOption;
   }>({
     message: <></>,
-    callback: () => { },
+    callback: () => {},
   });
   const [openConfirm, setOpenConfirm] = React.useState(false);
   const [showToast, setShowToast] = React.useState(false);
@@ -98,7 +98,9 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
 
   useEffectSkipFirst(() => {
     if (notificationMessage.body) {
-      setShowToast(true);
+      notification[notificationMessage.colorType!]({
+        message: notificationMessage.body,
+      });
     }
   }, [notificationMessage.body]);
 
@@ -112,7 +114,7 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
     if (apiError?.message) {
       setNotificationMessage({
         body: apiError.message,
-        colorType: "danger",
+        colorType: "error",
         delay: 15000,
       });
     }
@@ -137,38 +139,6 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
       }}
     >
       <div>
-        <div style={{ position: "fixed", top: 20, right: 20 }}>
-          {/* <ToastContainer className="d-inline-block m-1" position={'top-end'} style={{ zIndex: 1000000 }}> */}
-          <Toast
-            onClose={() => setShowToast(false)}
-            show={showToast}
-            autohide
-            delay={notificationMessage.delay || 5000}
-            bg={notificationMessage.colorType}
-          >
-            <Toast.Header>
-              {/* <img src={Logo} style={{ width: 20, height: 20 }} alt="" /> */}
-              <strong className="me-auto">
-                {notificationMessage.colorType?.toUpperCase()}!
-              </strong>
-              {/* <small>11 mins ago</small> */}
-            </Toast.Header>
-            <Toast.Body
-              className={
-                notificationMessage.colorType === "warning" ? "" : "text-white"
-              }
-            >
-              {typeof notificationMessage.body === "string"
-                ? notificationMessage.body
-                  .split("\n")
-                  .map((line, index) => (
-                    <div key={"message-line-" + index}>{line}</div>
-                  ))
-                : notificationMessage.body}
-            </Toast.Body>
-          </Toast>
-          {/* </ToastContainer> */}
-        </div>
         {loading && (
           <div
             style={{

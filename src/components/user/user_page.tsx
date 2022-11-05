@@ -29,7 +29,7 @@ import {
   fetchConnectedAccountInfo,
   fetchConnectedAccountReferralNum,
   fetchMonthlyDistributedFavoNum,
-  refer
+  refer,
 } from "api/fetch_sol/sbt";
 import { getCurrentAccountAddress } from "api/fetch_sol/utils";
 
@@ -67,13 +67,18 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
   const [favo, setFavo] = useState();
   const [grade, setGrade] = useState();
   const [maki, setMaki] = useState();
+  const [url, setUrl] = useState();
   const [makiMemory, setMakiMemory] = useState();
   const [referral, setReferral] = useState();
   const [referralRemain, setReferralRemain] = useState();
   const [monthlyDistributedFavoNum, setMonthlyDistributedFavoNum] = useState();
 
   async function setUser() {
-    const url = await fetchAccountImageUrl(await getCurrentAccountAddress());
+    try {
+      setUrl(await fetchAccountImageUrl(await getCurrentAccountAddress()));
+    } catch {
+      console.log("error!");
+    }
     const user: User = {
       avatorUrl: url,
       firstName: "hoge",
@@ -109,9 +114,8 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
         onCancel={() => setOpenRefaralForm(false)}
         onOk={() => {
           refer(referralForm.object.walletAddress);
-          setOpenRefaralForm(false)
-        }
-        }
+          setOpenRefaralForm(false);
+        }}
       />
       <Space size={20} direction="vertical" style={{ width: "100%" }}>
         <ContentBlock
@@ -194,7 +198,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             </Button>
           </ContentBlock>
         )}
-      </Space >
+      </Space>
     </>
   );
 };

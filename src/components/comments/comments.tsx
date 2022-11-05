@@ -23,7 +23,7 @@ import {
 } from "@ant-design/icons";
 import { fetchAccountImageUrl, addFavos } from "api/fetch_sol/sbt";
 import { getCurrentAccountAddress } from "api/fetch_sol/utils";
-import { useFetchUserApi } from "api/user";
+import { useFetchUserApi, useFetchUserByAccountAddressApi } from "api/user";
 
 export type EditorProps = {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -56,7 +56,7 @@ export type LectureCommentsListProps = {
 
 export const LectureCommetnsList = (props: LectureCommentsListProps) => {
   const postCommentApi = usePostCommentApi();
-  const userApi = useFetchUserApi();
+  const userApi = useFetchUserByAccountAddressApi();
   const params = useParams<{ id: string }>();
   const commentForm = useForm<CommentForm>({ lectureId: params.id });
   const [comments, setComments] = useState<Comment[]>(
@@ -65,21 +65,21 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
   const [account, setAccount] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    (async () => (setAccount(await getCurrentAccountAddress())))()
-  }, [])
+    (async () => setAccount(await getCurrentAccountAddress()))();
+  }, []);
 
   useEffectSkipFirst(() => {
     if (account !== undefined) {
-      // userApi.execute(account)
-      commentForm.updateObject("commenterEoa", account);
+      userApi.execute(account);
+      // commentForm.updateObject("commenterEoa", account);
     }
-  }, [account])
+  }, [account]);
 
-  // useEffectSkipFirst(() => {
-  //   if (userApi.isSuccess()) {
-  //     commentForm.updateObject("commenterEoa", userApi.response.user.eoa);
-  //   }
-  // }, [userApi.loading])
+  useEffectSkipFirst(() => {
+    if (userApi.isSuccess()) {
+      commentForm.updateObject("commenter", userApi.response.user);
+    }
+  }, [userApi.loading]);
 
   useEffectSkipFirst(() => {
     if (postCommentApi.isSuccess()) {
@@ -98,8 +98,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
               Number(item.id) % 3 === 0
                 ? "liked"
                 : Number(item.id) % 3 === 1
-                  ? "disliked"
-                  : undefined;
+                ? "disliked"
+                : undefined;
             return (
               <li>
                 <AntdComment
@@ -107,7 +107,7 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                     <Tooltip key="comment-basic-like" title="Like">
                       <span
                         onClick={() => {
-                          addFavos(item.commenterEoa, 1);
+                          addFavos(item.commenter?.eoa, 1);
                         }}
                       >
                         {action === "liked" ? (
@@ -153,8 +153,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                   author={item.commenter?.eoa}
                   avatar={
                     <Avatar
-                      // src={fetchAccountImageUrl(item.commenterEoa)} // null
-                      src={""} // null
+                      src={fetchAccountImageUrl(item.commenter?.eoa)} // null
+                      // src={""} // null
                       alt="Han Solo"
                     />
                   }
@@ -169,7 +169,10 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
       <AntdComment
         avatar={
           // <Avatar src={fetchAccountImageUrl(} alt="Han Solo" />
-          <Avatar src={"https://thechaininsight.github.io/img/0/1.gif"} alt="Han Solo" />
+          <Avatar
+            src={"https://thechaininsight.github.io/img/0/1.gif"}
+            alt="Han Solo"
+          />
         }
         content={
           <Editor
@@ -177,7 +180,9 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
               commentForm.updateObject("content", e.target.value);
             }}
             onSubmit={() => {
-              postCommentApi.execute(commentForm);
+              if (commentForm.object.content?.length) {
+                postCommentApi.execute(commentForm);
+              }
             }}
             submitting={postCommentApi.loading}
             value={commentForm.object.content ?? ""}

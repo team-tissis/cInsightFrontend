@@ -21,15 +21,34 @@ export type UserResponse = BaseResponse & {
 };
 
 export function useFetchUserApi(): ApiSet<UserResponse> & {
-  execute: (eoa: string) => void;
+  execute: (id: number) => void;
 } {
   const api = useShowApi<UserResponse>(new HttpClient(), {
     initialResponse: { user: {} },
   });
 
-  const execute = (eoa: string): void => {
-    const apiPath = `users/${eoa}/`;
+  const execute = (id: number): void => {
+    const apiPath = `users/${id}/`;
     api.execute(apiPath);
+  };
+
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
+}
+
+export function useFetchUserByAccountAddressApi(): ApiSet<UserResponse> & {
+  execute: (accountAddress: string) => void;
+} {
+  const api = useShowApi<UserResponse>(new HttpClient(), {
+    initialResponse: { user: {} },
+  });
+
+  const execute = (accountAddress: string): void => {
+    const apiPath = `users/fetch_by_account_address/`;
+    api.execute(apiPath, { accountAddress });
   };
 
   return {

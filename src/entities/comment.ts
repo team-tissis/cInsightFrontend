@@ -9,7 +9,6 @@ export type Comment = {
   id?: string;
   content?: string;
   commenter?: User;
-  commenterEoa?: string;
   lecture?: Lecture;
   lectureId?: string;
   createdAt?: string;
