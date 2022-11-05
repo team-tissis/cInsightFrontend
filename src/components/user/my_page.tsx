@@ -86,6 +86,7 @@ const MyPageWithoutSbt = () => {
         onOk={() => {
           // postする処理
           mint(createUserSbtForm.object.referencerAddress);
+          // window.location.replace("/mypage");
           setOpenCreateUserSbtForm(false);
         }}
       />
@@ -94,7 +95,6 @@ const MyPageWithoutSbt = () => {
           <Button
             onClick={() => {
               setOpenCreateUserSbtForm(true);
-              window.location.replace("/mypage");
             }}
             type="primary"
           >

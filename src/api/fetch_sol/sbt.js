@@ -20,12 +20,14 @@ const functionNames = [
 ];
 const sbtAbi = getSbtAbiAddedImp(functionNames);
 
-export async function fetchConnectedAccountInfo(method) {
+export async function fetchConnectedAccountInfo(method, account) {
   const { contract } = getContract("Sbt", sbtAbi);
-  const currentAccount = await getCurrentAccountAddress();
-  const response = await fetchFunction(contract, currentAccount, method);
+  if (account === undefined) {
+    account = await getCurrentAccountAddress();
+  }
+  const response = await fetchFunction(contract, account, method);
   console.log({
-    address: currentAccount,
+    address: account,
     method: method,
     value: response.toString(),
   });
@@ -81,9 +83,13 @@ export async function fetchReferralRate() {
   return message;
 }
 
-export async function fetchConnectedAccountReferralNum() {
+export async function fetchConnectedAccountReferralNum(account) {
+
   const referralRate = await fetchReferralRate();
-  const grade = await fetchConnectedAccountInfo("gradeOf");
+  if (account === undefined) {
+    account = getCurrentAccountAddress();
+  }
+  const grade = await fetchConnectedAccountInfo("gradeOf", account);
   return referralRate[grade];
 }
 

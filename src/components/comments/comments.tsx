@@ -108,8 +108,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
               Number(item.id) % 3 === 0
                 ? "liked"
                 : Number(item.id) % 3 === 1
-                ? "disliked"
-                : undefined;
+                  ? "disliked"
+                  : undefined;
             return (
               <li>
                 <AntdComment

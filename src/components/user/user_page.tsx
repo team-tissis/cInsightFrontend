@@ -95,9 +95,9 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
     } else {
       // マイページのとき
       // ToDo1: アカウントアドレスを取得
-      //
       (async () => {
         const _accountAddress = await getCurrentAccountAddress()
+        console.log({ hoge: _accountAddress });
         setAccountAddress(_accountAddress)
       })();
     }
@@ -136,13 +136,12 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
       (async function () {
         console.log(userApi.response.user.eoa); // eoaはこれで取れる
         // ToDo2. 以下を、↑のeoaを渡す形に書き換える
-        //
-        setFavo(await fetchConnectedAccountInfo("favoOf"));
-        setGrade(await fetchConnectedAccountInfo("gradeOf"));
-        setMaki(await fetchConnectedAccountInfo("makiOf"));
-        setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf"));
-        setReferral(await fetchConnectedAccountInfo("referralOf"));
-        setReferralRemain(await fetchConnectedAccountReferralNum());
+        setFavo(await fetchConnectedAccountInfo("favoOf", userApi.response.user.eoa));
+        setGrade(await fetchConnectedAccountInfo("gradeOf", userApi.response.user.eoa));
+        setMaki(await fetchConnectedAccountInfo("makiOf", userApi.response.user.eoa));
+        setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf", userApi.response.user.eoa));
+        setReferral(await fetchConnectedAccountInfo("referralOf", userApi.response.user.eoa));
+        setReferralRemain(await fetchConnectedAccountReferralNum(userApi.response.user.eoa));
         setMonthlyDistributedFavoNum(await fetchMonthlyDistributedFavoNum());
       })();
     }
