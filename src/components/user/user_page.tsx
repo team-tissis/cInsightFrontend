@@ -97,9 +97,8 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
       // ToDo1: アカウントアドレスを取得
       //
       (async () => {
-        // const _accountAddress =  await ...
-        // setAccountAddress(_accountAddress)
-        setAccountAddress("0x70997970C51812dc3A010C7d01b50e0d17dc79C8");
+        const _accountAddress = await getCurrentAccountAddress()
+        setAccountAddress(_accountAddress)
       })();
     }
   }, []);

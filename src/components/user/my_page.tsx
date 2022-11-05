@@ -53,18 +53,18 @@ export const MyPage = (props: Props) => {
         backgroundColor: "inherit",
       }}
       title={"マイページ"}
-      // extra={[
-      //   <Form.Item label="SBT" key="switch has sbt flag">
-      //     <Switch
-      //       checkedChildren={"Exist"}
-      //       unCheckedChildren={"Not Exist"}
-      //       checked={checkHasSbtApi.response?.hasSbt}
-      //       onChange={(hasSbt) => {
-      //         checkHasSbtApi.setResponse({ hasSbt });
-      //       }}
-      //     />
-      //   </Form.Item>,
-      // ]}
+    // extra={[
+    //   <Form.Item label="SBT" key="switch has sbt flag">
+    //     <Switch
+    //       checkedChildren={"Exist"}
+    //       unCheckedChildren={"Not Exist"}
+    //       checked={checkHasSbtApi.response?.hasSbt}
+    //       onChange={(hasSbt) => {
+    //         checkHasSbtApi.setResponse({ hasSbt });
+    //       }}
+    //     />
+    //   </Form.Item>,
+    // ]}
     >
       {/* {checkHasSbtApi.response?.hasSbt ? ( */}
       {hasSbt != 0 ? <UserPageContent isMyPage /> : <MyPageWithoutSbt />}
@@ -94,6 +94,7 @@ const MyPageWithoutSbt = () => {
           <Button
             onClick={() => {
               setOpenCreateUserSbtForm(true);
+              window.location.replace("/mypage");
             }}
             type="primary"
           >
