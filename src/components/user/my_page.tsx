@@ -28,13 +28,14 @@ import { withRouter } from "react-router";
 import { mint } from "api/fetch_sol/sbt";
 import { fetchConnectedAccountInfo } from "api/fetch_sol/sbt";
 import { getCurrentAccountAddress } from "api/fetch_sol/utils";
+import { usePostUserApi } from "api/user";
 
 type Props = {
   history: H.History;
 };
 
 export const MyPage = (props: Props) => {
-  const checkHasSbtApi = useCheckHasSbtApi();
+  // const checkHasSbtApi = useCheckHasSbtApi();
 
   const [hasSbt, setHasSbt] = useState();
   useEffect(() => {
@@ -79,6 +80,7 @@ const MyPageWithoutSbt = () => {
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
   const createUserSbtForm = useForm<User>({});
   const [account, setAccount] = useState<string | undefined>(undefined);
+  const postUserApi = usePostUserApi();
 
   useEffect(() => {
     (async () => setAccount(await getCurrentAccountAddress()))();
@@ -93,6 +95,13 @@ const MyPageWithoutSbt = () => {
         onOk={() => {
           console.log({ user: account })
           // postする処理
+          // createUserSbtForm.updateObject("eoa", account);
+          // createUserSbtForm.updateObject("name", "hoge");
+          console.log(createUserSbtForm.object);
+          createUserSbtForm.object = { name: createUserSbtForm.object.name, mail: createUserSbtForm.object.mail, eoa: account };
+          console.log(createUserSbtForm.object);
+          // createUserSbtForm.object
+          postUserApi.execute(createUserSbtForm);
           mint(createUserSbtForm.object.referencerAddress);
           // window.location.replace("/mypage");
           setOpenCreateUserSbtForm(false);

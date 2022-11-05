@@ -97,7 +97,6 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
       // ToDo1: アカウントアドレスを取得
       (async () => {
         const _accountAddress = await getCurrentAccountAddress()
-        console.log({ hoge: _accountAddress });
         setAccountAddress(_accountAddress)
       })();
     }

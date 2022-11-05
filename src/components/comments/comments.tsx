@@ -81,7 +81,9 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
 
   useEffectSkipFirst(() => {
     if (userApi.isSuccess()) {
+      console.log(userApi.response.user);
       commentForm.updateObject("commenterId", userApi.response.user.id);
+      // commentForm.updateObject("commenter", userApi.response.user);
     }
   }, [userApi.loading]);
 
@@ -125,6 +127,7 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                               },
                             });
                           } else {
+                            console.log(item);
                             addFavos(item.commenter?.eoa, 1);
                             notification["info"]({
                               message: "コメントに「いいね」を押しました",

@@ -26,11 +26,11 @@ export async function fetchConnectedAccountInfo(method, account) {
     account = await getCurrentAccountAddress();
   }
   const response = await fetchFunction(contract, account, method);
-  console.log({
-    address: account,
-    method: method,
-    value: response.toString(),
-  });
+  // console.log({
+  //   address: account,
+  //   method: method,
+  //   value: response.toString(),
+  // });
   return response.toString();
 }
 
