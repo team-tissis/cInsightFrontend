@@ -8,10 +8,13 @@ import {
   Row,
   Skeleton,
   Space,
+  Spin,
 } from "antd";
 import SkeletonButton from "antd/lib/skeleton/Button";
+import { fetchAccountImageUrl } from "api/fetch_sol/sbt";
 import { User } from "entities/user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export const UserProfileView = (user: User) => {
   return (
@@ -50,5 +53,21 @@ export const UserListView = (user: User, loading = false) => {
         />
       </Skeleton>
     </Card>
+  );
+};
+
+export const AvatorView = (address?: string) => {
+  const [src, setSrc] = useState<string | undefined>(address);
+  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+  useEffect(() => {
+    (async () => {
+      const srcResponse = await fetchAccountImageUrl(address);
+      setSrc(srcResponse);
+    })();
+  }, []);
+  return src === undefined ? (
+    <Spin indicator={antIcon} />
+  ) : (
+    <Avatar src={src} />
   );
 };

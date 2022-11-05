@@ -19,12 +19,14 @@ import { UserProfileView } from "./user_view";
 import { User } from "entities/user";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { useEffect, useState } from "react";
-import { CreateUserSbtForm, EditUserForm, ReferalForm } from "./user_form";
+import { CreateUserSbtForm, EditUserForm, ReferralForm } from "./user_form";
 import { useForm } from "utils/hooks";
 import * as H from "history";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { UserPage, UserPageContent } from "./user_page";
 import { withRouter } from "react-router";
+import { mint } from "api/fetch_sol/sbt";
+import { fetchConnectedAccountInfo } from "api/fetch_sol/sbt";
 
 type Props = {
   history: H.History;
@@ -33,9 +35,16 @@ type Props = {
 export const MyPage = (props: Props) => {
   const checkHasSbtApi = useCheckHasSbtApi();
 
+  const [hasSbt, setHasSbt] = useState();
   useEffect(() => {
-    checkHasSbtApi.execute();
+    (async function () {
+      setHasSbt(await fetchConnectedAccountInfo("gradeOf"));
+    })();
   }, []);
+
+  // useEffect(() => {
+  //   checkHasSbtApi.execute();
+  // }, []);
 
   return (
     <PageHeader
@@ -44,24 +53,21 @@ export const MyPage = (props: Props) => {
         backgroundColor: "inherit",
       }}
       title={"マイページ"}
-      extra={[
-        <Form.Item label="SBT" key="switch has sbt flag">
-          <Switch
-            checkedChildren={"Exist"}
-            unCheckedChildren={"Not Exist"}
-            checked={checkHasSbtApi.response?.hasSbt}
-            onChange={(hasSbt) => {
-              checkHasSbtApi.setResponse({ hasSbt });
-            }}
-          />
-        </Form.Item>,
-      ]}
+      // extra={[
+      //   <Form.Item label="SBT" key="switch has sbt flag">
+      //     <Switch
+      //       checkedChildren={"Exist"}
+      //       unCheckedChildren={"Not Exist"}
+      //       checked={checkHasSbtApi.response?.hasSbt}
+      //       onChange={(hasSbt) => {
+      //         checkHasSbtApi.setResponse({ hasSbt });
+      //       }}
+      //     />
+      //   </Form.Item>,
+      // ]}
     >
-      {checkHasSbtApi.response?.hasSbt ? (
-        <UserPageContent isMyPage />
-      ) : (
-        <MyPageWithoutSbt />
-      )}
+      {/* {checkHasSbtApi.response?.hasSbt ? ( */}
+      {hasSbt != 0 ? <UserPageContent isMyPage /> : <MyPageWithoutSbt />}
     </PageHeader>
   );
 };
@@ -69,21 +75,17 @@ export const MyPage = (props: Props) => {
 export default withRouter(MyPage);
 
 const MyPageWithoutSbt = () => {
-  const user: User = {
-    avatorUrl: "https://joeschmoe.io/api/v1/random",
-    firstName: "にしもと",
-    mail: "shozemi.nishimotp@icloud.com",
-  };
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
-  const editUserForm = useForm<User>(user);
+  const createUserSbtForm = useForm<User>({});
   return (
     <>
       <CreateUserSbtForm
         open={openCreateUserSbtForm}
-        form={editUserForm}
+        form={createUserSbtForm}
         onCancel={() => setOpenCreateUserSbtForm(false)}
         onOk={() => {
           // postする処理
+          mint(createUserSbtForm.object.referencerAddress);
           setOpenCreateUserSbtForm(false);
         }}
       />

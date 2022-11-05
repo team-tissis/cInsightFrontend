@@ -81,7 +81,7 @@ export function usePostCommentApi(): ApiSet<BaseResponse> & {
     {
       initialResponse: {},
     },
-    { formatJson: true }
+    { formatJson: false }
   );
 
   const execute = (form: Form<CommentForm>) => {
@@ -109,6 +109,29 @@ export function usePutCommentApi(): ApiSet<BaseResponse> & {
 
   const execute = (object: Comment) => {
     const apiPath = `comments/${object.id}/`;
+    api.execute(apiPath, object);
+  };
+
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
+}
+
+export function useFavoCommentApi(): ApiSet<BaseResponse> & {
+  execute: (object: Comment) => void;
+} {
+  const api = usePutApi<BaseResponse, CommentForm>(
+    new HttpClient(),
+    {
+      initialResponse: {},
+    },
+    { formatJson: true }
+  );
+
+  const execute = (object: Comment) => {
+    const apiPath = `comments/favo/`;
     api.execute(apiPath, object);
   };
 

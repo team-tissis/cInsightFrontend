@@ -12,7 +12,6 @@ import {
   InputField,
   RangeField,
   SelectField,
-  TextAreaField,
 } from "components/shared/input";
 import { User } from "entities/user";
 import moment, { Moment } from "moment";
@@ -64,15 +63,15 @@ export const CreateUserSbtForm = (props: CreateUserSbtFormProps) => {
   );
 };
 
-export type ReferalForm = {
+export type ReferralForm = {
   walletAddress?: string;
 };
 
-export type ReferalFormProps = ModalProps & {
-  form: Form<ReferalForm>;
+export type ReferralFormProps = ModalProps & {
+  form: Form<ReferralForm>;
 };
 
-export const ReferalForm = (props: ReferalFormProps) => {
+export const ReferralForm = (props: ReferralFormProps) => {
   const { form, ...rest } = props;
   return (
     <Modal title="新規リファラル" {...rest}>

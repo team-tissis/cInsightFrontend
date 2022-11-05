@@ -70,7 +70,6 @@ export const axios = (option?: {
     "Content-Type": "application/json",
   };
   const token = process.env.REACT_APP_TOKEN;
-  console.log(process.env);
   if (token) {
     headers["Authorization"] = `Token ${token}`;
   }

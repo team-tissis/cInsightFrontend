@@ -46,6 +46,7 @@ import { sleep } from "utils/util";
 import { EditLectureForm } from "./lecture_form";
 import { useFetchCommentsApi } from "api/comment";
 import { CommentSearchForm } from "entities/comment";
+import { addFavos } from "api/fetch_sol/sbt";
 
 type Props = {
   history: H.History;
@@ -287,6 +288,10 @@ const LecturePage = (props: Props) => {
                   key={"lecture like button"}
                   type="primary"
                   disabled={getLectureStatus(lecture() ?? {}) !== "End"}
+                  onClick={() => {
+                    handleEditModalOpen;
+                    addFavos(lecture()?.author?.eoa, 1);
+                  }}
                 >
                   勉強会にいいねを押す
                 </Button>
@@ -351,7 +356,10 @@ const LecturePage = (props: Props) => {
           </Row>
         </ContentBlock>
         <ContentBlock title="コメント">
-          <LectureCommetnsList lectureApi={lectureApi} />
+          <LectureCommetnsList
+            histroy={props.history}
+            lectureApi={lectureApi}
+          />
         </ContentBlock>
       </Space>
     </PageHeader>

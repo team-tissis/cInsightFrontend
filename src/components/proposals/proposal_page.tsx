@@ -5,7 +5,6 @@ import * as H from "history";
 import { Flex } from "components/shared/flex";
 import { useContext, useEffect, useState } from "react";
 import { useFetchProposalApi, usePutProposalApi } from "api/proposal";
-import { LectureCommetnsList } from "components/comments/comments";
 import {
   Alert,
   Button,
@@ -13,7 +12,9 @@ import {
   Col,
   Comment,
   Descriptions,
-  notification,
+  Form,
+  Modal,
+  ModalProps,
   PageHeader,
   Popconfirm,
   Progress,
@@ -38,6 +39,7 @@ import { sleep } from "utils/util";
 import { EditProposalForm } from "./proposal_form";
 import { red, green, grey } from "@ant-design/colors";
 import { ProposalStatusView, ProposalVoteView } from "./proposal_view";
+import { SelectRadioField } from "components/shared/input";
 const { Title, Paragraph, Text, Link } = Typography;
 
 type Props = {
@@ -51,6 +53,7 @@ const ProposalPage = (props: Props) => {
 
   const [openEditProposalForm, setOpenEditProposalForm] = useState(false);
   const [openCancelConfirm, setOpenCancelConfirm] = useState(false);
+  const [voteModalOpen, setVoteModalOpen] = useState(false);
   const [applyStatus, setApplyStatus] = useState<
     "open" | "allplyed" | "closed"
   >("allplyed");
@@ -148,9 +151,18 @@ const ProposalPage = (props: Props) => {
                 size="large"
                 type="primary"
                 disabled={proposal()?.status !== "Active"}
+                onClick={() => {
+                  setVoteModalOpen(true);
+                }}
               >
                 投票
               </Button>
+              <VoteModal
+                proposal={proposal() ?? {}}
+                title="投票"
+                open={voteModalOpen}
+                onCancel={() => setVoteModalOpen(false)}
+              />
             </div>
           </ContentBlock>
           <ContentBlock
@@ -211,3 +223,46 @@ const ProposalPage = (props: Props) => {
 };
 
 export default withRouter(ProposalPage);
+
+type VoteModalProps = ModalProps & {
+  proposal: Proposal;
+};
+
+const VoteModal = (props: VoteModalProps) => {
+  type VoteForm = {
+    proposal: Proposal;
+    voteResult?: "for" | "against" | "abstention";
+  };
+  const voteForm = useForm<VoteForm>({
+    proposal: props.proposal,
+  });
+
+  useEffect(() => {
+    voteForm.updateObject("proposal", props.proposal);
+  }, [JSON.stringify(props.proposal)]);
+  return (
+    <Modal {...props}>
+      <Form>
+        <SelectRadioField
+          form={voteForm}
+          attr="voteResult"
+          direction="vertical"
+          selectItems={[
+            {
+              label: "賛成",
+              value: "for",
+            },
+            {
+              label: "反対",
+              value: "against",
+            },
+            {
+              label: "棄権",
+              value: "abstention",
+            },
+          ]}
+        />
+      </Form>
+    </Modal>
+  );
+};

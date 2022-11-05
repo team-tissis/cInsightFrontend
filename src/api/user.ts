@@ -5,6 +5,7 @@ import {
   useDeleteApi,
   useDownloadApi,
   useIndexApi,
+  useShowApi,
   usePostApi,
   usePutApi,
 } from "utils/network/api_hooks";
@@ -13,6 +14,49 @@ import { HttpClient } from "../utils/network/axios";
 
 import { User, UserForm, UserSearchForm } from "entities/user";
 import { PagingResponse } from "entities";
+
+export type UserResponse = BaseResponse & {
+  user: User;
+  count?: number;
+};
+
+export function useFetchUserApi(): ApiSet<UserResponse> & {
+  execute: (id: number) => void;
+} {
+  const api = useShowApi<UserResponse>(new HttpClient(), {
+    initialResponse: { user: {} },
+  });
+
+  const execute = (id: number): void => {
+    const apiPath = `users/${id}/`;
+    api.execute(apiPath);
+  };
+
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
+}
+
+export function useFetchUserByAccountAddressApi(): ApiSet<UserResponse> & {
+  execute: (accountAddress: string) => void;
+} {
+  const api = useShowApi<UserResponse>(new HttpClient(), {
+    initialResponse: { user: {} },
+  });
+
+  const execute = (accountAddress: string): void => {
+    const apiPath = `users/fetch_by_account_address/`;
+    api.execute(apiPath, { accountAddress });
+  };
+
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
+}
 
 type UsersResponse = PagingResponse & {
   results: User[];
@@ -36,10 +80,6 @@ export function useFetchUsersApi(
 
   return { ...api, execute: execute };
 }
-
-type UserResponse = PagingResponse & {
-  user: User;
-};
 
 export function useFetchLoginUserApi(): IndexApiSet<UserResponse> & {
   execute: () => void;

@@ -2,7 +2,7 @@ import { User } from "entities/user";
 import { ConfirmOption, Dimension } from "containers/global_state_container";
 import React, { ReactNode, SetStateAction } from "react";
 
-export type NotificationColor = "success" | "danger" | "warning" | "info";
+export type NotificationColor = "success" | "info" | "warning" | "error";
 
 type GlobalState = {
   user: User;
