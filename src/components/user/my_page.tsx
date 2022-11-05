@@ -91,6 +91,7 @@ const MyPageWithoutSbt = () => {
         form={createUserSbtForm}
         onCancel={() => setOpenCreateUserSbtForm(false)}
         onOk={() => {
+          console.log({ user: account })
           // postする処理
           mint(createUserSbtForm.object.referencerAddress);
           // window.location.replace("/mypage");
@@ -101,7 +102,6 @@ const MyPageWithoutSbt = () => {
         <ContentBlock title="SBTの発行">
           <Button
             onClick={() => {
-              console.log({ user: account })
               setOpenCreateUserSbtForm(true);
             }}
             type="primary"
