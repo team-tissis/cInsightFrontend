@@ -20,10 +20,13 @@ export const UserProfileView = (user: User) => {
   return (
     <Space size={20}>
       {AvatorView(user.eoa, 180)}
-      <Descriptions column={1} bordered>
-        <Descriptions.Item style={{ minWidth: 300 }} label="名前">
-          {user.name}
-        </Descriptions.Item>
+      <Descriptions
+        labelStyle={{ width: 140 }}
+        style={{ minWidth: 400 }}
+        column={1}
+        bordered
+      >
+        <Descriptions.Item label="名前">{user.name}</Descriptions.Item>
         <Descriptions.Item label="メール">{user.mail}</Descriptions.Item>
       </Descriptions>
     </Space>
