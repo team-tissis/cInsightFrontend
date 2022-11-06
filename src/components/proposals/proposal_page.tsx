@@ -28,7 +28,7 @@ import {
 import { LikeOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { GlobalStateContext } from "contexts/global_state_context";
-import { Form, useEffectSkipFirst, useForm } from "utils/hooks";
+import { Form, useEffectSkipFirst, useForm, useQuery } from "utils/hooks";
 import { ContentBlock } from "components/shared/content_block";
 
 import Countdown from "antd/lib/statistic/Countdown";
@@ -105,15 +105,17 @@ const ProposalPage = (props: Props) => {
   useEffect(() => {
     (async function () {
       // TODO: 0 -> propose.id
-      setProposer(await getProposalInfo("proposer", 0));
+      setProposer(await getProposalInfo("proposer", Number(params.id)));
       setDebug(await getProposalCount());
-      setTargets(await getProposalInfo("targets", 0));
-      setValues(await getProposalInfo("values", 0));
-      setSignatures(await getProposalInfo("signatures", 0));
-      setCalldatas(await getProposalInfo("calldatas", 0));
-      setHasVoted(await getAccountVotingInfo("userHasVoted", 0));
-      setSupport(await getAccountVotingInfo("userSupport", 0));
-      setVotes(await getAccountVotingInfo("userVotes", 0));
+      setTargets(await getProposalInfo("targets", Number(params.id)));
+      setValues(await getProposalInfo("values", Number(params.id)));
+      setSignatures(await getProposalInfo("signatures", Number(params.id)));
+      setCalldatas(await getProposalInfo("calldatas", Number(params.id)));
+      setHasVoted(
+        await getAccountVotingInfo("userHasVoted", Number(params.id))
+      );
+      setSupport(await getAccountVotingInfo("userSupport", Number(params.id)));
+      setVotes(await getAccountVotingInfo("userVotes", Number(params.id)));
     })();
   }, []);
 
@@ -125,7 +127,7 @@ const ProposalPage = (props: Props) => {
   return (
     <PageHeader
       onBack={() => props.history.push("/proposals")}
-      title={`Proposal ${proposal()?.id}: ${proposal()?.title}`}
+      title={`Proposal ${proposal()?.web3Id}: ${proposal()?.title}`}
       tags={[ProposalStatusView(proposal()!)]}
       extra={[
         <Popconfirm
@@ -199,7 +201,7 @@ const ProposalPage = (props: Props) => {
                 open={voteModalOpen}
                 onCancel={() => setVoteModalOpen(false)}
                 onSubmit={(form: Form<VoteForm>) => {
-                  vote(proposal()?.id, form.object.voteResult, "");
+                  vote(proposal()?.web3Id, form.object.voteResult, "");
                 }}
               />
             </div>

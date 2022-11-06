@@ -33,7 +33,7 @@ export const ProposalListView = (proposal: Proposal) => {
     >
       <Flex justifyContent="space-between">
         <Space>
-          <div>#{proposal.id}</div>
+          <div>#{proposal.web3Id}</div>
           <div>{proposal.title}</div>
         </Space>
         {ProposalStatusView(proposal)}
