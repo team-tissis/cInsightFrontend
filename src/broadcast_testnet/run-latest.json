@@ -39,7 +39,7 @@
     {
       "hash": "0xea473d32523f6b814123a7293fbbe578b303041f82cfbce57c2368d9a1c411ca",
       "transactionType": "CREATE",
-      "contractName": "Sbt",
+      "contractName": "BonfireProxy",
       "contractAddress": "0x77C1cFcBa6484DDEB23b751Ed09B1b77a1DfbBaA",
       "function": null,
       "arguments": null,
@@ -57,7 +57,7 @@
     {
       "hash": "0x646c637f97c9e440e7b37462380987e0879a10dd5df34b416fef4dc6e6452f77",
       "transactionType": "CREATE",
-      "contractName": "SbtImp",
+      "contractName": "BonfireLogic",
       "contractAddress": "0xBD5aD62085376cdfc6035881cC2BD98254C34c00",
       "function": null,
       "arguments": null,
@@ -144,13 +144,13 @@
     {
       "hash": "0x21b82466620e5854a1dde159f59c6fd0afb6c410e1b1c089a57895e577e3482b",
       "transactionType": "CALL",
-      "contractName": "Sbt",
+      "contractName": "BonfireProxy",
       "contractAddress": "0x77C1cFcBa6484DDEB23b751Ed09B1b77a1DfbBaA",
       "function": "init(address,string,string,string,uint256,address,address)",
       "arguments": [
         "0xf4040Dd187F8cABdc6beb9227F87d5741379E2AC",
         "ChainInsight",
-        "SBT",
+        "BonfireProxy",
         "https://thechaininsight.github.io/sbt/metadata/",
         "50000000000000000",
         "0x2fF31Ae405AaA71c7B3E0150252f60451d0e2507",
