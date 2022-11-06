@@ -347,7 +347,7 @@ const ProposalPage = (props: Props) => {
         </ContentBlock>
         <ContentBlock
           style={{
-            minHeight: 344,
+            minHeight: 244,
           }}
           title="ユーザー情報"
         >
