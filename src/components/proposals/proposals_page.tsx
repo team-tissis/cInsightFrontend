@@ -26,7 +26,7 @@ const ProposalsPage = (props: Props): JSX.Element => {
   const globalState = useContext(GlobalStateContext);
   const defaultNewProposalForm: Proposal = {
     title: "いいね付与数を倍に増やしませんか？",
-    targets: "0x6573330b11f30a3583BD4C15f7cbbBea912e0727",
+    targets: "0x3a76707E7e789FED03C01282D90d5E0a7D13FC1d",
     values: 0,
     signatures: "setMonthlyDistributedFavoNum(uint16)",
     datas: "20",
