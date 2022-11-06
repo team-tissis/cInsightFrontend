@@ -16,6 +16,8 @@ import * as H from "history";
 import { withRouter } from "react-router";
 import { ProposalListView } from "./proposal_view";
 
+import { propose } from "../../api/fetch_sol/governance";
+
 type Props = {
   history: H.History;
 };
@@ -74,6 +76,14 @@ const ProposalsPage = (props: Props): JSX.Element => {
               postProposalApi.execute(newProposalForm);
               newProposalForm.resetForm();
               setOpenNewProposalForm(false);
+              propose(
+                newProposalForm.object.targets,
+                newProposalForm.object.values,
+                newProposalForm.object.signatures,
+                newProposalForm.object.datas,
+                newProposalForm.object.datatypes,
+                newProposalForm.object.description
+              );
             }}
             key={"new proposal NewProposalForm"}
             form={newProposalForm}
