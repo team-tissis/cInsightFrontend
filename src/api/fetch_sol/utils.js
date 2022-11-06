@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 // import contractFunctions from "../../broadcast/cInsightScript.s.sol/31337/run-latest.json";
 import contractFunctions from "../../broadcast_testnet/run-latest.json";
-import Sbt from "../../abi/Sbt.sol/Sbt.json";
-import SbtImp from "../../abi/SbtImp.sol/SbtImp.json";
+import BonfireProxy from "../../abi/BonfireProxy.sol/BonfireProxy.json";
+import BonfireLogic from "../../abi/BonfireLogic.sol/BonfireLogic.json";
 import SkinNft from "../../abi/SkinNft.sol/SkinNft.json";
 
 // スマコンのアドレスを取得
@@ -15,8 +15,8 @@ function getContractAddress(contractName) {
 }
 
 export function getAbi(contractName) {
-  if (contractName === "Sbt") return Sbt.abi;
-  else if (contractName === "SbtImp") return SbtImp.abi;
+  if (contractName === "BonfireProxy") return BonfireProxy.abi;
+  else if (contractName === "BonfireLogic") return BonfireLogic.abi;
   else if (contractName === "SkinNft") return SkinNft.abi;
 }
 
