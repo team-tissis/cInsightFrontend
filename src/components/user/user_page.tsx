@@ -234,7 +234,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             </Col>
             <Col span={8}>
               <Statistic
-                title="来月付与される Maki"
+                title="来月付与される薪"
                 value={makiMemory}
                 valueStyle={{ color: "#3f8600" }}
               />
