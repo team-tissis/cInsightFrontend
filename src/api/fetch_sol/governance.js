@@ -186,17 +186,33 @@ export async function _getProposalInfo(method, proposalResponse) {
 export async function getAccountVotingInfo(method, proposalResponse) {
   const accountAddress = await getCurrentAccountAddress();
   const message = await contract.getReceipt(proposalResponse, accountAddress);
-  console.log(message.hasVoted.toString());
+  const grade = await fetchConnectedAccountInfo("gradeOf");
+  const hasVoted = message.hasVoted;
+
   if (method == "canVote") {
-    const grade = await fetchConnectedAccountInfo("gradeOf");
     return grade >= 1;
   } else if (method == "hasVoted") {
-    return message.hasVoted.toString();
+    if (grade == 0) {
+      return "投票不可能";
+    } else if (hasVoted) {
+      return "投票済";
+    } else {
+      return "未投票";
+    }
   } else if (method == "support") {
-    return message.support.toString();
+    if (!hasVoted) {
+      return "-";
+    } else if (message.support == 0) {
+      return "反対";
+    } else if (message.support == 1) {
+      return "賛成";
+    } else if (message.support == 2) {
+      return "棄権";
+    }
   } else if (method == "votes") {
     return message.votes.toString();
   } else if (method == "canCancel") {
+    console.log(grade >= 1);
     const proposer = getProposalInfo("proposer", proposalResponse);
     return proposer == accountAddress;
   }
