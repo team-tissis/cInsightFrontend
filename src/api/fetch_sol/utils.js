@@ -24,8 +24,6 @@ export function getAbi(contractName) {
     return ChainInsightExecutorV1.abi;
   else if (contractName === "ChainInsightGovernanceProxyV1")
     return ChainInsightGovernanceProxyV1.abi;
-  else if (contractName === "Sbt") return Sbt.abi;
-  else if (contractName === "SbtImp") return SbtImp.abi;
   else if (contractName === "Bonfire") return BonfireProxy.abi;
   else if (contractName === "BonfireLogic") return BonfireLogic.abi;
   else if (contractName === "SkinNft") return SkinNft.abi;
