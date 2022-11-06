@@ -114,6 +114,9 @@ const GlobalStateContainer: React.FC<GlobalStateContainerProps> = (
       default:
         backgroundColor = "inherit";
     }
+    notification.config({
+      maxCount: 1,
+    });
     if (notificationMessage.body) {
       notification[notificationMessage.colorType!]({
         message: notificationMessage.body,
