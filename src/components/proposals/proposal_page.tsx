@@ -199,11 +199,7 @@ const ProposalPage = (props: Props) => {
                 open={voteModalOpen}
                 onCancel={() => setVoteModalOpen(false)}
                 onSubmit={(form: Form<VoteForm>) => {
-                  vote(proposal()?.id, form.object.voteResult, "").catch(
-                    (err) => {
-                      console.log(err); // TODO:
-                    }
-                  );
+                  vote(proposal()?.id, form.object.voteResult, "");
                 }}
               />
             </div>
