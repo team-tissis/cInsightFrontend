@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { ContentBlock } from "components/shared/content_block";
 
-import { getProposalInfo } from "api/fetch_sol/governance";
+import { getProposalInfo, getState } from "api/fetch_sol/governance";
 
 export const ProposalListView = (proposal: Proposal) => {
   const [isHover, setIsHover] = useState(false);
@@ -45,17 +45,23 @@ export const ProposalListView = (proposal: Proposal) => {
   );
 };
 
-export const ProposalStatusView = (proposal: Proposal) => {
-  switch (proposal.status as ProposalStatus) {
-    case "Active":
-      return <Tag color="success">{proposal.status}</Tag>;
-    case "Canceled":
-      return <Tag color="default">{proposal.status}</Tag>;
-    case "Defeated":
-      return <Tag color="error">{proposal.status}</Tag>;
-    case "Executed":
-      return <Tag color="processing">{proposal.status}</Tag>;
-  }
+export const ProposalStatusView = (proposal: Proposal, loadStatus = false) => {
+  const [status, setStatus] = useState<ProposalStatus | undefined>();
+
+  useEffect(() => {
+    if (loadStatus) {
+      (async () => {
+        const _status = await getState(proposal.web3Id);
+        setStatus(_status);
+      })();
+    }
+  }, []);
+
+  return (
+    <Tag color="#faa">
+      {(loadStatus ? status : proposal.status) ?? "UNDEFINED"}
+    </Tag>
+  );
 };
 
 export const ProposalVoteView = (proposal: Proposal) => {

@@ -32,7 +32,7 @@ import { Form, useEffectSkipFirst, useForm, useQuery } from "utils/hooks";
 import { ContentBlock } from "components/shared/content_block";
 
 import Countdown from "antd/lib/statistic/Countdown";
-import { Proposal } from "entities/proposal";
+import { Proposal, ProposalStatus } from "entities/proposal";
 import moment from "moment";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { sleep } from "utils/util";
@@ -77,6 +77,13 @@ const ProposalPage = (props: Props) => {
 
   useEffectSkipFirst(() => {
     globalState.setLoading(proposalApi.loading);
+    if (proposalApi.isSuccess()) {
+      (async () => {
+        console.log("getting status");
+        const _status = await getState(proposalApi.response.proposal.web3Id);
+        setStatus(_status);
+      })();
+    }
   }, [proposalApi.loading]);
 
   useEffectSkipFirst(() => {
@@ -99,17 +106,19 @@ const ProposalPage = (props: Props) => {
   const [support, setSupport] = useState();
   const [votes, setVotes] = useState();
   const [debug, setDebug] = useState();
+  const [status, setStatus] = useState<ProposalStatus | undefined>();
 
   const proposal = (): Proposal | undefined => {
     return {
       ...proposalApi.response?.proposal,
       forCount: forVotes ?? 0,
       againstCount: againstVotes ?? 0,
+      status: status,
     };
   };
 
   console.log(
-    `　canVote: ${canVote} \n`,
+    `canVote: ${canVote} \n`,
     `canCancel: ${canCancel} \n`,
     `forVotes (assume its type is number): ${forVotes} \n`,
     `againstVotes (assume its type is number): ${againstVotes} \n`
@@ -172,13 +181,13 @@ const ProposalPage = (props: Props) => {
             Cancel
           </Button>
         </Popconfirm>,
-        <Button
-          key={"proposal apply button"}
-          style={{ width: "100%" }}
-          onClick={handleEditModalOpen}
-        >
-          編集
-        </Button>,
+        // <Button
+        //   key={"proposal apply button"}
+        //   style={{ width: "100%" }}
+        //   onClick={handleEditModalOpen}
+        // >
+        //   編集
+        // </Button>,
         <EditProposalForm
           open={openEditProposalForm}
           onCancel={() => setOpenEditProposalForm(false)}
