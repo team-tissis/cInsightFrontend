@@ -148,6 +148,7 @@ export async function getProposalInfo(method, proposalResponse) {
 
 export async function _getProposalInfo(method, proposalResponse) {
   console.log("getProposalInfo...");
+  console.log("Current contract is ", contract);
   const message = await contract?.proposals(proposalResponse);
   console.log("done...!");
 
