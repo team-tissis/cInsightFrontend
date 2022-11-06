@@ -32,7 +32,7 @@ const ProposalsPage = (props: Props): JSX.Element => {
     datas: "77",
     datatypes: "uint16",
     description: "xxx",
-    status: "Active",
+    // status: "Active",
   };
   const newProposalForm = useForm<Proposal>(defaultNewProposalForm);
   const searchForm = useForm<ProposalSearchForm>({});
