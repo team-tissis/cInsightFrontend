@@ -62,7 +62,7 @@ const UsersPage = (props: Props): JSX.Element => {
           width: "100%",
           backgroundColor: "inherit",
         }}
-        title={"利用者一覧"}
+        title={"SBTホルダーリスト"}
       >
         <ContentBlock
         // title="勉強会一覧"

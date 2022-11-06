@@ -44,7 +44,7 @@ const Layout = (props: LayoutProps): JSX.Element => {
     },
     {
       key: "/users",
-      label: "利用者",
+      label: "SBTホルダー",
       icon: <UserOutlined />,
       onClick: () => {
         props.history.push("/users");

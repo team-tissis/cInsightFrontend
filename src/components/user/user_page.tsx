@@ -52,7 +52,7 @@ export const UserPage = (props: UserPageProps): JSX.Element => {
         width: "100%",
         backgroundColor: "inherit",
       }}
-      title={"利用者"}
+      title={"SBTホルダー"}
     >
       <UserPageContent />
     </PageHeader>
@@ -224,7 +224,7 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             </Col>
             <Col span={8}>
               <Statistic
-                title="Current Rate"
+                title="Maki"
                 value={maki}
                 valueStyle={{ color: "#3f8600" }}
               />
@@ -234,13 +234,13 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
             </Col>
             <Col span={8}>
               <Statistic
-                title="Current Rate"
+                title="来月付与される Maki"
                 value={makiMemory}
                 valueStyle={{ color: "#3f8600" }}
               />
-              <div style={{ fontSize: 14, paddingTop: 10 }}>
+              {/* <div style={{ fontSize: 14, paddingTop: 10 }}>
                 翌月にレートに反映されます
-              </div>
+              </div> */}
             </Col>
             <Col span={8}>
               <StatistcsLikeBlock title="今月のいいね付与数">

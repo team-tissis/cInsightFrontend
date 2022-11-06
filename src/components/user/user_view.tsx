@@ -26,7 +26,7 @@ export const UserProfileView = (user: User) => {
         column={1}
         bordered
       >
-        <Descriptions.Item label="アカウント">{user.eoa}</Descriptions.Item>
+        <Descriptions.Item label="EOA">{user.eoa}</Descriptions.Item>
         <Descriptions.Item label="名前">{user.name}</Descriptions.Item>
         <Descriptions.Item label="メール">{user.mail}</Descriptions.Item>
       </Descriptions>
