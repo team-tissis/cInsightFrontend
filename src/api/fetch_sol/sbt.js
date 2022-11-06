@@ -2,8 +2,8 @@ import { ethers } from "ethers";
 import { getContract, getAbi, getCurrentAccountAddress } from "./utils";
 
 function getSbtAbiAddedImp(_functionNames) {
-  const abi = getAbi("Sbt");
-  const abiImp = getAbi("SbtImp");
+  const abi = getAbi("Bonfire");
+  const abiImp = getAbi("BonfireLogic");
   for (var i = 0; i < _functionNames.length; i++) {
     abi.push(abiImp.find((v) => v.name === _functionNames[i]));
   }
@@ -21,7 +21,7 @@ const functionNames = [
 const sbtAbi = getSbtAbiAddedImp(functionNames);
 
 export async function fetchConnectedAccountInfo(method, account) {
-  const { contract } = getContract("Sbt", sbtAbi);
+  const { contract } = await getContract("Bonfire", sbtAbi);
   if (account === undefined) {
     account = await getCurrentAccountAddress();
   }
@@ -58,7 +58,7 @@ async function fetchFunction(contract, address, method) {
 }
 
 export async function fetchAccountImageUrl(address) {
-  const { contract } = getContract("Sbt", sbtAbi);
+  const { contract } = await getContract("Bonfire", sbtAbi);
   let response;
 
   if (address === undefined) {
@@ -77,7 +77,7 @@ export async function fetchAccountImageUrl(address) {
 }
 
 export async function fetchReferralRate() {
-  const { contract } = getContract("Sbt");
+  const { contract } = await getContract("Bonfire");
   const message = await contract.referralRate();
   console.log({ referralRate: message });
   return message;
@@ -86,21 +86,21 @@ export async function fetchReferralRate() {
 export async function fetchConnectedAccountReferralNum(account) {
   const referralRate = await fetchReferralRate();
   if (account === undefined) {
-    account = getCurrentAccountAddress();
+    account = await getCurrentAccountAddress();
   }
   const grade = await fetchConnectedAccountInfo("gradeOf", account);
   return referralRate[grade];
 }
 
 export async function fetchMonthlyDistributedFavoNum() {
-  const { contract } = getContract("Sbt");
+  const { contract } = await getContract("Bonfire");
   const message = await contract.monthlyDistributedFavoNum();
   console.log({ monthlyDistributedFavoNum: message.toString() });
   return message.toString();
 }
 
 export async function fetchMintedTokenNumber() {
-  const { contract } = getContract("Sbt");
+  const { contract } = await getContract("Bonfire");
   const message = await contract.mintedTokenNumber();
   console.log({ mintedTokenNumber: message.toString() });
   return message.toString();
@@ -110,14 +110,14 @@ export async function mint(address) {
   // mint
   let mintIndex;
   if (address === undefined) {
-    const { contract } = getContract("Sbt");
-    const options = { value: ethers.utils.parseEther("20.0") };
+    const { contract } = await getContract("Bonfire");
+    const options = { value: ethers.utils.parseEther("0.1") };
     mintIndex = contract.mint(options);
   }
   // mint with referral
   else {
-    const { contract } = getContract("Sbt", sbtAbi);
-    const options = { value: ethers.utils.parseEther("20.0") };
+    const { contract } = await getContract("Bonfire", sbtAbi);
+    const options = { value: ethers.utils.parseEther("0.1") };
     mintIndex = contract.mintWithReferral(address, options);
   }
 
@@ -127,14 +127,14 @@ export async function mint(address) {
 }
 
 export async function refer(address) {
-  const { contract } = getContract("Sbt");
+  const { contract } = await getContract("Bonfire");
   contract.refer(address);
 
   //TODO; refer listen
 }
 
-export function _addFavos(address, num) {
-  const { contract } = getContract("Sbt", sbtAbi);
+export async function _addFavos(address, num) {
+  const { contract } = await getContract("Bonfire", sbtAbi);
   console.log(address);
   contract.addFavos(address, num);
 }
