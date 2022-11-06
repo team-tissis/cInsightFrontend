@@ -147,11 +147,10 @@ export async function getProposalInfo(method, proposalResponse) {
 }
 
 export async function _getProposalInfo(method, proposalResponse) {
+  console.log("getProposalInfo...");
   const message = await contract.proposals(proposalResponse);
+  console.log("done...!");
 
-  // if (method == "id") {
-  //   console.log(message.id.toString());
-  //   return message.id.toString();
   if (method == "proposer") {
     return message.proposer.toString();
   } else if (method == "eta") {
