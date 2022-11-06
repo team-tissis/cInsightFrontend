@@ -140,7 +140,7 @@ export const LecturesTable = <T extends any>(props: LecturesTableProps) => {
       sorter: true,
       width: "20%",
       ...getColumnSearchProps("author"),
-      render: (object: Lecture) => `${object.author?.name ?? "nisshimo"}`,
+      render: (object: Lecture) => `${object.author?.name ?? "--"}`,
     },
     {
       title: "開始日時",

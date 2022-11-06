@@ -25,6 +25,9 @@ import { withRouter } from "react-router";
 import { getLectureStatus, LectureStatusView } from "./lecture_view";
 import { LecturesCalender } from "./lectures_calender";
 
+import { getCurrentAccountAddress } from "api/fetch_sol/utils";
+import { useFetchUserByAccountAddressApi } from "api/user";
+
 type Props = {
   history: H.History;
 };
@@ -60,6 +63,37 @@ const LecturesPage = (props: Props): JSX.Element => {
     }
   }, [postLectureApi.loading]);
 
+  const userApiByAccountAddress = useFetchUserByAccountAddressApi();
+  const [accountAddress, setAccountAddress] = useState<string | undefined>(
+    undefined
+  );
+
+  useEffect(() => {
+    (async () => {
+      const _accountAddress = await getCurrentAccountAddress();
+      setAccountAddress(_accountAddress);
+    })();
+  }, []);
+
+  useEffectSkipFirst(() => {
+    if (accountAddress !== undefined) {
+      userApiByAccountAddress.execute(accountAddress);
+    }
+  }, [accountAddress]);
+
+  useEffectSkipFirst(() => {
+    globalState.setLoading(userApiByAccountAddress.loading);
+    if (userApiByAccountAddress.isSuccess()) {
+      console.log(userApiByAccountAddress.response.user.id);
+      newLectureForm.updateObject(
+        "authorId",
+        userApiByAccountAddress.response.user.id
+      );
+    }
+  }, [userApiByAccountAddress.loading]);
+
+  console.log(newLectureForm.object);
+
   return (
     <>
       <PageHeader
@@ -83,7 +117,9 @@ const LecturesPage = (props: Props): JSX.Element => {
             onCancel={() => setOpenNewLectureForm(false)}
             onOk={() => {
               postLectureApi.execute(newLectureForm);
-              newLectureForm.resetForm();
+              newLectureForm.set({
+                authorId: userApiByAccountAddress.response.user.id,
+              });
               setOpenNewLectureForm(false);
             }}
             key={"new lecture NewLectureForm"}

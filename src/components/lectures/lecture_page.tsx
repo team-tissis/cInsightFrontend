@@ -297,7 +297,7 @@ const LecturePage = (props: Props) => {
                   type="primary"
                   disabled={getLectureStatus(lecture() ?? {}) !== "End"}
                   onClick={() => {
-                    handleEditModalOpen;
+                    console.log(lecture()?.author?.eoa);
                     addFavos(lecture()?.author?.eoa, 1);
                   }}
                 >

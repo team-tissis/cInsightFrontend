@@ -55,7 +55,7 @@ export const UserListView = (user: User, loading = false) => {
         <List.Item.Meta
           avatar={AvatorView(user.eoa)}
           title={user.name}
-          description={<div>token: {user.token}</div>}
+          description={<div>token: {user.eoa}</div>}
         />
       </Skeleton>
     </Card>

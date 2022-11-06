@@ -21,7 +21,7 @@ import { User } from "entities/user";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { useEffect, useState } from "react";
 import { CreateUserSbtForm, EditUserForm, ReferralForm } from "./user_form";
-import { useForm } from "utils/hooks";
+import { useEffectSkipFirst, useForm } from "utils/hooks";
 import * as H from "history";
 import { useCheckHasSbtApi } from "api/meta_mask";
 import { UserPage, UserPageContent } from "./user_page";
@@ -89,6 +89,12 @@ const MyPageWithoutSbt = () => {
     (async () => setAccount(await getCurrentAccountAddress()))();
   }, []);
 
+  useEffectSkipFirst(() => {
+    if (createUserSbtForm.object.eoa) {
+      postUserApi.execute(createUserSbtForm);
+    }
+  }, [createUserSbtForm.object.eoa]);
+
   return (
     <>
       <CreateUserSbtForm
@@ -100,12 +106,7 @@ const MyPageWithoutSbt = () => {
           // postする処理
           try {
             mint(createUserSbtForm.object.referencerAddress);
-            createUserSbtForm.object = {
-              name: createUserSbtForm.object.name,
-              mail: createUserSbtForm.object.mail,
-              eoa: account,
-            };
-            postUserApi.execute(createUserSbtForm);
+            createUserSbtForm.updateObject("eoa", account);
           } catch (e) {
             console.error(e);
           }

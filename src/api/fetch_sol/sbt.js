@@ -84,7 +84,6 @@ export async function fetchReferralRate() {
 }
 
 export async function fetchConnectedAccountReferralNum(account) {
-
   const referralRate = await fetchReferralRate();
   if (account === undefined) {
     account = getCurrentAccountAddress();
@@ -134,7 +133,7 @@ export async function refer(address) {
   //TODO; refer listen
 }
 
-export async function _addFavos(address, num) {
+export function _addFavos(address, num) {
   const { contract } = getContract("Sbt", sbtAbi);
   console.log(address);
   contract.addFavos(address, num);
@@ -143,8 +142,8 @@ export async function _addFavos(address, num) {
 export async function addFavos(address, num) {
   console.log({ addFavos: address });
   try {
-    await _addFavos(address, num);
+    _addFavos(address, num);
   } catch (e) {
-    console.alert(e);
+    console.log(e);
   }
 }

@@ -86,12 +86,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:home_test": "env-cmd -f .env.development_home_test  react-scripts start",
     "start:staging": "env-cmd -f .env.staging  react-scripts start",
     "build:development": "env-cmd -f .env.development react-scripts build",
     "build:staging": "env-cmd -f .env.staging  react-scripts build",
     "build:production": "env-cmd -f .env.production  react-scripts build",
-    "build:production_home_test": "env-cmd -f .env.production_home_test  react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --ext .ts,.tsx ./src",
