@@ -110,6 +110,7 @@ const ProposalPage = (props: Props) => {
       setHasVoted(await getAccountVotingInfo("hasVoted", Number(params.id)));
       setSupport(await getAccountVotingInfo("support", Number(params.id)));
       setVotes(await getAccountVotingInfo("votes", Number(params.id)));
+      setDebug(await getAccountVotingInfo("canCancel", Number(params.id)));
     })();
   }, []);
 
@@ -236,7 +237,6 @@ const ProposalPage = (props: Props) => {
                     }}
                   >
                     {targets}
-                    {/* TODO: {targets} */}
                   </div>
                 </StatistcsLikeBlock>
               </Col>
@@ -250,7 +250,6 @@ const ProposalPage = (props: Props) => {
                     }}
                   >
                     {values}
-                    {/* {values} */}
                   </div>
                 </StatistcsLikeBlock>
               </Col>
@@ -295,7 +294,6 @@ const ProposalPage = (props: Props) => {
                     }}
                   >
                     {proposal()?.datas}
-                    {/* TODO: {signatures} */}
                   </div>
                 </StatistcsLikeBlock>
               </Col>
@@ -335,7 +333,7 @@ const ProposalPage = (props: Props) => {
               </StatistcsLikeBlock>
             </Col>
             <Col span={12}>
-              <StatistcsLikeBlock title="投票結果">
+              <StatistcsLikeBlock title="投票内容">
                 <div
                   style={{
                     fontSize: 20,
@@ -344,7 +342,6 @@ const ProposalPage = (props: Props) => {
                   }}
                 >
                   {support}
-                  {" (0->反対or未投票, 1->賛成, 2->棄権)"}
                 </div>
               </StatistcsLikeBlock>
             </Col>
@@ -365,6 +362,7 @@ const ProposalPage = (props: Props) => {
             </Col>
             <Col span={12}>
               <StatistcsLikeBlock title="hoge">
+                {debug}
                 <div
                   style={{
                     fontSize: 20,
