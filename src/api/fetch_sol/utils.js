@@ -60,7 +60,7 @@ export async function getCurrentAccountAddress() {
 //   const _myaddr = (await signer.getAddress()).toString();
 //   console.log({ wallet: _myaddr });
 //   return _myaddr;
-}
+// }
 
 export async function getContract(contractName, abi) {
   if (abi === undefined) abi = getAbi(contractName);
