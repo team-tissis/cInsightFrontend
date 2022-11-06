@@ -79,7 +79,15 @@ export async function propose(
   return proposalId.toString();
 }
 
-export async function vote(proposalId, support, reason) {
+export async function vote(proposalId, voteResult, reason) {
+  let support;
+  if (voteResult == "against") {
+    support = 0;
+  } else if (voteResult == "for") {
+    support = 1;
+  } else if (voteResult == "abstention") {
+    support = 2;
+  }
   await contract.castVoteWithReason(proposalId, support, reason);
 }
 
