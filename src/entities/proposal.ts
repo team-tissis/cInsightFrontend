@@ -13,6 +13,7 @@ export type ProposalStatus = typeof ProposalStatusList[number];
 
 export type Proposal = {
   id?: string;
+  web3Id?: string;
   title?: string;
 
   transaction?: string;
@@ -29,7 +30,7 @@ export type Proposal = {
   forCount?: number;
   againstCount?: number;
   targets?: string;
-  values?: string;
+  values?: number;
   signatures?: string;
   datas?: string;
   datatypes?: string;

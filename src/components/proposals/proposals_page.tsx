@@ -24,7 +24,17 @@ type Props = {
 
 const ProposalsPage = (props: Props): JSX.Element => {
   const globalState = useContext(GlobalStateContext);
-  const newProposalForm = useForm<Proposal>({});
+  const defaultNewProposalForm: Proposal = {
+    title: "タイトル",
+    targets: "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+    values: 0,
+    signatures: "setMonthlyDistributedFavoNum(uint16)",
+    datas: "77",
+    datatypes: "uint16",
+    description: "xxx",
+    status: "Active",
+  };
+  const newProposalForm = useForm<Proposal>(defaultNewProposalForm);
   const searchForm = useForm<ProposalSearchForm>({});
   const proposalsApi = useFetchProposalsApi(searchForm);
   const postProposalApi = usePostProposalApi();
@@ -71,11 +81,9 @@ const ProposalsPage = (props: Props): JSX.Element => {
           </Button>,
           <NewProposalForm
             open={openNewProposalForm}
+            width={700}
             onCancel={() => setOpenNewProposalForm(false)}
             onOk={() => {
-              postProposalApi.execute(newProposalForm);
-              newProposalForm.resetForm();
-              setOpenNewProposalForm(false);
               propose(
                 newProposalForm.object.targets,
                 newProposalForm.object.values,
@@ -84,6 +92,9 @@ const ProposalsPage = (props: Props): JSX.Element => {
                 newProposalForm.object.datatypes,
                 newProposalForm.object.description
               );
+              postProposalApi.execute(newProposalForm);
+              newProposalForm.resetForm();
+              setOpenNewProposalForm(false);
             }}
             key={"new proposal NewProposalForm"}
             form={newProposalForm}
@@ -100,7 +111,7 @@ const ProposalsPage = (props: Props): JSX.Element => {
             dataSource={proposalsApi.response.results}
             renderItem={(item) => (
               <List.Item
-                onClick={() => props.history.push(`/proposals/${item.id}`)}
+                onClick={() => props.history.push(`/proposals/${item.web3Id}`)}
               >
                 {ProposalListView(item)}
               </List.Item>
