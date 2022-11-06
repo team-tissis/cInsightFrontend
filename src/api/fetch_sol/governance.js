@@ -65,7 +65,7 @@ export async function propose(
   const abiCoder = ethers.utils.defaultAbiCoder;
   const calldatas = abiCoder.encode([datatypes], [datas]);
   console.log("contract set");
-  const proposalResponse = await contract.propose(
+  const proposalResponse = await contract?.propose(
     targets,
     values,
     signatures,
@@ -87,27 +87,27 @@ export async function vote(proposalResponse, voteResult, reason) {
   } else if (voteResult == "abstention") {
     support = 2;
   }
-  await contract.castVoteWithReason(proposalResponse, support, reason);
+  await contract?.castVoteWithReason(proposalResponse, support, reason);
 }
 
 export async function queue(proposalResponse) {
-  await contract.queue(proposalResponse);
+  await contract?.queue(proposalResponse);
 }
 
 export async function execute(proposalResponse) {
-  await contract.execute(proposalResponse);
+  await contract?.execute(proposalResponse);
 }
 
 export async function cancel(proposalResponse) {
-  await contract.cancel(proposalResponse);
+  await contract?.cancel(proposalResponse);
 }
 
 export async function veto(proposalResponse) {
-  await contract.veto(proposalResponse);
+  await contract?.veto(proposalResponse);
 }
 
 export async function getState(proposalResponse) {
-  const message = await contract.state(proposalResponse);
+  const message = await contract?.state(proposalResponse);
   console.log(message);
   return message;
 }
@@ -148,46 +148,46 @@ export async function getProposalInfo(method, proposalResponse) {
 
 export async function _getProposalInfo(method, proposalResponse) {
   console.log("getProposalInfo...");
-  const message = await contract.proposals(proposalResponse);
+  const message = await contract?.proposals(proposalResponse);
   console.log("done...!");
 
   if (method == "proposer") {
-    return message.proposer.toString();
+    return message?.proposer.toString();
   } else if (method == "eta") {
-    return message.eta.toString();
+    return message?.eta.toString();
   } else if (method == "targets") {
-    const message = await contract.getTargets(proposalResponse);
-    return message.toString();
+    const message = await contract?.getTargets(proposalResponse);
+    return message?.toString();
   } else if (method == "values") {
-    const message = await contract.getValues(proposalResponse);
-    return message.toString();
+    const message = await contract?.getValues(proposalResponse);
+    return message?.toString();
   } else if (method == "signatures") {
-    const message = await contract.getSignatures(proposalResponse);
-    return message.toString();
+    const message = await contract?.getSignatures(proposalResponse);
+    return message?.toString();
   } else if (method == "calldatas") {
-    const message = await contract.getCalldatas(proposalResponse);
-    return message.toString();
+    const message = await contract?.getCalldatas(proposalResponse);
+    return message?.toString();
   } else if (method == "startBlock") {
-    return message.startBlock.toString();
+    return message?.startBlock.toString();
   } else if (method == "endBlock") {
-    return message.startBlock.toString();
+    return message?.startBlock.toString();
   } else if (method == "forVotes") {
-    const message = await contract.getForVotes(proposalResponse);
-    return message.toString();
+    const message = await contract?.getForVotes(proposalResponse);
+    return message?.toString();
   } else if (method == "againstVotes") {
-    const message = await contract.getAgainstVotes(proposalResponse);
-    return message.toString();
+    const message = await contract?.getAgainstVotes(proposalResponse);
+    return message?.toString();
   } else if (method == "abstainVotes") {
-    const message = await contract.getAbstainVotes(proposalResponse);
-    return message.toString();
+    const message = await contract?.getAbstainVotes(proposalResponse);
+    return message?.toString();
   }
 }
 
 export async function getAccountVotingInfo(method, proposalResponse) {
   const accountAddress = await getCurrentAccountAddress();
-  const message = await contract.getReceipt(proposalResponse, accountAddress);
+  const message = await contract?.getReceipt(proposalResponse, accountAddress);
   const grade = await fetchConnectedAccountInfo("gradeOf");
-  const hasVoted = message.hasVoted;
+  const hasVoted = message?.hasVoted;
 
   if (method == "canVote") {
     return grade >= 1;
@@ -202,15 +202,15 @@ export async function getAccountVotingInfo(method, proposalResponse) {
   } else if (method == "support") {
     if (!hasVoted) {
       return "-";
-    } else if (message.support == 0) {
+    } else if (message?.support == 0) {
       return "反対";
-    } else if (message.support == 1) {
+    } else if (message?.support == 1) {
       return "賛成";
-    } else if (message.support == 2) {
+    } else if (message?.support == 2) {
       return "棄権";
     }
   } else if (method == "votes") {
-    return message.votes.toString();
+    return message?.votes.toString();
   } else if (method == "canCancel") {
     console.log(grade >= 1);
     const proposer = getProposalInfo("proposer", proposalResponse);
@@ -219,44 +219,44 @@ export async function getAccountVotingInfo(method, proposalResponse) {
 }
 
 // export async function getExecutingGracePeriod() {
-//   const message = await contract.executingGracePeriod();
+//   const message = await contract?.executingGracePeriod();
 //   console.log(message);
-//   return message.toString();
+//   return message?.toString();
 // }
 //
 // export async function getExecutingDelay() {
-//   const message = await contract.executingDelay();
-//   console.log(message.toString());
-//   return message.toString();
+//   const message = await contract?.executingDelay();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 //
 // export async function getVotingPeriod() {
-//   const message = await contract.votingPeriod();
-//   console.log(message.toString());
-//   return message.toString();
+//   const message = await contract?.votingPeriod();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 //
 // export async function getVotingDelay() {
-//   const message = await contract.votingDelay();
-//   console.log(message.toString());
-//   return message.toString();
+//   const message = await contract?.votingDelay();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 //
 // export async function getProposalThreshold() {
-//   const message = await contract.proposalThreshold();
-//   console.log(message.toString());
-//   return message.toString();
+//   const message = await contract?.proposalThreshold();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 //
 // export async function getLatestProposalId(address) {
-//   const message = await contract.latestProposalIds(address);
-//   console.log(message.toString());
-//   return message.toString();
+//   const message = await contract?.latestProposalIds(address);
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 
 export async function getProposalCount() {
-  const message = await contract.proposalCount();
+  const message = await contract?.proposalCount();
   console.log("proposalCount done...");
-  console.log(message.toString());
-  return message.toString();
+  console.log(message?.toString());
+  return message?.toString();
 }
