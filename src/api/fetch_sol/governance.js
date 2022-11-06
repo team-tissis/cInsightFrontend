@@ -196,6 +196,9 @@ export async function getAccountVotingInfo(method, proposalResponse) {
     return message.support.toString();
   } else if (method == "votes") {
     return message.votes.toString();
+  } else if (method == "canCancel") {
+    const proposer = getProposalInfo("proposer", proposalResponse);
+    return proposer == accountAddress;
   }
 }
 
