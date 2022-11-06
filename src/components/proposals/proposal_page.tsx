@@ -105,17 +105,17 @@ const ProposalPage = (props: Props) => {
   useEffect(() => {
     (async function () {
       // TODO: 0 -> propose.id
-      setProposer(await getProposalInfo("proposer", Number(params.id)));
-      setDebug(await getProposalCount());
-      setTargets(await getProposalInfo("targets", Number(params.id)));
-      setValues(await getProposalInfo("values", Number(params.id)));
-      setSignatures(await getProposalInfo("signatures", Number(params.id)));
-      setCalldatas(await getProposalInfo("calldatas", Number(params.id)));
-      setHasVoted(
-        await getAccountVotingInfo("userHasVoted", Number(params.id))
-      );
-      setSupport(await getAccountVotingInfo("userSupport", Number(params.id)));
-      setVotes(await getAccountVotingInfo("userVotes", Number(params.id)));
+      // setProposer(await getProposalInfo("proposer", Number(params.id)));
+      // setDebug(await getProposalCount());
+      // setTargets(await getProposalInfo("targets", Number(params.id)));
+      // setValues(await getProposalInfo("values", Number(params.id)));
+      // setSignatures(await getProposalInfo("signatures", Number(params.id)));
+      // setCalldatas(await getProposalInfo("calldatas", Number(params.id)));
+      // setHasVoted(
+      //   await getAccountVotingInfo("userHasVoted", Number(params.id))
+      // );
+      // setSupport(await getAccountVotingInfo("userSupport", Number(params.id)));
+      // setVotes(await getAccountVotingInfo("userVotes", Number(params.id)));
     })();
   }, []);
 
@@ -271,6 +271,22 @@ const ProposalPage = (props: Props) => {
                     }}
                   >
                     {calldatas}
+                    {/* TODO: {signatures} */}
+                  </div>
+                </StatistcsLikeBlock>
+              </Col>
+            </Row>
+            <Row style={{ marginTop: 30 }}>
+              <Col span={12}>
+                <StatistcsLikeBlock title="データ">
+                  <div
+                    style={{
+                      fontSize: 20,
+                      whiteSpace: "pre-line",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {proposal()?.datas}
                     {/* TODO: {signatures} */}
                   </div>
                 </StatistcsLikeBlock>
