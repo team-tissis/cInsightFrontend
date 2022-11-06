@@ -152,7 +152,7 @@ const LecturePage = (props: Props) => {
           form={editLectureForm}
         />,
       ]}
-      // subTitle="This is a subtitle"
+    // subTitle="This is a subtitle"
     >
       <PurchaseMovieModal
         open={openPurchaseModal}
