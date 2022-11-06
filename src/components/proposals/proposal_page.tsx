@@ -92,13 +92,28 @@ const ProposalPage = (props: Props) => {
   const [calldatas, setCalldatas] = useState();
   const [proposer, setProposer] = useState();
   const [hasVoted, setHasVoted] = useState();
+  const [canVote, setCanVote] = useState<boolean | undefined>();
+  const [canCancel, setCanCancel] = useState<boolean | undefined>();
+  const [forVotes, setForVotes] = useState();
+  const [againstVotes, setAgainstVotes] = useState();
   const [support, setSupport] = useState();
   const [votes, setVotes] = useState();
   const [debug, setDebug] = useState();
 
   const proposal = (): Proposal | undefined => {
-    return proposalApi.response?.proposal;
+    return {
+      ...proposalApi.response?.proposal,
+      forCount: forVotes ?? 0,
+      againstCount: againstVotes ?? 0,
+    };
   };
+
+  console.log(
+    `　canVote: ${canVote} \n`,
+    `canCancel: ${canCancel} \n`,
+    `forVotes (assume its type is number): ${forVotes} \n`,
+    `againstVotes (assume its type is number): ${againstVotes} \n`
+  );
 
   useEffect(() => {
     (async function () {
@@ -108,6 +123,12 @@ const ProposalPage = (props: Props) => {
       setSignatures(await getProposalInfo("signatures", Number(params.id)));
       setCalldatas(await getProposalInfo("calldatas", Number(params.id)));
       setHasVoted(await getAccountVotingInfo("hasVoted", Number(params.id)));
+      setCanVote(await getAccountVotingInfo("canVote", Number(params.id)));
+      setCanCancel(await getAccountVotingInfo("canCancel", Number(params.id)));
+      setForVotes(await getAccountVotingInfo("fotVotes", Number(params.id)));
+      setAgainstVotes(
+        await getAccountVotingInfo("againstVotes", Number(params.id))
+      );
       setSupport(await getAccountVotingInfo("support", Number(params.id)));
       setVotes(await getAccountVotingInfo("votes", Number(params.id)));
       setDebug(await getAccountVotingInfo("canCancel", Number(params.id)));
@@ -118,6 +139,8 @@ const ProposalPage = (props: Props) => {
     setOpenEditProposalForm(true);
     editProposalForm.set(() => proposal() ?? {});
   };
+
+  console.log(hasVoted);
 
   return (
     <PageHeader
@@ -143,7 +166,7 @@ const ProposalPage = (props: Props) => {
             type="primary"
             style={{ width: "100%" }}
             danger
-            disabled={proposal()?.status !== "Active"}
+            disabled={proposal()?.status !== "Active" || !canCancel}
             onClick={() => setOpenCancelConfirm(true)}
           >
             Cancel
@@ -163,7 +186,6 @@ const ProposalPage = (props: Props) => {
             putProposalApi.execute(editProposalForm.object);
             setOpenEditProposalForm(false);
           }}
-          width={700}
           key={"new proposal NewProposalForm"}
           form={editProposalForm}
         />,
@@ -184,7 +206,7 @@ const ProposalPage = (props: Props) => {
               <Button
                 size="large"
                 type="primary"
-                disabled={proposal()?.status !== "Active"}
+                disabled={proposal()?.status !== "Active" || !canVote}
                 onClick={() => {
                   setVoteModalOpen(true);
                 }}
