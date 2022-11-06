@@ -58,7 +58,7 @@ export const ProposalStatusView = (proposal: Proposal, loadStatus = false) => {
   }, []);
 
   return (
-    <Tag color="#faa">
+    <Tag color="#f33a">
       {(loadStatus ? status : proposal.status) ?? "UNDEFINED"}
     </Tag>
   );
