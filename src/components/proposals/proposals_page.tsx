@@ -25,13 +25,14 @@ type Props = {
 const ProposalsPage = (props: Props): JSX.Element => {
   const globalState = useContext(GlobalStateContext);
   const defaultNewProposalForm: Proposal = {
-    title: "タイトル",
-    targets: "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9",
+    title: "いいね付与数を倍に増やしませんか？",
+    targets: "0x6573330b11f30a3583BD4C15f7cbbBea912e0727",
     values: 0,
     signatures: "setMonthlyDistributedFavoNum(uint16)",
-    datas: "77",
+    datas: "20",
     datatypes: "uint16",
-    description: "xxx",
+    description:
+      "現在，1ヶ月につき10のいいねが付与されていますが，DAOの規模拡大に伴って，良い発表やコメントの数が日に日に増えています．それに伴い，付与数も増やすべきだと考えます．",
     // status: "Active",
   };
   const newProposalForm = useForm<Proposal>(defaultNewProposalForm);

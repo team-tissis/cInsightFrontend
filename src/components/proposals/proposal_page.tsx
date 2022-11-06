@@ -73,6 +73,21 @@ const ProposalPage = (props: Props) => {
 
   useEffect(() => {
     proposalApi.execute(Number(params.id));
+    (async function () {
+      setProposer(await getProposalInfo("proposer", Number(params.id)));
+      setTargets(await getProposalInfo("targets", Number(params.id)));
+      setValues(await getProposalInfo("values", Number(params.id)));
+      setSignatures(await getProposalInfo("signatures", Number(params.id)));
+      setCalldatas(await getProposalInfo("calldatas", Number(params.id)));
+      setHasVoted(await getAccountVotingInfo("hasVoted", Number(params.id)));
+      setCanVote(await getAccountVotingInfo("canVote", Number(params.id)));
+      setCanCancel(await getAccountVotingInfo("canCancel", Number(params.id)));
+      setForVotes(await getProposalInfo("forVotes", Number(params.id)));
+      setAgainstVotes(await getProposalInfo("againstVotes", Number(params.id)));
+      setSupport(await getAccountVotingInfo("support", Number(params.id)));
+      setVotes(await getAccountVotingInfo("votes", Number(params.id)));
+      setDebug(await getAccountVotingInfo("canCancel", Number(params.id)));
+    })();
   }, []);
 
   useEffectSkipFirst(() => {
@@ -101,8 +116,8 @@ const ProposalPage = (props: Props) => {
   const [hasVoted, setHasVoted] = useState();
   const [canVote, setCanVote] = useState<boolean | undefined>();
   const [canCancel, setCanCancel] = useState<boolean | undefined>();
-  const [forVotes, setForVotes] = useState();
-  const [againstVotes, setAgainstVotes] = useState();
+  const [forVotes, setForVotes] = useState(undefined);
+  const [againstVotes, setAgainstVotes] = useState(undefined);
   const [support, setSupport] = useState();
   const [votes, setVotes] = useState();
   const [debug, setDebug] = useState();
@@ -111,8 +126,8 @@ const ProposalPage = (props: Props) => {
   const proposal = (): Proposal | undefined => {
     return {
       ...proposalApi.response?.proposal,
-      forCount: forVotes ?? 0,
-      againstCount: againstVotes ?? 0,
+      forCount: Number(forVotes) ?? 0,
+      againstCount: Number(againstVotes) ?? 0,
       status: status,
     };
   };
@@ -123,26 +138,6 @@ const ProposalPage = (props: Props) => {
     `forVotes (assume its type is number): ${forVotes} \n`,
     `againstVotes (assume its type is number): ${againstVotes} \n`
   );
-
-  useEffect(() => {
-    (async function () {
-      setProposer(await getProposalInfo("proposer", Number(params.id)));
-      setTargets(await getProposalInfo("targets", Number(params.id)));
-      setValues(await getProposalInfo("values", Number(params.id)));
-      setSignatures(await getProposalInfo("signatures", Number(params.id)));
-      setCalldatas(await getProposalInfo("calldatas", Number(params.id)));
-      setHasVoted(await getAccountVotingInfo("hasVoted", Number(params.id)));
-      setCanVote(await getAccountVotingInfo("canVote", Number(params.id)));
-      setCanCancel(await getAccountVotingInfo("canCancel", Number(params.id)));
-      setForVotes(await getAccountVotingInfo("fotVotes", Number(params.id)));
-      setAgainstVotes(
-        await getAccountVotingInfo("againstVotes", Number(params.id))
-      );
-      setSupport(await getAccountVotingInfo("support", Number(params.id)));
-      setVotes(await getAccountVotingInfo("votes", Number(params.id)));
-      setDebug(await getAccountVotingInfo("canCancel", Number(params.id)));
-    })();
-  }, []);
 
   const handleEditModalOpen = () => {
     setOpenEditProposalForm(true);
@@ -211,7 +206,13 @@ const ProposalPage = (props: Props) => {
             }}
           >
             <div style={{ textAlign: "center" }}>
-              <div style={{ padding: 10 }}>{ProposalVoteView(proposal()!)}</div>
+              <div style={{ padding: 10 }}>
+                <Skeleton
+                  loading={forVotes === undefined || againstVotes === undefined}
+                >
+                  {ProposalVoteView(proposal()!)}
+                </Skeleton>
+              </div>
               <Button
                 size="large"
                 type="primary"
@@ -390,18 +391,6 @@ const ProposalPage = (props: Props) => {
                 >
                   {votes}
                 </div>
-              </StatistcsLikeBlock>
-            </Col>
-            <Col span={12}>
-              <StatistcsLikeBlock title="hoge">
-                {debug}
-                <div
-                  style={{
-                    fontSize: 20,
-                    whiteSpace: "pre-line",
-                    lineHeight: 1.2,
-                  }}
-                ></div>
               </StatistcsLikeBlock>
             </Col>
           </Row>

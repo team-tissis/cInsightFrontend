@@ -39,7 +39,7 @@ export const ProposalListView = (proposal: Proposal) => {
           <div>#{proposal.web3Id}</div>
           <div>{proposal.title}</div>
         </Space>
-        {ProposalStatusView(proposal)}
+        {ProposalStatusView(proposal, true)}
       </Flex>
     </Card>
   );
@@ -72,18 +72,6 @@ export const ProposalVoteView = (proposal: Proposal) => {
   );
   const forColor = forPercent === 100 ? "#52c41a" : "#1890ff";
 
-  const [forVotes, setForVotes] = useState();
-  const [againstVotes, setAgainstVotes] = useState();
-  const [abstainVotes, setAbstainVotes] = useState();
-
-  useEffect(() => {
-    (async function () {
-      setForVotes(await getProposalInfo("forVotes", Number(params.id)));
-      setAgainstVotes(await getProposalInfo("againVotes", Number(params.id)));
-      setAbstainVotes(await getProposalInfo("abstainVotes", Number(params.id)));
-    })();
-  }, []);
-
   return (
     <Space style={{ width: "100%" }}>
       <Progress
@@ -95,9 +83,9 @@ export const ProposalVoteView = (proposal: Proposal) => {
         format={(_) => (
           <Space direction="vertical">
             <Space style={{ alignItems: "center" }}>
-              <div style={{ color: forColor }}>{forVotes ?? 0}</div>
+              <div style={{ color: forColor }}>{proposal.forCount ?? 0}</div>
               <div style={{ color: "#000" }}>vs</div>
-              <div>{againstVotes ?? 0}</div>
+              <div>{proposal.againstCount ?? 0}</div>
             </Space>
             <div style={{ color: "#8c8c8c", fontSize: 20 }}>
               {/* 定足数: {proposal.quorum ?? 0} */}
