@@ -91,8 +91,6 @@ const ProposalPage = (props: Props) => {
   const [signatures, setSignatures] = useState();
   const [calldatas, setCalldatas] = useState();
   const [proposer, setProposer] = useState();
-  const [forVotes, setForVotes] = useState();
-  const [againstVotes, setAgainstVotes] = useState();
   const [hasVoted, setHasVoted] = useState();
   const [support, setSupport] = useState();
   const [votes, setVotes] = useState();
@@ -105,7 +103,6 @@ const ProposalPage = (props: Props) => {
   useEffect(() => {
     (async function () {
       setProposer(await getProposalInfo("proposer", Number(params.id)));
-      setDebug(await getProposalCount());
       setTargets(await getProposalInfo("targets", Number(params.id)));
       setValues(await getProposalInfo("values", Number(params.id)));
       setSignatures(await getProposalInfo("signatures", Number(params.id)));
