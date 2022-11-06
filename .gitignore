@@ -25,3 +25,5 @@ yarn-error.log*
 
 src/api/Sbt.sol/
 src/api/SkinNft.sol/
+
+.env.development
