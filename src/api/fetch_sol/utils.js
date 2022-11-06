@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-// import contractFunctions from "../../broadcast/cInsightScript.s.sol/31337/run-latest.json";
-import contractFunctions from "../../broadcast_testnet/run-latest.json";
+import contractFunctions from "../../broadcast/cInsightScript.s.sol/31337/run-latest.json";
+// import contractFunctions from "../../broadcast_testnet/run-latest.json";
 import BonfireProxy from "../../abi/BonfireProxy.sol/BonfireProxy.json";
 import BonfireLogic from "../../abi/BonfireLogic.sol/BonfireLogic.json";
 import SkinNft from "../../abi/SkinNft.sol/SkinNft.json";
@@ -47,19 +47,19 @@ export async function getCurrentAccountAddress() {
 }
 
 // MetaMask を使う方法 
-export async function getSigner() {
-  const provider = new ethers.providers.Web3Provider(window.ethereum, 80001);
-  await provider.send('eth_requestAccounts', []);
-  const signer = provider.getSigner();
+// export async function getSigner() {
+//   const provider = new ethers.providers.Web3Provider(window.ethereum, 80001);
+//   await provider.send('eth_requestAccounts', []);
+//   const signer = provider.getSigner();
 
-  return signer;
-}
+//   return signer;
+// }
 
-export async function getCurrentAccountAddress() {
-  const signer = await getSigner();
-  const _myaddr = (await signer.getAddress()).toString();
-  console.log({ wallet: _myaddr });
-  return _myaddr;
+// export async function getCurrentAccountAddress() {
+//   const signer = await getSigner();
+//   const _myaddr = (await signer.getAddress()).toString();
+//   console.log({ wallet: _myaddr });
+//   return _myaddr;
 }
 
 export async function getContract(contractName, abi) {
