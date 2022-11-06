@@ -83,7 +83,9 @@ const ProposalsPage = (props: Props): JSX.Element => {
                 newProposalForm.object.datas,
                 newProposalForm.object.datatypes,
                 newProposalForm.object.description
-              );
+              ).catch((err) => {
+                console.log(err); // TODO:
+              });
             }}
             key={"new proposal NewProposalForm"}
             form={newProposalForm}
