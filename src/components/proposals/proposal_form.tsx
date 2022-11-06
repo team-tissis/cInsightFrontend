@@ -26,7 +26,7 @@ const FormView = (form: Form<Proposal>): JSX.Element => {
   return (
     <AntdForm {...layout}>
       <InputField label="タイトル" form={form} attr="title" />
-      <TextAreaField label="コントラクトアドレス" form={form} attr="targets" />
+      <TextAreaField label="実行コントラクト" form={form} attr="targets" />
       <InputField type="number" label="値" form={form} attr="values" />
       <TextAreaField label="関数シグネチャ" form={form} attr="signatures" />
       <TextAreaField label="データ" form={form} attr="datas" />

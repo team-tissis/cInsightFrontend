@@ -211,7 +211,23 @@ const ProposalPage = (props: Props) => {
           >
             <Row>
               <Col span={12}>
-                <StatistcsLikeBlock title="コントラクトアドレス">
+                <StatistcsLikeBlock title="提案者">
+                  <div
+                    style={{
+                      fontSize: 20,
+                      whiteSpace: "pre-line",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {proposer}
+                  </div>
+                </StatistcsLikeBlock>
+              </Col>
+            </Row>
+
+            <Row style={{ marginTop: 30 }}>
+              <Col span={12}>
+                <StatistcsLikeBlock title="実行コントラクト">
                   <div
                     style={{
                       fontSize: 20,
@@ -251,10 +267,10 @@ const ProposalPage = (props: Props) => {
                     }}
                   >
                     {signatures}
-                    {/* TODO: {signatures} */}
                   </div>
                 </StatistcsLikeBlock>
               </Col>
+              {/*
               <Col span={12}>
                 <StatistcsLikeBlock title="コールデータ">
                   <div
@@ -265,12 +281,10 @@ const ProposalPage = (props: Props) => {
                     }}
                   >
                     {calldatas}
-                    {/* TODO: {signatures} */}
                   </div>
                 </StatistcsLikeBlock>
               </Col>
-            </Row>
-            <Row style={{ marginTop: 30 }}>
+              */}
               <Col span={12}>
                 <StatistcsLikeBlock title="データ">
                   <div
@@ -308,7 +322,7 @@ const ProposalPage = (props: Props) => {
         >
           <Row>
             <Col span={12}>
-              <StatistcsLikeBlock title="投票有無">
+              <StatistcsLikeBlock title="投票ステータス">
                 <div
                   style={{
                     fontSize: 20,
