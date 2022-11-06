@@ -163,6 +163,7 @@ const ProposalPage = (props: Props) => {
             putProposalApi.execute(editProposalForm.object);
             setOpenEditProposalForm(false);
           }}
+          width={700}
           key={"new proposal NewProposalForm"}
           form={editProposalForm}
         />,
