@@ -40,6 +40,14 @@ import { EditProposalForm } from "./proposal_form";
 import { red, green, grey } from "@ant-design/colors";
 import { ProposalStatusView, ProposalVoteView } from "./proposal_view";
 import { SelectRadioField } from "components/shared/input";
+
+import {
+  getProposalCount,
+  getProposalInfo,
+  getState,
+  getAccountVotingInfo,
+} from "api/fetch_sol/governance";
+
 const { Title, Paragraph, Text, Link } = Typography;
 
 type Props = {
@@ -77,9 +85,36 @@ const ProposalPage = (props: Props) => {
     }
   }, [putProposalApi.loading]);
 
+  const [targets, setTargets] = useState();
+  const [values, setValues] = useState();
+  const [signatures, setSignatures] = useState();
+  const [calldatas, setCalldatas] = useState();
+  const [proposer, setProposer] = useState();
+  const [forVotes, setForVotes] = useState();
+  const [againstVotes, setAgainstVotes] = useState();
+  const [hasVoted, setHasVoted] = useState();
+  const [support, setSupport] = useState();
+  const [votes, setVotes] = useState();
+  const [debug, setDebug] = useState();
+
   const proposal = (): Proposal | undefined => {
     return proposalApi.response?.proposal;
   };
+
+  useEffect(() => {
+    (async function () {
+      // TODO: 0 -> propose.id
+      setProposer(await getProposalInfo("proposer", 0));
+      setDebug(await getProposalCount());
+      setTargets(await getProposalInfo("targets", 0));
+      setValues(await getProposalInfo("values", 0));
+      setSignatures(await getProposalInfo("signatures", 0));
+      setCalldatas(await getProposalInfo("calldatas", 0));
+      setHasVoted(await getAccountVotingInfo("userHasVoted", 0));
+      setSupport(await getAccountVotingInfo("userSupport", 0));
+      setVotes(await getAccountVotingInfo("userVotes", 0));
+    })();
+  }, []);
 
   const handleEditModalOpen = () => {
     setOpenEditProposalForm(true);
@@ -151,19 +186,9 @@ const ProposalPage = (props: Props) => {
                 size="large"
                 type="primary"
                 disabled={proposal()?.status !== "Active"}
-                onClick={() => {
-                  setVoteModalOpen(true);
-                }}
               >
                 投票
               </Button>
-              <VoteModal
-                proposal={proposal() ?? {}}
-                title="投票"
-                open={voteModalOpen}
-                onCancel={() => setVoteModalOpen(false)}
-                onSubmit={(form: Form<VoteForm>) => {}}
-              />
             </div>
           </ContentBlock>
           <ContentBlock
@@ -173,25 +198,11 @@ const ProposalPage = (props: Props) => {
                 ? globalState.dimension.width - 128 - 248 - 40
                 : globalState.dimension.width - 248 - 248 - 40,
             }}
-            title="統計情報"
+            title="提案情報"
           >
             <Row>
               <Col span={12}>
-                <StatistcsLikeBlock title="投票締切日">
-                  {proposal()?.endDate}
-                </StatistcsLikeBlock>
-              </Col>
-              <Col>
-                <Countdown
-                  title={`投票締め切りまで`}
-                  value={proposal()?.endDate + " 23:59:59"}
-                  format="D日H時間m分s秒"
-                />
-              </Col>
-            </Row>
-            <Row style={{ marginTop: 30 }}>
-              <Col span={12}>
-                <StatistcsLikeBlock title="トランザクション">
+                <StatistcsLikeBlock title="コントラクトアドレス">
                   <div
                     style={{
                       fontSize: 20,
@@ -199,7 +210,53 @@ const ProposalPage = (props: Props) => {
                       lineHeight: 1.2,
                     }}
                   >
-                    {proposal()?.transaction}
+                    {targets}
+                    {/* TODO: {targets} */}
+                  </div>
+                </StatistcsLikeBlock>
+              </Col>
+              <Col span={12}>
+                <StatistcsLikeBlock title="値">
+                  <div
+                    style={{
+                      fontSize: 20,
+                      whiteSpace: "pre-line",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {values}
+                    {/* {values} */}
+                  </div>
+                </StatistcsLikeBlock>
+              </Col>
+            </Row>
+
+            <Row style={{ marginTop: 30 }}>
+              <Col span={12}>
+                <StatistcsLikeBlock title="関数シグネチャ">
+                  <div
+                    style={{
+                      fontSize: 20,
+                      whiteSpace: "pre-line",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {signatures}
+                    {/* TODO: {signatures} */}
+                  </div>
+                </StatistcsLikeBlock>
+              </Col>
+              <Col span={12}>
+                <StatistcsLikeBlock title="コールデータ">
+                  <div
+                    style={{
+                      fontSize: 20,
+                      whiteSpace: "pre-line",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {calldatas}
+                    {/* TODO: {signatures} */}
                   </div>
                 </StatistcsLikeBlock>
               </Col>
@@ -217,6 +274,69 @@ const ProposalPage = (props: Props) => {
               {proposal()?.description}
             </Paragraph>
           </Typography>
+        </ContentBlock>
+        デバッグ用: {debug}
+        <ContentBlock
+          style={{
+            minHeight: 344,
+          }}
+          title="ユーザー情報"
+        >
+          <Row>
+            <Col span={12}>
+              <StatistcsLikeBlock title="投票有無">
+                <div
+                  style={{
+                    fontSize: 20,
+                    whiteSpace: "pre-line",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {hasVoted}
+                </div>
+              </StatistcsLikeBlock>
+            </Col>
+            <Col span={12}>
+              <StatistcsLikeBlock title="投票結果">
+                <div
+                  style={{
+                    fontSize: 20,
+                    whiteSpace: "pre-line",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {support}
+                  {" (0->反対or未投票, 1->賛成, 2->棄権)"}
+                </div>
+              </StatistcsLikeBlock>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: 30 }}>
+            <Col span={12}>
+              <StatistcsLikeBlock title="保持投票数">
+                <div
+                  style={{
+                    fontSize: 20,
+                    whiteSpace: "pre-line",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {votes}
+                </div>
+              </StatistcsLikeBlock>
+            </Col>
+            <Col span={12}>
+              <StatistcsLikeBlock title="hoge">
+                <div
+                  style={{
+                    fontSize: 20,
+                    whiteSpace: "pre-line",
+                    lineHeight: 1.2,
+                  }}
+                ></div>
+              </StatistcsLikeBlock>
+            </Col>
+          </Row>
         </ContentBlock>
       </Space>
     </PageHeader>
