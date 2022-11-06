@@ -67,11 +67,11 @@ export const AvatorView = (address?: string, size?: number) => {
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
   useEffect(() => {
     (async () => {
-      // const srcResponse = await fetchAccountImageUrl(address);
-      // setSrc(srcResponse);
-      setSrc(
-        "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-      );
+      const srcResponse = await fetchAccountImageUrl(address);
+      setSrc(srcResponse);
+      // setSrc(
+      //   "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+      // );
     })();
   }, []);
   return src === undefined ? (
