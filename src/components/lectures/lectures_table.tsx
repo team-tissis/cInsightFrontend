@@ -110,9 +110,7 @@ export const LecturesTable = <T extends any>(props: LecturesTableProps) => {
     {
       title: "勉強会名",
       width: "20%",
-      sorter: true,
       key: "name",
-      ...getColumnSearchProps("name"),
       render: (object: Lecture) => (
         <Link style={{ textDecoration: "auto" }} to={`lectures/${object.id}`}>
           {object.name}
@@ -122,40 +120,19 @@ export const LecturesTable = <T extends any>(props: LecturesTableProps) => {
     {
       title: "開催状況",
       width: "20%",
-      sorter: true,
       sortOrder: "descend",
       key: "status",
       render: (lecture) => LectureStatusView(lecture),
     },
     {
-      title: "分野",
-      width: "20%",
-      sorter: true,
-      key: "tags",
-      ...getColumnSearchProps("tags"),
-      render: (lecture) => LectureTagsView(lecture),
-    },
-    {
-      title: "主催者",
-      sorter: true,
-      width: "20%",
-      ...getColumnSearchProps("author"),
-      render: (object: Lecture) => `${object.author?.name ?? "--"}`,
-    },
-    {
       title: "開始日時",
       width: "20%",
-      sorter: true,
-      ...getColumnSearchProps("fromDate"),
       render: (object: Lecture) =>
         moment(object.fromDate).format("YYYY/MM/DD HH:mm"),
     },
     {
       title: "終了日時",
       width: "20%",
-      sorter: true,
-      filtered: true,
-      ...getColumnSearchProps("toDate"),
       render: (object: Lecture) =>
         moment(object.toDate).format("YYYY/MM/DD HH:mm"),
     },
@@ -174,7 +151,6 @@ export const LecturesTable = <T extends any>(props: LecturesTableProps) => {
       title: "作成日",
       dataIndex: "createdAt",
       width: "20%",
-      sorter: true,
     },
   ];
 
@@ -183,16 +159,16 @@ export const LecturesTable = <T extends any>(props: LecturesTableProps) => {
       columns={columns}
       rowKey={(object) => String(object.id)}
       dataSource={props.data}
-      pagination={props.tableParams.pagination}
+      // pagination={props.tableParams.pagination}
       loading={props.loading}
-      onChange={(pagination, filters, sorter, extra) => {
-        props.setTableParams({
-          pagination,
-          filters,
-          sorter,
-          extra,
-        });
-      }}
+      // onChange={(pagination, filters, sorter, extra) => {
+      //   props.setTableParams({
+      //     pagination,
+      //     filters,
+      //     sorter,
+      //     extra,
+      //   });
+      // }}
       scroll={{
         y: "calc(100vh - 280px)",
         x: globalState.dimension.width - 120,

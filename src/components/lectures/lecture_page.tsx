@@ -64,9 +64,7 @@ const LecturePage = (props: Props) => {
   const [applyStatus, setApplyStatus] = useState<
     "open" | "allplyed" | "closed"
   >("allplyed");
-  const editLectureForm = useForm<Lecture>({
-    author: { name: "nisshimo" },
-  });
+  const editLectureForm = useForm<Lecture>({});
   const putLectureApi = usePutLectureApi();
   const deleteLectureApi = useDeleteLectureApi();
 
@@ -105,6 +103,8 @@ const LecturePage = (props: Props) => {
     setOpenEditLectureForm(true);
     editLectureForm.set(() => lecture() ?? {});
   };
+
+  console.log(editLectureForm.object);
 
   return (
     <PageHeader

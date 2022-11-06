@@ -57,8 +57,8 @@ const FormView = (form: Form<Lecture>): JSX.Element => {
             },
             format: "YYYY/MM/DD HH:mm",
             defaultValue: [
-              moment(form.object.fromDate),
-              moment(form.object.toDate),
+              moment(form.object.fromDate, "YYYY/MM/DD HH:mm"),
+              moment(form.object.toDate, "YYYY/MM/DD HH:mm"),
             ],
             disabledDate: (current) => {
               const customDate = moment().format("YYYY-MM-DD");
