@@ -96,13 +96,13 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
       // マイページのとき
       // ToDo1: アカウントアドレスを取得
       (async () => {
-        const _accountAddress = await getCurrentAccountAddress()
-        setAccountAddress(_accountAddress)
+        const _accountAddress = await getCurrentAccountAddress();
+        setAccountAddress(_accountAddress);
       })();
     }
   }, []);
 
-  useEffect(() => {
+  useEffectSkipFirst(() => {
     if (accountAddress !== undefined) {
       // マイページのとき
       // このスコープ内はこのままでよき
@@ -123,24 +123,42 @@ export const UserPageContent = (props: UserPageContentProps): JSX.Element => {
     globalState.setLoading(userApiByAccountAddress.loading);
     // この部分が実行されるのは、マイページのときのみ
     // このスコープ内もこのままでよき
-    if (userApiByAccountAddress.isSuccess()) {
+    if (userApiByAccountAddress.isSuccess() && props.isMyPage) {
       editUserForm.set(userApiByAccountAddress.response.user);
     }
   }, [userApiByAccountAddress.loading]);
 
-  useEffect(() => {
+  useEffectSkipFirst(() => {
     globalState.setLoading(userApi.loading);
-    if (userApi.isSuccess()) {
+    if (userApi.isSuccess() && !props.isMyPage) {
       // この部分が実行されるのは、マイページではないときのみ
       (async function () {
         console.log(userApi.response.user.eoa); // eoaはこれで取れる
         // ToDo2. 以下を、↑のeoaを渡す形に書き換える
-        setFavo(await fetchConnectedAccountInfo("favoOf", userApi.response.user.eoa));
-        setGrade(await fetchConnectedAccountInfo("gradeOf", userApi.response.user.eoa));
-        setMaki(await fetchConnectedAccountInfo("makiOf", userApi.response.user.eoa));
-        setMakiMemory(await fetchConnectedAccountInfo("makiMemoryOf", userApi.response.user.eoa));
-        setReferral(await fetchConnectedAccountInfo("referralOf", userApi.response.user.eoa));
-        setReferralRemain(await fetchConnectedAccountReferralNum(userApi.response.user.eoa));
+        setFavo(
+          await fetchConnectedAccountInfo("favoOf", userApi.response.user.eoa)
+        );
+        setGrade(
+          await fetchConnectedAccountInfo("gradeOf", userApi.response.user.eoa)
+        );
+        setMaki(
+          await fetchConnectedAccountInfo("makiOf", userApi.response.user.eoa)
+        );
+        setMakiMemory(
+          await fetchConnectedAccountInfo(
+            "makiMemoryOf",
+            userApi.response.user.eoa
+          )
+        );
+        setReferral(
+          await fetchConnectedAccountInfo(
+            "referralOf",
+            userApi.response.user.eoa
+          )
+        );
+        setReferralRemain(
+          await fetchConnectedAccountReferralNum(userApi.response.user.eoa)
+        );
         setMonthlyDistributedFavoNum(await fetchMonthlyDistributedFavoNum());
       })();
     }

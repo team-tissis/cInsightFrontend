@@ -4,6 +4,7 @@ import {
   Form,
   PageHeader,
   Row,
+  Skeleton,
   Space,
   Statistic,
   Switch,
@@ -55,21 +56,23 @@ export const MyPage = (props: Props) => {
         backgroundColor: "inherit",
       }}
       title={"マイページ"}
-    // extra={[
-    //   <Form.Item label="SBT" key="switch has sbt flag">
-    //     <Switch
-    //       checkedChildren={"Exist"}
-    //       unCheckedChildren={"Not Exist"}
-    //       checked={checkHasSbtApi.response?.hasSbt}
-    //       onChange={(hasSbt) => {
-    //         checkHasSbtApi.setResponse({ hasSbt });
-    //       }}
-    //     />
-    //   </Form.Item>,
-    // ]}
+      // extra={[
+      //   <Form.Item label="SBT" key="switch has sbt flag">
+      //     <Switch
+      //       checkedChildren={"Exist"}
+      //       unCheckedChildren={"Not Exist"}
+      //       checked={checkHasSbtApi.response?.hasSbt}
+      //       onChange={(hasSbt) => {
+      //         checkHasSbtApi.setResponse({ hasSbt });
+      //       }}
+      //     />
+      //   </Form.Item>,
+      // ]}
     >
       {/* {checkHasSbtApi.response?.hasSbt ? ( */}
-      {hasSbt != 0 ? <UserPageContent isMyPage /> : <MyPageWithoutSbt />}
+      <Skeleton loading={hasSbt === undefined}>
+        {hasSbt !== 0 ? <UserPageContent isMyPage /> : <MyPageWithoutSbt />}
+      </Skeleton>
     </PageHeader>
   );
 };
@@ -93,11 +96,15 @@ const MyPageWithoutSbt = () => {
         form={createUserSbtForm}
         onCancel={() => setOpenCreateUserSbtForm(false)}
         onOk={() => {
-          console.log({ user: account })
+          console.log({ user: account });
           // postする処理
           try {
             mint(createUserSbtForm.object.referencerAddress);
-            createUserSbtForm.object = { name: createUserSbtForm.object.name, mail: createUserSbtForm.object.mail, eoa: account };
+            createUserSbtForm.object = {
+              name: createUserSbtForm.object.name,
+              mail: createUserSbtForm.object.mail,
+              eoa: account,
+            };
             postUserApi.execute(createUserSbtForm);
           } catch (e) {
             console.error(e);
