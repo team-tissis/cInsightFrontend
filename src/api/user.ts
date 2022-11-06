@@ -96,6 +96,29 @@ export function useFetchLoginUserApi(): IndexApiSet<UserResponse> & {
   return { ...api, execute: execute };
 }
 
+export function usePostUserApi(): ApiSet<BaseResponse> & {
+  execute: (form: Form<UserForm>) => void;
+} {
+  const api = usePostApi<BaseResponse, UserForm>(
+    new HttpClient(),
+    {
+      initialResponse: {},
+    },
+    { formatJson: true }
+  );
+
+  const execute = (form: Form<UserForm>) => {
+    const apiPath = `users/`;
+    api.execute(apiPath, form);
+  };
+
+  return {
+    ...api,
+    isSuccess: () => !api.loading && !api.isError,
+    execute: execute,
+  };
+}
+
 export function usePutUserApi(): ApiSet<BaseResponse> & {
   execute: (object: User) => void;
 } {
