@@ -11,8 +11,11 @@ import {
 import { CSSProperties } from "styled-components";
 import moment from "moment";
 import { Flex } from "components/shared/flex";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import { ContentBlock } from "components/shared/content_block";
+
+import { getProposalInfo } from "api/fetch_sol/governance";
 
 export const ProposalListView = (proposal: Proposal) => {
   const [isHover, setIsHover] = useState(false);
@@ -56,11 +59,24 @@ export const ProposalStatusView = (proposal: Proposal) => {
 };
 
 export const ProposalVoteView = (proposal: Proposal) => {
+  const params = useParams<{ id: string }>();
   const forPercent = Math.round(
     (100 * (proposal.forCount ?? 0)) /
       (proposal.forCount! + proposal.againstCount! || 1)
   );
   const forColor = forPercent === 100 ? "#52c41a" : "#1890ff";
+
+  const [forVotes, setForVotes] = useState();
+  const [againstVotes, setAgainstVotes] = useState();
+  const [abstainVotes, setAbstainVotes] = useState();
+
+  useEffect(() => {
+    (async function () {
+      setForVotes(await getProposalInfo("forVotes", Number(params.id)));
+      setAgainstVotes(await getProposalInfo("againVotes", Number(params.id)));
+      setAbstainVotes(await getProposalInfo("abstainVotes", Number(params.id)));
+    })();
+  }, []);
 
   return (
     <Space style={{ width: "100%" }}>
@@ -73,12 +89,12 @@ export const ProposalVoteView = (proposal: Proposal) => {
         format={(_) => (
           <Space direction="vertical">
             <Space style={{ alignItems: "center" }}>
-              <div style={{ color: forColor }}>{proposal.forCount ?? 0}</div>
+              <div style={{ color: forColor }}>{forVotes ?? 0}</div>
               <div style={{ color: "#000" }}>vs</div>
-              <div>{proposal.againstCount ?? 0}</div>
+              <div>{againstVotes ?? 0}</div>
             </Space>
             <div style={{ color: "#8c8c8c", fontSize: 20 }}>
-              定足数: {proposal.quorum ?? 0}
+              {/* 定足数: {proposal.quorum ?? 0} */}
             </div>
           </Space>
         )}
