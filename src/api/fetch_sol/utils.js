@@ -7,6 +7,7 @@ import SkinNft from "../../abi/SkinNft.sol/SkinNft.json";
 
 // スマコンのアドレスを取得
 function getContractAddress(contractName) {
+  console.log(contractFunctions);
   const contractAddress = contractFunctions.transactions.find(
     (v) => v.contractName === contractName
   ).contractAddress;
@@ -15,7 +16,7 @@ function getContractAddress(contractName) {
 }
 
 export function getAbi(contractName) {
-  if (contractName === "BonfireProxy") return BonfireProxy.abi;
+  if (contractName === "Bonfire") return BonfireProxy.abi;
   else if (contractName === "BonfireLogic") return BonfireLogic.abi;
   else if (contractName === "SkinNft") return SkinNft.abi;
 }
