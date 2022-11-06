@@ -44,14 +44,9 @@ import { SelectRadioField } from "components/shared/input";
 import {
   getProposalCount,
   getProposalInfo,
-<<<<<<< HEAD
   getAccountVotingInfo,
   getState,
   vote,
-=======
-  getState,
-  getAccountVotingInfo,
->>>>>>> eabe15c (MOD: proposal page)
 } from "api/fetch_sol/governance";
 
 const { Title, Paragraph, Text, Link } = Typography;
@@ -192,6 +187,9 @@ const ProposalPage = (props: Props) => {
                 size="large"
                 type="primary"
                 disabled={proposal()?.status !== "Active"}
+                onClick={() => {
+                  setVoteModalOpen(true);
+                }}
               >
                 投票
               </Button>
@@ -290,7 +288,6 @@ const ProposalPage = (props: Props) => {
             </Paragraph>
           </Typography>
         </ContentBlock>
-        デバッグ用: {debug}
         <ContentBlock
           style={{
             minHeight: 344,
