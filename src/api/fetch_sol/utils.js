@@ -1,6 +1,9 @@
 import { ethers } from "ethers";
 import contractFunctions from "../../broadcast/cInsightScript.s.sol/31337/run-latest.json";
 // import contractFunctions from "../../broadcast_testnet/run-latest.json";
+import ChainInsightLogicV1 from "../../abi/LogicV1.sol/ChainInsightLogicV1.json";
+import ChainInsightExecutorV1 from "../../abi/ExecutorV1.sol/ChainInsightExecutorV1.json";
+import ChainInsightGovernanceProxyV1 from "../../abi/ProxyV1.sol/ChainInsightGovernanceProxyV1.json";
 import BonfireProxy from "../../abi/BonfireProxy.sol/Bonfire.json";
 import BonfireLogic from "../../abi/BonfireLogic.sol/BonfireLogic.json";
 import SkinNft from "../../abi/SkinNft.sol/SkinNft.json";
@@ -16,7 +19,12 @@ function getContractAddress(contractName) {
 }
 
 export function getAbi(contractName) {
-  if (contractName === "Bonfire") return BonfireProxy.abi;
+  if (contractName === "ChainInsightLogicV1") return ChainInsightLogicV1.abi;
+  else if (contractName === "ChainInsightExecutorV1")
+    return ChainInsightExecutorV1.abi;
+  else if (contractName === "ChainInsightGovernanceProxyV1")
+    return ChainInsightGovernanceProxyV1.abi;
+  else if (contractName === "Bonfire") return BonfireProxy.abi;
   else if (contractName === "BonfireLogic") return BonfireLogic.abi;
   else if (contractName === "SkinNft") return SkinNft.abi;
 }
@@ -31,7 +39,10 @@ export function getAbi(contractName) {
 // (7) 0x14dc79964da2c08b23698b3d3cc7ca32193d9955 (10000 ETH)
 // (8) 0x23618e81e3f5cdf7f54c3d65f7fbc0abf5b21e8f (10000 ETH)
 // (9) 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 (10000 ETH)
-const msgSender = 2;
+const msgSender = 0; // 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+// const msgSender = 1; // 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+// const msgSender = 2; // 0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc
+// const msgSender = 3; // 0x90f79bf6eb2c4f870365e785982e1f101e93b906
 
 // ローカルネットワークにアクセスする方法（ http://localhost:8545 が指定される）
 export async function getSigner() {
@@ -47,7 +58,7 @@ export async function getCurrentAccountAddress() {
   return accounts[msgSender];
 }
 
-// MetaMask を使う方法 
+// MetaMask を使う方法
 // export async function getSigner() {
 //   const provider = new ethers.providers.Web3Provider(window.ethereum, 80001);
 //   await provider.send('eth_requestAccounts', []);
