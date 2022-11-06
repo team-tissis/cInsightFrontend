@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import contractFunctions from "../../broadcast/cInsightScript.s.sol/31337/run-latest.json";
 // import contractFunctions from "../../broadcast_testnet/run-latest.json";
-import BonfireProxy from "../../abi/BonfireProxy.sol/BonfireProxy.json";
+import BonfireProxy from "../../abi/BonfireProxy.sol/Bonfire.json";
 import BonfireLogic from "../../abi/BonfireLogic.sol/BonfireLogic.json";
 import SkinNft from "../../abi/SkinNft.sol/SkinNft.json";
 
