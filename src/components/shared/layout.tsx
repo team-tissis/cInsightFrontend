@@ -96,7 +96,7 @@ const Layout = (props: LayoutProps): JSX.Element => {
                 fontWeight: 500,
               }}
             >
-              Daofication
+              ChainInsight
             </div>
           )}
         </Flex>
