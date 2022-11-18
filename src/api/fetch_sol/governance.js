@@ -37,11 +37,6 @@ const functionNames = [
 
 const proxyExtendedAbi = getProxyAbiAddedLogic(functionNames);
 
-const { contract } = getContract(
-  "ChainInsightGovernanceProxyV1",
-  proxyExtendedAbi
-);
-
 function getProxyAbiAddedLogic(_functionNames) {
   const abi = getAbi("ChainInsightGovernanceProxyV1");
   const abiLogic = getAbi("ChainInsightLogicV1");
@@ -59,13 +54,17 @@ export async function propose(
   datatypes,
   description
 ) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
   console.log("propose start ...");
   console.log("targets, values, signatures, datas, datatypes, description");
   console.log(targets, values, signatures, datas, datatypes, description);
   const abiCoder = ethers.utils.defaultAbiCoder;
   const calldatas = abiCoder.encode([datatypes], [datas]);
   console.log("contract set");
-  const proposalResponse = await contract.propose(
+  const proposalId = await contract.propose(
     targets,
     values,
     signatures,
@@ -74,11 +73,15 @@ export async function propose(
   );
   console.log("propose end ...");
   console.log("proposeResponse:");
-  console.log(proposalResponse);
-  return proposalResponse;
+  console.log(proposalId);
+  return proposalId;
 }
 
-export async function vote(proposalResponse, voteResult, reason) {
+export async function vote(proposalId, voteResult, reason) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
   let support;
   if (voteResult == "against") {
     support = 0;
@@ -87,29 +90,69 @@ export async function vote(proposalResponse, voteResult, reason) {
   } else if (voteResult == "abstention") {
     support = 2;
   }
-  await contract.castVoteWithReason(proposalResponse, support, reason);
+  await contract.castVoteWithReason(proposalId, support, reason);
 }
 
-export async function queue(proposalResponse) {
-  await contract.queue(proposalResponse);
+export async function queue(proposalId) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
+  await contract.queue(proposalId);
 }
 
-export async function execute(proposalResponse) {
-  await contract.execute(proposalResponse);
+export async function execute(proposalId) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
+  await contract.execute(proposalId);
 }
 
-export async function cancel(proposalResponse) {
-  await contract.cancel(proposalResponse);
+export async function cancel(proposalId) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
+  await contract.cancel(proposalId);
 }
 
-export async function veto(proposalResponse) {
-  await contract.veto(proposalResponse);
+export async function veto(proposalId) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
+  await contract.veto(proposalId);
 }
 
-export async function getState(proposalResponse) {
-  const message = await contract.state(proposalResponse);
+export async function getState(proposalId) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
+  const message = await contract.state(proposalId);
   console.log(message);
-  return message;
+  if (message == 0) {
+    return "Pending";
+  } else if (message == 1) {
+    return "Active";
+  } else if (message == 2) {
+    return "Canceled";
+  } else if (message == 3) {
+    return "Defeated";
+  } else if (message == 4) {
+    return "Succeeded";
+  } else if (message == 5) {
+    return "Queued";
+  } else if (message == 6) {
+    return "Expired";
+  } else if (message == 7) {
+    return "Executed";
+  } else if (message == 8) {
+    return "Vetoed";
+  } else {
+    return undefined;
+  }
 }
 // if (message == 0) {
 //   return "Pending";
@@ -132,62 +175,71 @@ export async function getState(proposalResponse) {
 //   return message;
 // }
 
-export async function getProposalInfo(method, proposalResponse) {
-  if (proposalResponse == undefined) {
+export async function getProposalInfo(method, proposalId) {
+  if (proposalId == undefined) {
     const proposalCount = await getProposalCount();
     var proposalInfos = [];
 
     for (let i = 0; i < proposalCount; i++) {
-      proposalInfos.push(_getProposalInfo(method, proposalResponse));
+      proposalInfos.push(_getProposalInfo(method, proposalId));
       return proposalInfos;
     }
   } else {
-    return _getProposalInfo(method, proposalResponse);
+    return _getProposalInfo(method, proposalId);
   }
 }
 
-export async function _getProposalInfo(method, proposalResponse) {
+export async function _getProposalInfo(method, proposalId) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
   console.log("getProposalInfo...");
-  const message = await contract.proposals(proposalResponse);
+  console.log("Current contract is ", contract);
+  const message = await contract.proposals(proposalId);
   console.log("done...!");
 
   if (method == "proposer") {
-    return message.proposer.toString();
+    return message?.proposer.toString();
   } else if (method == "eta") {
-    return message.eta.toString();
+    return message?.eta.toString();
   } else if (method == "targets") {
-    const message = await contract.getTargets(proposalResponse);
-    return message.toString();
+    const message = await contract.getTargets(proposalId);
+    return message?.toString();
   } else if (method == "values") {
-    const message = await contract.getValues(proposalResponse);
-    return message.toString();
+    const message = await contract.getValues(proposalId);
+    return message?.toString();
   } else if (method == "signatures") {
-    const message = await contract.getSignatures(proposalResponse);
-    return message.toString();
+    const message = await contract.getSignatures(proposalId);
+    return message?.toString();
   } else if (method == "calldatas") {
-    const message = await contract.getCalldatas(proposalResponse);
-    return message.toString();
+    const message = await contract.getCalldatas(proposalId);
+    return message?.toString();
   } else if (method == "startBlock") {
-    return message.startBlock.toString();
+    return message?.startBlock.toString();
   } else if (method == "endBlock") {
-    return message.startBlock.toString();
+    return message?.startBlock.toString();
   } else if (method == "forVotes") {
-    const message = await contract.getForVotes(proposalResponse);
-    return message.toString();
+    const message = await contract.getForVotes(proposalId);
+    return message?.toString();
   } else if (method == "againstVotes") {
-    const message = await contract.getAgainstVotes(proposalResponse);
-    return message.toString();
+    const message = await contract.getAgainstVotes(proposalId);
+    return message?.toString();
   } else if (method == "abstainVotes") {
-    const message = await contract.getAbstainVotes(proposalResponse);
-    return message.toString();
+    const message = await contract.getAbstainVotes(proposalId);
+    return message?.toString();
   }
 }
 
-export async function getAccountVotingInfo(method, proposalResponse) {
+export async function getAccountVotingInfo(method, proposalId) {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
   const accountAddress = await getCurrentAccountAddress();
-  const message = await contract.getReceipt(proposalResponse, accountAddress);
+  const message = await contract.getReceipt(proposalId, accountAddress);
   const grade = await fetchConnectedAccountInfo("gradeOf");
-  const hasVoted = message.hasVoted;
+  const hasVoted = message?.hasVoted;
 
   if (method == "canVote") {
     return grade >= 1;
@@ -202,18 +254,18 @@ export async function getAccountVotingInfo(method, proposalResponse) {
   } else if (method == "support") {
     if (!hasVoted) {
       return "-";
-    } else if (message.support == 0) {
+    } else if (message?.support == 0) {
       return "反対";
-    } else if (message.support == 1) {
+    } else if (message?.support == 1) {
       return "賛成";
-    } else if (message.support == 2) {
+    } else if (message?.support == 2) {
       return "棄権";
     }
   } else if (method == "votes") {
-    return message.votes.toString();
+    return message?.votes.toString();
   } else if (method == "canCancel") {
     console.log(grade >= 1);
-    const proposer = getProposalInfo("proposer", proposalResponse);
+    const proposer = getProposalInfo("proposer", proposalId);
     return proposer == accountAddress;
   }
 }
@@ -221,42 +273,46 @@ export async function getAccountVotingInfo(method, proposalResponse) {
 // export async function getExecutingGracePeriod() {
 //   const message = await contract.executingGracePeriod();
 //   console.log(message);
-//   return message.toString();
+//   return message?.toString();
 // }
 //
 // export async function getExecutingDelay() {
 //   const message = await contract.executingDelay();
-//   console.log(message.toString());
-//   return message.toString();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 //
 // export async function getVotingPeriod() {
 //   const message = await contract.votingPeriod();
-//   console.log(message.toString());
-//   return message.toString();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 //
 // export async function getVotingDelay() {
 //   const message = await contract.votingDelay();
-//   console.log(message.toString());
-//   return message.toString();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 //
 // export async function getProposalThreshold() {
 //   const message = await contract.proposalThreshold();
-//   console.log(message.toString());
-//   return message.toString();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 //
 // export async function getLatestProposalId(address) {
 //   const message = await contract.latestProposalIds(address);
-//   console.log(message.toString());
-//   return message.toString();
+//   console.log(message?.toString());
+//   return message?.toString();
 // }
 
 export async function getProposalCount() {
+  const { contract } = await getContract(
+    "ChainInsightGovernanceProxyV1",
+    proxyExtendedAbi
+  );
   const message = await contract.proposalCount();
   console.log("proposalCount done...");
-  console.log(message.toString());
-  return message.toString();
+  console.log(message?.toString());
+  return message?.toString();
 }

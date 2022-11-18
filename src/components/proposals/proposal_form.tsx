@@ -33,9 +33,8 @@ const FormView = (form: Form<Proposal>): JSX.Element => {
       <TextAreaField label="データ型" form={form} attr="datatypes" />
       <TextAreaField label="詳細" form={form} attr="description" />
       {/*
-        temp
+              <TextAreaField label="状態" form={form} attr="status" />
       */}
-      <TextAreaField label="状態" form={form} attr="status" />
     </AntdForm>
   );
 };

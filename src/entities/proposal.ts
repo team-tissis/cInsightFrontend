@@ -3,10 +3,16 @@ import { Transaction } from "./transaction";
 import { User } from "./user";
 
 export const ProposalStatusList = [
+  "Pending",
   "Active",
   "Canceled",
   "Defeated",
+  "Succeeded",
+  "Queued",
+  "Expired",
   "Executed",
+  "Vetoed",
+  undefined,
 ] as const;
 
 export type ProposalStatus = typeof ProposalStatusList[number];

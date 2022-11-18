@@ -32,7 +32,7 @@ import { Form, useEffectSkipFirst, useForm, useQuery } from "utils/hooks";
 import { ContentBlock } from "components/shared/content_block";
 
 import Countdown from "antd/lib/statistic/Countdown";
-import { Proposal } from "entities/proposal";
+import { Proposal, ProposalStatus } from "entities/proposal";
 import moment from "moment";
 import { StatistcsLikeBlock } from "components/shared/statistics_like_block";
 import { sleep } from "utils/util";
@@ -73,10 +73,32 @@ const ProposalPage = (props: Props) => {
 
   useEffect(() => {
     proposalApi.execute(Number(params.id));
+    (async function () {
+      setProposer(await getProposalInfo("proposer", Number(params.id)));
+      setTargets(await getProposalInfo("targets", Number(params.id)));
+      setValues(await getProposalInfo("values", Number(params.id)));
+      setSignatures(await getProposalInfo("signatures", Number(params.id)));
+      setCalldatas(await getProposalInfo("calldatas", Number(params.id)));
+      setHasVoted(await getAccountVotingInfo("hasVoted", Number(params.id)));
+      setCanVote(await getAccountVotingInfo("canVote", Number(params.id)));
+      setCanCancel(await getAccountVotingInfo("canCancel", Number(params.id)));
+      setForVotes(await getProposalInfo("forVotes", Number(params.id)));
+      setAgainstVotes(await getProposalInfo("againstVotes", Number(params.id)));
+      setSupport(await getAccountVotingInfo("support", Number(params.id)));
+      setVotes(await getAccountVotingInfo("votes", Number(params.id)));
+      setDebug(await getAccountVotingInfo("canCancel", Number(params.id)));
+    })();
   }, []);
 
   useEffectSkipFirst(() => {
     globalState.setLoading(proposalApi.loading);
+    if (proposalApi.isSuccess()) {
+      (async () => {
+        console.log("getting status");
+        const _status = await getState(proposalApi.response.proposal.web3Id);
+        setStatus(_status);
+      })();
+    }
   }, [proposalApi.loading]);
 
   useEffectSkipFirst(() => {
@@ -92,32 +114,37 @@ const ProposalPage = (props: Props) => {
   const [calldatas, setCalldatas] = useState();
   const [proposer, setProposer] = useState();
   const [hasVoted, setHasVoted] = useState();
+  const [canVote, setCanVote] = useState<boolean | undefined>();
+  const [canCancel, setCanCancel] = useState<boolean | undefined>();
+  const [forVotes, setForVotes] = useState(undefined);
+  const [againstVotes, setAgainstVotes] = useState(undefined);
   const [support, setSupport] = useState();
   const [votes, setVotes] = useState();
   const [debug, setDebug] = useState();
+  const [status, setStatus] = useState<ProposalStatus | undefined>();
 
   const proposal = (): Proposal | undefined => {
-    return proposalApi.response?.proposal;
+    return {
+      ...proposalApi.response?.proposal,
+      forCount: Number(forVotes) ?? 0,
+      againstCount: Number(againstVotes) ?? 0,
+      status: status,
+    };
   };
 
-  useEffect(() => {
-    (async function () {
-      setProposer(await getProposalInfo("proposer", Number(params.id)));
-      setTargets(await getProposalInfo("targets", Number(params.id)));
-      setValues(await getProposalInfo("values", Number(params.id)));
-      setSignatures(await getProposalInfo("signatures", Number(params.id)));
-      setCalldatas(await getProposalInfo("calldatas", Number(params.id)));
-      setHasVoted(await getAccountVotingInfo("hasVoted", Number(params.id)));
-      setSupport(await getAccountVotingInfo("support", Number(params.id)));
-      setVotes(await getAccountVotingInfo("votes", Number(params.id)));
-      setDebug(await getAccountVotingInfo("canCancel", Number(params.id)));
-    })();
-  }, []);
+  console.log(
+    `canVote: ${canVote} \n`,
+    `canCancel: ${canCancel} \n`,
+    `forVotes (assume its type is number): ${forVotes} \n`,
+    `againstVotes (assume its type is number): ${againstVotes} \n`
+  );
 
   const handleEditModalOpen = () => {
     setOpenEditProposalForm(true);
     editProposalForm.set(() => proposal() ?? {});
   };
+
+  console.log(hasVoted);
 
   return (
     <PageHeader
@@ -143,19 +170,19 @@ const ProposalPage = (props: Props) => {
             type="primary"
             style={{ width: "100%" }}
             danger
-            disabled={proposal()?.status !== "Active"}
+            disabled={proposal()?.status !== "Active" || !canCancel}
             onClick={() => setOpenCancelConfirm(true)}
           >
             Cancel
           </Button>
         </Popconfirm>,
-        <Button
-          key={"proposal apply button"}
-          style={{ width: "100%" }}
-          onClick={handleEditModalOpen}
-        >
-          編集
-        </Button>,
+        // <Button
+        //   key={"proposal apply button"}
+        //   style={{ width: "100%" }}
+        //   onClick={handleEditModalOpen}
+        // >
+        //   編集
+        // </Button>,
         <EditProposalForm
           open={openEditProposalForm}
           onCancel={() => setOpenEditProposalForm(false)}
@@ -179,11 +206,17 @@ const ProposalPage = (props: Props) => {
             }}
           >
             <div style={{ textAlign: "center" }}>
-              <div style={{ padding: 10 }}>{ProposalVoteView(proposal()!)}</div>
+              <div style={{ padding: 10 }}>
+                <Skeleton
+                  loading={forVotes === undefined || againstVotes === undefined}
+                >
+                  {ProposalVoteView(proposal()!)}
+                </Skeleton>
+              </div>
               <Button
                 size="large"
                 type="primary"
-                disabled={proposal()?.status !== "Active"}
+                disabled={proposal()?.status !== "Active" || !canVote}
                 onClick={() => {
                   setVoteModalOpen(true);
                 }}
@@ -314,7 +347,7 @@ const ProposalPage = (props: Props) => {
         </ContentBlock>
         <ContentBlock
           style={{
-            minHeight: 344,
+            minHeight: 244,
           }}
           title="ユーザー情報"
         >
@@ -358,18 +391,6 @@ const ProposalPage = (props: Props) => {
                 >
                   {votes}
                 </div>
-              </StatistcsLikeBlock>
-            </Col>
-            <Col span={12}>
-              <StatistcsLikeBlock title="hoge">
-                {debug}
-                <div
-                  style={{
-                    fontSize: 20,
-                    whiteSpace: "pre-line",
-                    lineHeight: 1.2,
-                  }}
-                ></div>
               </StatistcsLikeBlock>
             </Col>
           </Row>

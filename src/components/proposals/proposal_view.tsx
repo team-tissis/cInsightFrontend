@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { ContentBlock } from "components/shared/content_block";
 
-import { getProposalInfo } from "api/fetch_sol/governance";
+import { getProposalInfo, getState } from "api/fetch_sol/governance";
 
 export const ProposalListView = (proposal: Proposal) => {
   const [isHover, setIsHover] = useState(false);
@@ -39,23 +39,29 @@ export const ProposalListView = (proposal: Proposal) => {
           <div>#{proposal.web3Id}</div>
           <div>{proposal.title}</div>
         </Space>
-        {ProposalStatusView(proposal)}
+        {ProposalStatusView(proposal, true)}
       </Flex>
     </Card>
   );
 };
 
-export const ProposalStatusView = (proposal: Proposal) => {
-  switch (proposal.status as ProposalStatus) {
-    case "Active":
-      return <Tag color="success">{proposal.status}</Tag>;
-    case "Canceled":
-      return <Tag color="default">{proposal.status}</Tag>;
-    case "Defeated":
-      return <Tag color="error">{proposal.status}</Tag>;
-    case "Executed":
-      return <Tag color="processing">{proposal.status}</Tag>;
-  }
+export const ProposalStatusView = (proposal: Proposal, loadStatus = false) => {
+  const [status, setStatus] = useState<ProposalStatus | undefined>();
+
+  useEffect(() => {
+    if (loadStatus) {
+      (async () => {
+        const _status = await getState(proposal.web3Id);
+        setStatus(_status);
+      })();
+    }
+  }, []);
+
+  return (
+    <Tag color="#f33a">
+      {(loadStatus ? status : proposal.status) ?? "UNDEFINED"}
+    </Tag>
+  );
 };
 
 export const ProposalVoteView = (proposal: Proposal) => {
@@ -65,18 +71,6 @@ export const ProposalVoteView = (proposal: Proposal) => {
       (proposal.forCount! + proposal.againstCount! || 1)
   );
   const forColor = forPercent === 100 ? "#52c41a" : "#1890ff";
-
-  const [forVotes, setForVotes] = useState();
-  const [againstVotes, setAgainstVotes] = useState();
-  const [abstainVotes, setAbstainVotes] = useState();
-
-  useEffect(() => {
-    (async function () {
-      setForVotes(await getProposalInfo("forVotes", Number(params.id)));
-      setAgainstVotes(await getProposalInfo("againVotes", Number(params.id)));
-      setAbstainVotes(await getProposalInfo("abstainVotes", Number(params.id)));
-    })();
-  }, []);
 
   return (
     <Space style={{ width: "100%" }}>
@@ -89,9 +83,9 @@ export const ProposalVoteView = (proposal: Proposal) => {
         format={(_) => (
           <Space direction="vertical">
             <Space style={{ alignItems: "center" }}>
-              <div style={{ color: forColor }}>{forVotes ?? 0}</div>
+              <div style={{ color: forColor }}>{proposal.forCount ?? 0}</div>
               <div style={{ color: "#000" }}>vs</div>
-              <div>{againstVotes ?? 0}</div>
+              <div>{proposal.againstCount ?? 0}</div>
             </Space>
             <div style={{ color: "#8c8c8c", fontSize: 20 }}>
               {/* 定足数: {proposal.quorum ?? 0} */}
