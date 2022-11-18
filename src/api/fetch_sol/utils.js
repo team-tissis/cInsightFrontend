@@ -1,6 +1,4 @@
 import { ethers } from "ethers";
-import contractFunctions from "../../broadcast/cInsightScript.s.sol/31337/run-latest.json";
-// import contractFunctions from "../../broadcast_testnet/run-latest.json";
 import ChainInsightLogicV1 from "../../abi/LogicV1.sol/ChainInsightLogicV1.json";
 import ChainInsightExecutorV1 from "../../abi/ExecutorV1.sol/ChainInsightExecutorV1.json";
 import ChainInsightGovernanceProxyV1 from "../../abi/ProxyV1.sol/ChainInsightGovernanceProxyV1.json";
@@ -37,13 +35,15 @@ export function getAbi(contractName) {
 // (7) 0x14dc79964da2c08b23698b3d3cc7ca32193d9955 (10000 ETH)
 // (8) 0x23618e81e3f5cdf7f54c3d65f7fbc0abf5b21e8f (10000 ETH)
 // (9) 0xa0ee7a142d267c1f36714e4a8f75612f20a79720 (10000 ETH)
-const msgSender = 0; // 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+
+const msgSender = 1; // 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
 
 // ローカルネットワークにアクセスする方法（ http://localhost:8545 が指定される）
+import contractFunctions from "../../broadcast/cInsightScript.s.sol/31337/run-latest.json";
 export async function getSigner() {
   const provider = new ethers.providers.JsonRpcProvider();
   const signer = provider.getSigner(msgSender); // 2番目の account（1番目は deployer）
-  //
+
   return signer;
 }
 //
@@ -53,15 +53,16 @@ export async function getCurrentAccountAddress() {
   return accounts[msgSender];
 }
 
-// // MetaMask を使う方法
+// MetaMask を使う方法
+// import contractFunctions from "../../broadcast_testnet/run-latest.json";
 // export async function getSigner() {
 //   const provider = new ethers.providers.Web3Provider(window.ethereum, 80001);
-//   await provider.send("eth_requestAccounts", []);
+//   await provider.send('eth_requestAccounts', []);
 //   const signer = provider.getSigner();
-//
+
 //   return signer;
 // }
-//
+
 // export async function getCurrentAccountAddress() {
 //   const signer = await getSigner();
 //   const _myaddr = (await signer.getAddress()).toString();
