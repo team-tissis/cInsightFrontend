@@ -77,12 +77,11 @@ export const MyPage = (props: Props) => {
   );
 };
 
+export default withRouter(MyPage);
+
 type MyPageWithoutSbtProps = {
   setPostForm?: any;
 };
-
-export default withRouter(MyPage);
-
 
 const MyPageWithoutSbt = (props: MyPageWithoutSbtProps) => {
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
