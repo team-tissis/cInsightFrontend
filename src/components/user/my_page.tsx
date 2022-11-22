@@ -37,13 +37,13 @@ type Props = {
 
 export const MyPage = (props: Props) => {
   // const checkHasSbtApi = useCheckHasSbtApi();
-
+  const [postForm, setPostForm] = useState<number>(0)
   const [hasSbt, setHasSbt] = useState();
   useEffect(() => {
     (async function () {
       setHasSbt(await fetchConnectedAccountInfo("gradeOf"));
     })();
-  }, []);
+  }, [postForm]);
 
   // useEffect(() => {
   //   checkHasSbtApi.execute();
@@ -71,15 +71,20 @@ export const MyPage = (props: Props) => {
     >
       {/* {checkHasSbtApi.response?.hasSbt ? ( */}
       {/* <Skeleton loading={hasSbt === undefined}> */}
-      {hasSbt != 0 ? <UserPageContent isMyPage /> : <MyPageWithoutSbt />}
+      {hasSbt != 0 ? <UserPageContent isMyPage /> : <MyPageWithoutSbt setPostForm={setPostForm}/>}
       {/* </Skeleton> */}
     </PageHeader>
   );
 };
 
+type MyPageWithoutSbtProps = {
+  setPostForm?: any;
+};
+
 export default withRouter(MyPage);
 
-const MyPageWithoutSbt = () => {
+
+const MyPageWithoutSbt = (props: MyPageWithoutSbtProps) => {
   const [openCreateUserSbtForm, setOpenCreateUserSbtForm] = useState(false);
   const createUserSbtForm = useForm<User>({});
   const [account, setAccount] = useState<string | undefined>(undefined);
@@ -107,6 +112,7 @@ const MyPageWithoutSbt = () => {
           try {
             mint(createUserSbtForm.object.referencerAddress);
             createUserSbtForm.updateObject("eoa", account);
+            props.setPostForm((prev: number) => prev + 1)
           } catch (e) {
             console.error(e);
           }
