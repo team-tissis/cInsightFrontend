@@ -80,7 +80,7 @@ export const MyPage = (props: Props) => {
 export default withRouter(MyPage);
 
 type MyPageWithoutSbtProps = {
-  setPostForm?: any;
+  setPostForm: any;
 };
 
 const MyPageWithoutSbt = (props: MyPageWithoutSbtProps) => {
@@ -105,11 +105,11 @@ const MyPageWithoutSbt = (props: MyPageWithoutSbtProps) => {
         open={openCreateUserSbtForm}
         form={createUserSbtForm}
         onCancel={() => setOpenCreateUserSbtForm(false)}
-        onOk={() => {
+        onOk={async () => {
           console.log({ user: account });
           // postする処理
           try {
-            mint(createUserSbtForm.object.referencerAddress);
+            await mint(createUserSbtForm.object.referencerAddress);
             createUserSbtForm.updateObject("eoa", account);
             props.setPostForm((prev: number) => prev + 1)
           } catch (e) {

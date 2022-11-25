@@ -112,13 +112,13 @@ export async function mint(address) {
   if (address === undefined) {
     const { contract } = await getContract("Bonfire");
     const options = { value: ethers.utils.parseEther("0.1") };
-    mintIndex = contract.mint(options);
+    mintIndex = await contract.mint(options);
   }
   // mint with referral
   else {
     const { contract } = await getContract("Bonfire", sbtAbi);
     const options = { value: ethers.utils.parseEther("0.1") };
-    mintIndex = contract.mintWithReferral(address, options);
+    mintIndex = await contract.mintWithReferral(address, options);
   }
 
   console.log({ mintIndex: mintIndex });
