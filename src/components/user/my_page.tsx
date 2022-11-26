@@ -3,6 +3,7 @@ import {
   Col,
   Form,
   PageHeader,
+  notification,
   Row,
   Skeleton,
   Space,
@@ -109,7 +110,19 @@ const MyPageWithoutSbt = (props: MyPageWithoutSbtProps) => {
           console.log({ user: account });
           // postする処理
           try {
-            await mint(createUserSbtForm.object.referencerAddress);
+            const success: boolean  = await mint(createUserSbtForm.object.referencerAddress);
+            if(!success) {
+              notification.config({
+                maxCount: 1,
+              });
+              notification["error"]({
+                message: "エラーが発生したため、ミントできませんでした。\n紹介者アドレスが有効か再度確認してください。",
+                style: {
+                  backgroundColor: "#FFF2F0",
+                },
+              });
+              throw new Error('エラーが発生したため、ミントできませんでした。紹介者アドレスが有効か再度確認してください。')
+            }
             createUserSbtForm.updateObject("eoa", account);
             props.setPostForm((prev: number) => prev + 1)
           } catch (e) {
