@@ -11,9 +11,12 @@ import {
 } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import { Comment, CommentForm } from "entities/comment";
+import { User } from "entities/user";
+import { FavoriteForm, Favorite } from "entities/favorite";
 import React, { createElement, useEffect, useState } from "react";
 import { useEffectSkipFirst, useForm } from "utils/hooks";
 import { useFavoCommentApi, usePostCommentApi } from "api/comment";
+import { useCreateFavoriteApi, useDeleteFavoriteApi } from "api/favorite";
 import { ApiSet } from "utils/network/api_hooks";
 import { LectureResponse } from "api/lecture";
 import { useParams } from "react-router";
@@ -63,10 +66,14 @@ export type LectureCommentsListProps = {
 export const LectureCommetnsList = (props: LectureCommentsListProps) => {
   const postCommentApi = usePostCommentApi();
   const favoCommentApi = useFavoCommentApi();
+  const favoriteApi = useCreateFavoriteApi();
   const userApi = useFetchUserByAccountAddressApi();
   const params = useParams<{ id: string }>();
   const commentForm = useForm<CommentForm>({ lectureId: params.id });
+  // const favoriteForm = useForm<Favorite | undefined>(undefined)
   const [account, setAccount] = useState<string | undefined>(undefined);
+  const [currentUser, setCurrentUser] = useState<User>();
+  const favoriteForm = useForm<Favorite>({user: undefined, comment: undefined})
 
   useEffect(() => {
     (async () => setAccount(await getCurrentAccountAddress()))();
@@ -82,6 +89,7 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
   useEffectSkipFirst(() => {
     if (userApi.isSuccess()) {
       console.log(userApi.response.user);
+      setCurrentUser(userApi.response.user)
       commentForm.updateObject("commenterId", userApi.response.user.id);
       // commentForm.updateObject("commenter", userApi.response.user);
     }
@@ -98,6 +106,22 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
       props.lectureApi.execute(Number(props.lectureApi.response.lecture.id));
     }
   }, [favoCommentApi.loading]);
+
+  // function handlePostFavo(comment: Comment){
+  //   const favoriteForm = useForm<FavoriteForm>({ comment: comment, user: currentUser! });
+  //   console.log({POSTしようとしているデータ: favoriteForm})
+  //   favoriteApi.execute(favoriteForm)
+  // }
+  const handlePostFavo = (
+    comment: Comment
+  ) => {
+    console.log("POSTしようとしている...")
+    favoriteForm.update((f) => {
+      f!.user = currentUser!
+      f!.comment = comment
+    });
+    favoriteApi.execute(favoriteForm!)
+  };
 
   return (
     <>
@@ -141,7 +165,8 @@ export const LectureCommetnsList = (props: LectureCommentsListProps) => {
                                 backgroundColor: "#E6F7FF",
                               },
                             });
-                            favoCommentApi.execute(item);
+                            handlePostFavo(item)
+                            // favoCommentApi.execute(item);
                           }
                         }}
                       >
